@@ -1,0 +1,50 @@
+.prospects{
+  position: absolute;
+  top: 60px;
+  left: 0px;
+  background-color: azure;
+  width: 100%;
+  height: calc(100% - 70px);
+  display: flex;
+  flex-direction: column;
+  .prospects-header{
+    height: 38px;
+    display: flex;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    .prospects-title{
+      font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+      font-size: 16;
+      font-weight: 500;
+      margin-left: 90px;
+      text-align: left;
+    }
+    .add-button{
+      width: 20px;
+      height: 20px;
+      margin-top: 8px;
+      margin-left: 5px;
+      border: 1px solid black;
+      border-radius: 50%;
+      font-family: 'Arial, Helvetica, sans-serif';
+      font-size: 16px;
+      line-height: 18px;
+      text-align: center;
+      background-color: white;
+      color: black;
+      &:hover{
+        background-color: black;
+        color: white;
+      }
+    }
+  }
+  .add-prospect-wrapper{
+    overflow: hidden;
+    height: 0px;
+    width: 100%;
+    transition: height .5s;
+    &.is-add-prospect-open{
+      height: 340px;
+    }
+  }
+}

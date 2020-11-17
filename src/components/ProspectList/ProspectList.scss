@@ -1,0 +1,78 @@
+.prospect-list{
+  width: calc(100% - 40px);
+  margin-left: 20px;
+  margin-right: 20px;
+  .prospect-list-header{
+    width: 100%;
+    display: flex;
+    border: solid 1px black;
+    height: 44px;
+    .header-item{
+      width: calc(11%);
+      height: 44px;
+      line-height: 44px;
+      padding-left: 10px;
+      padding-right: 10px;
+      font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+      font-size: 14px;
+      border-left: 1px solid black;
+      span{
+        display: inline-block;
+        vertical-align: middle;
+        line-height: normal;
+      }
+      &:first-of-type{
+        border-left: none;
+      }
+    }
+  }
+  .prospect-list-items{
+    width: 100%;
+    .prospect-list-row{
+      width: 100%;
+      display: flex;
+      height: auto;
+      min-height: 30px;
+      border-bottom: solid 1px black;
+      border-left: solid 1px black;
+      border-right: solid 1px black;
+      .detail-item{
+        width: calc(11%);
+        height: auto;
+        min-height: 30px;
+        line-height: 30px;
+        padding-left: 10px;
+        padding-right: 10px;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 14px;
+        border-right: solid 1px black;
+        text-align: left;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        &:last-of-type{
+          border-right: none;
+        }
+        &.allow-hover{
+          &:hover{
+            line-height: 14px;
+            overflow: auto;
+            max-height: 120px;
+            white-space: unset;
+            text-overflow: unset;
+            height: auto;
+            margin-top: 4px;
+            margin-bottom: 4px;
+            z-index: 10;
+           }
+        }
+      }
+      &:last-of-type{
+        border-bottom: solid 1px black;
+      }
+    }
+    .none-found{
+      margin-top: 50px;
+    }
+  }
+}

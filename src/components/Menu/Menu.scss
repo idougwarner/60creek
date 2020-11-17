@@ -1,0 +1,50 @@
+.menu{
+  z-index: 10;
+  .logo{
+    position: absolute;
+    left: 10px;
+    top: 0px;
+    background-image: url(../../assets/images/60-Creek-Logo_isolated-BG_full-color.png);
+    background-repeat: no-repeat;
+    margin-top: 10px;
+    width: 70px;
+    height: 40px;
+    background-size: 70px 40px;
+  }
+  .menu-wrapper{
+    display: flex;
+    flex-direction: row;
+    position: absolute;
+    top: 0px;
+    left: 90px;
+    width: calc(100% - 90px);
+    height: 62px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    background-color: #7d7d7d;
+    .link-item
+    {
+      color: white;
+      text-decoration: none;
+      font-family: Arial, Helvetica, sans-serif;
+      padding: 10px;
+      font-size: 18px;
+      border: 1px solid #4a4a4a;
+      border-radius: 4;
+      background-color: transparent;
+      height: 40px;
+      line-height: 40px;
+      text-align: center;
+      &:hover{
+        background-color: #7e7e7e;
+        color: black;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.4), 0 6px 20px 0 rgba(0, 0, 0, 0.29);
+      }
+      &.selected{
+        background-color: #aeaeae;
+        color: black;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.4), 0 6px 20px 0 rgba(0, 0, 0, 0.29);
+      }
+    }
+
+  } 
+}
