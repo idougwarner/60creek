@@ -41,8 +41,6 @@ const AddProspectForm = (props) => {
                   setChangedValue(true)
                 }}
                 data={['raw', 'contacting', 'ready', 'customer']}
-                inputProps={{ required: true, name: "heardAboutUsFrom" }}
-                name="heardAboutUsFrom"
               />
             </div>
           </div>
@@ -116,6 +114,7 @@ const AddProspectForm = (props) => {
           details: detailsValue,
         })
         setChangedValue(false)
+        setIdValue('')
         setStatusValue('')
         setFirstNameValue('')
         setLastNameValue('')
