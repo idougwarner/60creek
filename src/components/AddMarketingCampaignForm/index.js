@@ -1,7 +1,9 @@
 import react, { useState } from 'react'
 import './AddMarketingCampaignForm.scss'
 import 'react-widgets/lib/scss/react-widgets.scss'
-import { Combobox, SelectList } from 'react-widgets';
+import Globalize from 'globalize';
+import globalizeLocalizer from 'react-widgets-globalize';import { Combobox, SelectList, DateTimePicker } from 'react-widgets';
+
 
 const targetList = [
   { name: 'List 1', targets: ['Target 1', 'Target 2', 'Target 3', 'Target 4', 'Target 5'] },
@@ -23,9 +25,8 @@ const AddMarketingCampaignForm = (props) => {
   const [startTimeValue, setStartTimeValue] = useState()
   const [startDateValue, setStartDateValue] = useState()
 
-  // Globalize.locale('en')
-
-  // globalizeLocalizer()
+  Globalize.locale('en')
+  globalizeLocalizer()
 
   if (marketingCampaignToUpdate && titleValue !== marketingCampaignToUpdate.title) {
     setIdValue(marketingCampaignToUpdate.id)
@@ -80,27 +81,27 @@ const AddMarketingCampaignForm = (props) => {
           <div className='input-box'>
             <div className='label'>Start Date</div>
             <div className='input-container'>
-              {/* <DateTimePicker
+              <DateTimePicker
                 date={true}
                 value={startDateValue}
                 onChange={(value) => {
                   setStartDateValue(value)
                   setChangedValue(true)
                 }}
-              /> */}
+              />
             </div>
           </div>
           <div className='input-box'>
             <div className='label'>Start Time</div>
             <div className='input-container'>
-              {/* <DateTimePicker
+              <DateTimePicker
                 time={true}
                 value={startTimeValue}
                 onChange={(value) => {
                   setStartTimeValue(value)
                   setChangedValue(true)
                 }}
-              /> */}
+              />
             </div>
           </div>
         </div>
