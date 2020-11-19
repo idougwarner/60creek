@@ -1,12 +1,18 @@
 .add-prospect-form{
-  width: 50%;
+  width: 500px;
   height: 300px;
   margin: 20px;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   position: relative;
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 16px;
-  text-align: center;
+
+  .title-box{
+    padding-top: 10px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 16px;
+    text-align: center;
+    height: 20px;
+    line-height: 20px;
+  }
 
   .sides-container{
     display:flex;
@@ -32,20 +38,32 @@
           .rw-widget{
             font-size: 12px;
           }
-        }
-        input{
-          width: 95%;
-          height: 24px;
-        }
-        textarea{
-          width: 95%;
-          height: 48x;
+          input{
+            width: 95%;
+            height: 24px;
+          }
+          textarea{
+            width: 95%;
+            height: 48x;
+          }
+          .rw-select-list-label{
+            text-align: left;
+            input{
+              width: auto;
+            }
+          }
+          .rw-popup-container{
+            text-align: left;
+          }
         }
       }
     }
     .left-side{
-      margin-right: 20px;
+      padding-right: 8px;
       border-right: 1px solid darkgray;
+    }
+    .right-side{
+      padding-left: 10px;
     }
   }
   .add-button{

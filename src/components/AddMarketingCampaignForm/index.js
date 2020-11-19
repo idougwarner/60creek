@@ -165,7 +165,9 @@ const AddMarketingCampaignForm = (props) => {
 
   return (
     <div className='add-campaign-form'>
-      Add a Marketing Campaign
+      <div className='title-box'>
+        Add a Marketing Campaign
+      </div>
       <div className='campaign-sides-container'>
         <div className="left-side">
     

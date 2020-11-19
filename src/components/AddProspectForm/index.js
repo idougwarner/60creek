@@ -28,7 +28,9 @@ const AddProspectForm = (props) => {
 
   return (
     <div className='add-prospect-form'>
-      Add a Prospect
+      <div className='title-box'>
+        Add a Prospect
+      </div>
       <div className='sides-container'>
         <div className="left-side">
           <div className='input-box'>

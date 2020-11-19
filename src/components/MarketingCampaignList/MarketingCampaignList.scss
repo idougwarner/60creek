@@ -1,14 +1,16 @@
 .marketing-list{
-  width: calc(100% - 40px);
   margin-left: 20px;
   margin-right: 20px;
+  width: calc(100% - 40px);
+  border-bottom: 1px solid black;
+  margin-bottom: 40px;
   .marketing-list-header{
     width: calc(100% - 2px);
     display: flex;
     border: solid 1px black;
     height: 54px;
     .header-item{
-      width: calc(10%);
+      width: calc(11%);
       height: 54px;
       line-height: 54px;
       padding-left: 10px;
@@ -29,9 +31,9 @@
   .marketing-list-items{
     width: 100%;
     overflow-y: auto;
-    max-height: 100%;
+    max-height: calc(100vh - 200px);
     &.short{
-      max-height: calc(100vh - 640px);
+      max-height: calc(100vh - 663px);
     }
     .marketing-list-row{
       width: calc(100% - 2px);
@@ -42,7 +44,7 @@
       border-left: solid 1px black;
       border-right: solid 1px black;
       .detail-item{
-        width: calc(12%);
+        width: calc(11%);
         height: auto;
         min-height: 30px;
         line-height: 30px;
@@ -60,7 +62,7 @@
         }
       }
       &:last-of-type{
-        border-bottom: solid 1px black;
+        border-bottom: none;
       }
     }
     .none-found{
