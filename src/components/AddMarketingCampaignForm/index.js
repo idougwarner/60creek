@@ -1,8 +1,9 @@
-import react, { useState } from 'react'
+import React, { useState } from 'react'
 import './AddMarketingCampaignForm.scss'
 import 'react-widgets/lib/scss/react-widgets.scss'
 import Globalize from 'globalize';
-import globalizeLocalizer from 'react-widgets-globalize';import { Combobox, SelectList, DateTimePicker } from 'react-widgets';
+import globalizeLocalizer from 'react-widgets-globalize';
+import { Combobox, SelectList, DateTimePicker } from 'react-widgets';
 
 
 const targetList = [
@@ -22,10 +23,127 @@ const AddMarketingCampaignForm = (props) => {
   const [automatedTextValue, setAutomatedTextValue] = useState(false)
   const [automatedRinglessVoicemailValue, setAutomatedRinglessVoicemailValue] = useState(false)
   const [automatedPostcardValue, setAutomatedPostcardValue] = useState(false)
-  const [startTimeValue, setStartTimeValue] = useState()
-  const [startDateValue, setStartDateValue] = useState()
+  const [startDateTimeValue, setStartDateTimeValue] = useState()
 
-  Globalize.locale('en')
+  Globalize.load({
+    "main": {
+    "en-US": {
+      "identity": {
+        "version": {
+          "_cldrVersion": "25",
+          "_number": "$Revision: 91 $"
+        },
+        "generation": {
+          "_date": "$Date: 2014-03-13 22:27:12 -0500 (Thu, 13 Mar 2014) $"
+        },
+        "language": "en"
+      },
+      "dates": {
+        "calendars": {
+          "gregorian": {
+            "months": {
+              "format": {
+                "wide": {
+                  "1": "January",
+                  "2": "February",
+                  "3": "March",
+                  "4": "April",
+                  "5": "May",
+                  "6": "June",
+                  "7": "July",
+                  "8": "August",
+                  "9": "September",
+                  "10": "October",
+                  "11": "November",
+                  "12": "December"
+                },
+                "abbreviated": {
+                  "1": "Jan",
+                  "2": "Feb",
+                  "3": "Mar",
+                  "4": "Apr",
+                  "5": "May",
+                  "6": "Jun",
+                  "7": "Jul",
+                  "8": "Aug",
+                  "9": "Sep",
+                  "10": "Oct",
+                  "11": "Nov",
+                  "12": "Dec"
+                }
+              }
+            },
+            "days": {
+              "format": {
+                "abbreviated": {
+                  "1": "Sun",
+                  "2": "Mon",
+                  "3": "Tue",
+                  "4": "Wed",
+                  "5": "Thu",
+                  "6": "Fri",
+                  "7": "Sat",
+                }
+              }
+            },
+            "dayPeriods": {
+              "format": {
+                "wide": {
+                  "am": "AM",
+                  "am-alt-variant": "am",
+                  "noon": "noon",
+                  "pm": "PM",
+                  "pm-alt-variant": "pm"
+                }
+              }
+            },
+            "dateFormats": {
+              "short": "MM/dd/yyyy",
+              "medium": "MMM d, y",
+              "full": "MMM d, YYYY"
+            },
+            "timeFormats": {
+              "medium": "h:mm:ss a",
+              "short": "hh:mm a",
+            },
+            "dateTimeFormats": {
+              "medium": "{1}, {0}"
+            }
+          }
+        }
+      },
+      "numbers": {
+        "defaultNumberingSystem": "latn",
+        "symbols-numberSystem-latn": {
+          "group": ",",
+          "timeSeparator": ":",
+          "infinity": "0",
+          "nan": "nan",
+          "decimal": ".",
+          "percentSign": "%",
+          "plusSign": "+",
+          "minusSign": "-",
+          "exponential": "e",
+          "perMille": "?",
+        },
+        "decimalFormats-numberSystem-latn": {
+          "standard": "#,##0.###"
+        }
+      }
+    }
+  },
+    "supplemental": {
+      "version": {
+        "_cldrVersion": "25",
+        "_number": "$Revision: 91 $"
+      },
+      "likelySubtags": {
+        "en": "en-Latn-US",
+      }
+    }
+  });
+  
+  Globalize.locale('en-US')
   globalizeLocalizer()
 
   if (marketingCampaignToUpdate && titleValue !== marketingCampaignToUpdate.title) {
@@ -37,8 +155,8 @@ const AddMarketingCampaignForm = (props) => {
     setAutomatedPostcardValue(marketingCampaignToUpdate.automatedPostCard)
     setAutomatedTextValue(marketingCampaignToUpdate.automatedText)
     setAutomatedRinglessVoicemailValue(marketingCampaignToUpdate.automatedRinglessVoicemail)
-    setStartTimeValue(marketingCampaignToUpdate.startTime)
-    setStartDateValue(marketingCampaignToUpdate.startDate)
+    setStartDateTimeValue(marketingCampaignToUpdate.startTime)
+    setStartDateTimeValue(marketingCampaignToUpdate.startDate)
 }
   else if (!idValue) {
     setChangedValue(false)
@@ -79,26 +197,15 @@ const AddMarketingCampaignForm = (props) => {
             </div>
           </div>
           <div className='input-box'>
-            <div className='label'>Start Date</div>
+            <div className='label'>Start Date/Time</div>
             <div className='input-container'>
               <DateTimePicker
                 date={true}
-                value={startDateValue}
-                onChange={(value) => {
-                  setStartDateValue(value)
-                  setChangedValue(true)
-                }}
-              />
-            </div>
-          </div>
-          <div className='input-box'>
-            <div className='label'>Start Time</div>
-            <div className='input-container'>
-              <DateTimePicker
                 time={true}
-                value={startTimeValue}
+                dropUp={true}
+                value={startDateTimeValue}
                 onChange={(value) => {
-                  setStartTimeValue(value)
+                  setStartDateTimeValue(new Date(value))
                   setChangedValue(true)
                 }}
               />
@@ -188,8 +295,7 @@ const AddMarketingCampaignForm = (props) => {
           automatedText: automatedTextValue,
           automatedRinglessVoicemail: automatedRinglessVoicemailValue,
           total: totalAmount,
-          startDate: startDateValue,
-          startTime: startTimeValue,
+          startDateTime: startDateTimeValue,
         })
         setIdValue('')
         setChangedValue(false)
@@ -199,8 +305,7 @@ const AddMarketingCampaignForm = (props) => {
         setAutomatedPostcardValue(false)
         setAutomatedTextValue(false)
         setAutomatedRinglessVoicemailValue(false)
-        setStartTimeValue()
-        setStartDateValue()
+        setStartDateTimeValue("")
     
       } : null}>{marketingCampaignToUpdate ? 'Update Campaign' : 'Add Campaign'}</div>
     </div>

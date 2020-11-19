@@ -1,11 +1,11 @@
-import react from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
 import './Marketing.scss'
 import MarketingCampaignList from '../../components/MarketingCampaignList'
 import { createMarketingCampaign } from '../../redux/actions'
 import AddMarketingCampaignForm from '../../components/AddMarketingCampaignForm'
 
-export class Marketing extends react.Component {
+export class Marketing extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -17,7 +17,7 @@ export class Marketing extends react.Component {
     this.closeOpenAddMarket = this.closeOpenAddMarket.bind(this)
     this.handleUpdatingMarketingCampaign = this.handleUpdatingMarketingCampaign.bind(this)
 
-    this.wrapperRef = react.createRef()
+    this.wrapperRef = React.createRef()
   }
 
   closeOpenAddMarket() {
@@ -58,7 +58,8 @@ export class Marketing extends react.Component {
           <AddMarketingCampaignForm addMarketingCampaign={this.handleAddMarketingCampaign} marketingCampaignToUpdate={ marketingCampaignToUpdate }/>
         </div>
 
-        <MarketingCampaignList markets={this.props.markets} updateMarketingCampaign={ this.handleUpdatingMarketingCampaign}/>
+        <MarketingCampaignList markets={this.props.markets} updateMarketingCampaign={this.handleUpdatingMarketingCampaign}
+          short={addingMarket}/>
       </div>
     )
   }

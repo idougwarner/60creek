@@ -1,4 +1,4 @@
-import react, { useState } from 'react'
+import React, { useState } from 'react'
 import './AddProspectForm.scss'
 import 'react-widgets/lib/scss/react-widgets.scss'
 import {Combobox} from 'react-widgets';

@@ -1,0 +1,27 @@
+{
+  "files": {
+    "main.css": "/static/css/main.7433471c.chunk.css",
+    "main.js": "/static/js/main.5f224b09.chunk.js",
+    "main.js.map": "/static/js/main.5f224b09.chunk.js.map",
+    "runtime-main.js": "/static/js/runtime-main.735a32f0.js",
+    "runtime-main.js.map": "/static/js/runtime-main.735a32f0.js.map",
+    "static/css/2.325fce33.chunk.css": "/static/css/2.325fce33.chunk.css",
+    "static/js/2.90488543.chunk.js": "/static/js/2.90488543.chunk.js",
+    "static/js/2.90488543.chunk.js.map": "/static/js/2.90488543.chunk.js.map",
+    "static/js/3.8f08005e.chunk.js": "/static/js/3.8f08005e.chunk.js",
+    "static/js/3.8f08005e.chunk.js.map": "/static/js/3.8f08005e.chunk.js.map",
+    "index.html": "/index.html",
+    "static/css/2.325fce33.chunk.css.map": "/static/css/2.325fce33.chunk.css.map",
+    "static/css/main.7433471c.chunk.css.map": "/static/css/main.7433471c.chunk.css.map",
+    "static/js/2.90488543.chunk.js.LICENSE.txt": "/static/js/2.90488543.chunk.js.LICENSE.txt",
+    "static/media/Menu.scss": "/static/media/60-Creek-Logo_isolated-BG_full-color.6fc1895e.png",
+    "static/media/react-widgets.scss": "/static/media/rw-widgets.e8b49908.svg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.735a32f0.js",
+    "static/css/2.325fce33.chunk.css",
+    "static/js/2.90488543.chunk.js",
+    "static/css/main.7433471c.chunk.css",
+    "static/js/main.5f224b09.chunk.js"
+  ]
+}

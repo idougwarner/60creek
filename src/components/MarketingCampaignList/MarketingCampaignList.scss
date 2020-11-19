@@ -3,7 +3,7 @@
   margin-left: 20px;
   margin-right: 20px;
   .marketing-list-header{
-    width: 100%;
+    width: calc(100% - 2px);
     display: flex;
     border: solid 1px black;
     height: 54px;
@@ -28,8 +28,13 @@
   }
   .marketing-list-items{
     width: 100%;
+    overflow-y: auto;
+    max-height: 100%;
+    &.short{
+      max-height: calc(100vh - 640px);
+    }
     .marketing-list-row{
-      width: 100%;
+      width: calc(100% - 2px);
       display: flex;
       height: auto;
       min-height: 30px;

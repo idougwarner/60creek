@@ -1,4 +1,4 @@
-import react from 'react'
+import React from 'react'
 import './Menu.scss'
 import { Link } from 'react-router-dom'
 import { withRouter } from 'react-router-dom'
@@ -19,7 +19,7 @@ const Menu = (props) => {
 
 export default withRouter(Menu)
 // // 
-// import react from 'react'
+// import React from 'react'
 
 // const Menu = () => {
 //   return <div className='menu'>

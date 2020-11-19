@@ -1,4 +1,4 @@
-import react from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
 import './MarketingCampaignList.scss'
 
@@ -15,8 +15,7 @@ const MarketingCampaignList = (props) => {
           <div className='detail-item'>{market.automatedText ? 'Yes - $.25 a Target' : 'No'}</div>
           <div className='detail-item'>{market.automatedRinglessVoicemail ? 'Yes - $.25 a Target' : 'No'}</div>
           <div className='detail-item'>{market.automatedPostCard ? 'Yes - $1.25 a Target' : 'No'}</div>
-          <div className='detail-item'>{market.startDate}</div>
-          <div className='detail-item'>{market.startTime}</div>
+          <div className='detail-item'>{market.startDateTime}</div>
           <div className='detail-item'>{market.consent}</div>
           <div className='detail-item'>{market.total ? '$' + market.total.toFixed(2) : '$0.00'}</div>
         </div>
@@ -25,7 +24,7 @@ const MarketingCampaignList = (props) => {
     )
   }
   return (
-    <div className='marketing-list'>
+    <div className={'marketing-list'}>
       <div className="marketing-list-header">
         <div className='header-item'><span>Title</span></div>
         <div className='header-item'><span>Target List</span></div>
@@ -33,12 +32,11 @@ const MarketingCampaignList = (props) => {
         <div className='header-item'><span>Automated Text</span></div>
         <div className='header-item'><span>Automated Ringless Voicemail</span></div>
         <div className='header-item'><span>Automated Postcard</span></div>
-        <div className='header-item'><span>Start Date</span></div>
-        <div className='header-item'><span>Start Time</span></div>
+        <div className='header-item'><span>Start Date/Time</span></div>
         <div className='header-item'><span>Consent</span></div>
         <div className='header-item'><span>Total</span></div>
       </div>
-      <div className='marketing-list-items'>
+      <div className={'marketing-list-items' + (props.short ? ' short' : '')}>
         {marketingList}
       </div>
     </div>

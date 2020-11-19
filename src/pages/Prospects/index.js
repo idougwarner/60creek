@@ -1,11 +1,11 @@
-import react from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
 import './Prospects.scss'
 import ProspectList from '../../components/ProspectList'
 import AddProspectForm from '../../components/AddProspectForm'
 import { createProspect } from '../../redux/actions'
 
-export class Prospects extends react.Component {
+export class Prospects extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -17,7 +17,7 @@ export class Prospects extends react.Component {
     this.closeOpenAddProspect = this.closeOpenAddProspect.bind(this)
     this.handleUpdatingProspect = this.handleUpdatingProspect.bind(this)
 
-    this.wrapperRef = react.createRef()
+    this.wrapperRef = React.createRef()
   }
 
   closeOpenAddProspect() {
