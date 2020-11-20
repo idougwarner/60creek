@@ -1,0 +1,31 @@
+@import '../../assets/styles/global-styles.scss';
+
+.sixty-creek-login-header{
+  display: flex;
+  height: 84px;
+  width: 100%;
+  position: relative;
+  background-color: white;
+  .sixty-creek-icon{
+    margin-left: 32px;
+    margin-top: 24px;
+    background-image: url(../../assets/images/60-Creek-Logo_isolated-BG_full-color.png);
+    background-repeat: no-repeat;
+    background-size: 66px 36px;
+    width: 66px;
+    height: 36px;
+  }
+  .not-a-member-box{
+    position: absolute;
+    width: 300px;;
+    height: 84px;
+    right: 32px;
+    display: flex;
+    flex-direction: row-reverse;
+    text-align: right;
+    .header-label{
+      margin-top: 30px;
+      margin-left: 5px;
+    }
+  }
+}

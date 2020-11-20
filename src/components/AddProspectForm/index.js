@@ -12,7 +12,17 @@ const AddProspectForm = (props) => {
   const [lastNameValue, setLastNameValue] = useState('')
   const [companyNameValue, setCompanyNameValue] = useState('')
   const [detailsValue, setDetailsValue] = useState('')
-  if (prospectToUpdate && !statusValue) {
+
+  function resetValues() {
+    setChangedValue(false)
+    setIdValue(Math.ceil(Math.random() * 100000000))
+    setStatusValue('')
+    setFirstNameValue('')
+    setLastNameValue('')
+    setCompanyNameValue('')
+    setDetailsValue('')
+  }
+  if (prospectToUpdate && statusValue !== prospectToUpdate.statusValue) {
     setIdValue(prospectToUpdate.id)
     setStatusValue(prospectToUpdate.status)
     setFirstNameValue(prospectToUpdate.firstName)
@@ -22,8 +32,7 @@ const AddProspectForm = (props) => {
     setChangedValue(false)
   }
   else if (!idValue) {
-    setChangedValue(false)
-    setIdValue(Math.ceil(Math.random() * 100000000))
+    resetValues()
   }
 
   return (
@@ -115,13 +124,7 @@ const AddProspectForm = (props) => {
           companyName: companyNameValue,
           details: detailsValue,
         })
-        setChangedValue(false)
-        setIdValue('')
-        setStatusValue('')
-        setFirstNameValue('')
-        setLastNameValue('')
-        setCompanyNameValue('')
-        setDetailsValue('')
+        resetValues()
     
       } : null}>{prospectToUpdate ? 'Update Prospect' : 'Add Prospect'}</div>
     </div>

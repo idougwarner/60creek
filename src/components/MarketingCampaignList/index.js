@@ -3,6 +3,23 @@ import { connect } from 'react-redux'
 import './MarketingCampaignList.scss'
 
 const MarketingCampaignList = (props) => {
+  function formatDateTime(dateTime) {
+    const realDate = new Date(dateTime)
+    let hours = realDate.getHours()
+    let amPm = ' am'
+    if (hours === 0) {
+      hours = 12
+    }
+    else if (hours > 12) {
+      hours -= 12
+      amPm = ' pm'
+    }
+    else if (hours === 12) {
+      amPm = ' pm'
+    }
+    return realDate.getMonth() + '/' + realDate.getDate() + '/' + realDate.getFullYear() + ' ' +
+      hours + ':' + (realDate.getMinutes() < 10 ? '0' : '') + realDate.getMinutes() + amPm
+  }
   const { markets, updateMarketingCampaign } = props
   let marketingList = <div className='none-found'>No Campaigns Created Yet</div>
   if (markets && markets.length) {
@@ -15,8 +32,8 @@ const MarketingCampaignList = (props) => {
           <div className='detail-item'>{market.automatedText ? 'Yes - $.25 a Target' : 'No'}</div>
           <div className='detail-item'>{market.automatedRinglessVoicemail ? 'Yes - $.25 a Target' : 'No'}</div>
           <div className='detail-item'>{market.automatedPostCard ? 'Yes - $1.25 a Target' : 'No'}</div>
-          <div className='detail-item'>{market.startDateTime}</div>
-          <div className='detail-item'>{market.consent}</div>
+          <div className='detail-item'>{formatDateTime(market.startDateTime)}</div>
+          <div className='detail-item'>{market.consent ? 'Yes' : 'No'}</div>
           <div className='detail-item'>{market.total ? '$' + market.total.toFixed(2) : '$0.00'}</div>
         </div>
       )

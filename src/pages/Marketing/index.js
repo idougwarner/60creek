@@ -1,66 +1,96 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import {Elements} from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
 import './Marketing.scss'
 import MarketingCampaignList from '../../components/MarketingCampaignList'
 import { createMarketingCampaign } from '../../redux/actions'
 import AddMarketingCampaignForm from '../../components/AddMarketingCampaignForm'
 
+const stripePromise = loadStripe('pk_test_JJ1eMdKN0Hp4UFJ6kWXWO4ix00jtXzq5XG');
+
 export class Marketing extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      addingMarket: false
+      addingMarket: false,
+      addingMarketOpened: false
     }
 
     this.handleAddClick = this.handleAddClick.bind(this)
     this.handleAddMarketingCampaign = this.handleAddMarketingCampaign.bind(this)
-    this.closeOpenAddMarket = this.closeOpenAddMarket.bind(this)
+    this.closeAddMarket = this.closeAddMarket.bind(this)
+    this.openAddMarket = this.openAddMarket.bind(this)
     this.handleUpdatingMarketingCampaign = this.handleUpdatingMarketingCampaign.bind(this)
 
     this.wrapperRef = React.createRef()
   }
 
-  closeOpenAddMarket() {
+  closeAddMarket() {
     const wrapper = this.wrapperRef.current
     wrapper.classList.toggle('is-add-market-open')
-    this.setState({addingMarket: !this.state.addingMarket, marketingCampaignToUpdate: null})
+    this.setState({ addingMarket: false, marketingCampaignToUpdate: null }, () => {
+      setTimeout(() => {
+        this.setState({addingMarketOpened: false})
+      }, 600)
+    })
+  }
+  
+  openAddMarket() {
+    const wrapper = this.wrapperRef.current
+    this.setState({ addingMarketOpened: true }, () => {
+      wrapper.classList.toggle('is-add-market-open')
+      this.setState({ addingMarket: true })
+    })
   }
   
   handleAddClick() {
-    this.closeOpenAddMarket()
-    this.setState(this.state.visible)
-
+    if (this.state.addingMarketOpened) {
+      this.closeAddMarket()
+    }
+    else {
+      this.openAddMarket()
+    }
   }
 
   handleAddMarketingCampaign(newCampaign) {
     const { onCreatePressed } = this.props
-    this.closeOpenAddMarket()
+    this.closeAddMarket()
     onCreatePressed(newCampaign)
   }
 
   handleUpdatingMarketingCampaign(market) {
-    this.setState({ marketingCampaignToUpdate: market }, () => {
-      this.closeOpenAddMarket()
-    })
+    if (!this.state.addingMarketOpened) {
+      this.setState({ marketingCampaignToUpdate: market }, () => {
+        this.openAddMarket()
+      })
+    }
   }
 
   render() {
 
-    const { addingMarket, marketingCampaignToUpdate } = this.state
+    const { addingMarket, addingMarketOpened, marketingCampaignToUpdate } = this.state
+    let addingMarketForm = null
+    if (addingMarketOpened) {
+      addingMarketForm = <AddMarketingCampaignForm
+        addMarketingCampaign={this.handleAddMarketingCampaign} marketingCampaignToUpdate={marketingCampaignToUpdate} />
+    }
     return (
-      <div className="markets">
-        <div className='markets-header'>
-          <div className='markets-title'>Marketing</div>
-          <div className='add-button' onClick={this.handleAddClick}>{addingMarket ? '-' : '+'}</div>
-        </div>
+      <Elements stripe={stripePromise}>
+        <div className="markets">
+          <div className='markets-header'>
+            <div className='markets-title'>Marketing</div>
+            <div className='add-button' onClick={this.handleAddClick}>{addingMarket ? '-' : '+'}</div>
+          </div>
 
-        <div className='add-market-wrapper' ref={this.wrapperRef}>
-          <AddMarketingCampaignForm addMarketingCampaign={this.handleAddMarketingCampaign} marketingCampaignToUpdate={ marketingCampaignToUpdate }/>
-        </div>
+          <div className='add-market-wrapper' ref={this.wrapperRef}>
+            {addingMarketForm}
+          </div>
 
-        <MarketingCampaignList markets={this.props.markets} updateMarketingCampaign={this.handleUpdatingMarketingCampaign}
-          short={addingMarket}/>
-      </div>
+          <MarketingCampaignList markets={this.props.markets} updateMarketingCampaign={this.handleUpdatingMarketingCampaign}
+            short={addingMarket} />
+        </div>
+      </Elements>
     )
   }
 }

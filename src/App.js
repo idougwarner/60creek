@@ -3,6 +3,7 @@ import React from 'react'
 import { BrowserRouter, Switch } from "react-router-dom"
 import { MakeRoutesWithSubRoutes } from './MakeRoutesWithSubRoutes';
 import Home from './pages/Home'
+import Login from './pages/Login'
 import Prospects from './pages/Prospects'
 import Marketing from './pages/Marketing'
 import YourAccount from './pages/YourAccount'
@@ -13,12 +14,13 @@ import About from './pages/About'
 const appRoutes = [
   /** WEB ROUTES */
   // { path: "/", component: ProjectsContainer },
+  { path: '/login', component:Login},
   { path: '/prospects', component:Prospects},
   { path: '/marketing', component:Marketing},
   { path: '/dashboard', component:Dashboard},
   { path: '/youraccount', component:YourAccount},
   { path: '/about', component:About},
-  { path: "/", component: Home },
+  { path: "/", component: Login },
 ]
 
 function App() {
@@ -26,7 +28,6 @@ function App() {
     <div className="App">
       <header className="App-header">
         <BrowserRouter>
-          <Menu />
           <Switch>
             {appRoutes.map((route, i) => (
               <MakeRoutesWithSubRoutes key={route.component.displayName ? route.component.displayName : route.component.name} {...route} />

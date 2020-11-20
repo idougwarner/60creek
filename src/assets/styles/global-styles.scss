@@ -1,0 +1,156 @@
+.g-basic-label{
+  font-family: Raleway;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 20px;
+  line-height: 24px;
+  letter-spacing: 0.15px;
+  color: rgba(19, 22, 36, 0.6);
+  &.small{
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: 0.25px;
+  }
+  &.medium{
+    font-size: 16px;
+    line-height: 24px;
+    letter-spacing: 0.5px;
+  }
+  &.large{
+    font-size: 20px;
+    line-height: 24px;
+    letter-spacing: 0.15px;
+  }
+}
+
+.g-clickable-label{
+  font-family: Raleway;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 24px;
+  letter-spacing: 0.15px;
+  text-align: left;
+  color: #366EE7;
+  cursor: pointer;
+  &.small{
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: 0.25px;
+  }
+  &.medium{
+    font-size: 16px;
+    line-height: 24px;
+    letter-spacing: 0.5px;
+  }
+  &.large{
+    font-size: 20px;
+    line-height: 24px;
+    letter-spacing: 0.15px;
+  }
+}
+
+.g-page-background{
+  position: fixed;
+  left: 0px;
+  top: 0px;
+  background-color: #F5F7FA;
+  width: 100vw;
+  height: calc(100vw - 84px);
+}
+
+.g-page-background-with-nav{
+  position: fixed;
+  left: 179px;
+  top: 0px;
+  background-color: #F5F7FA;
+  width: calc(100vw - 178px);
+  height: 100vw;
+}
+
+.g-centered-form{
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: 100%;
+  height: 58%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  .g-form-container{
+    position: relative;
+    background-color: white;
+    border-radius: 10px;
+    flex-shrink: 0;
+    padding: 32px;
+    .g-caption{
+      position: absolute;
+      font-family: Raleway;
+      font-style: normal;
+      font-weight: normal;
+      font-size: 34px;
+      line-height: 36px;
+      color: #131624;
+      width: 100%;
+      height: 36px;
+      top: -64px;
+      text-align: center;
+    }
+
+    .g-form-frame{
+      background-color: white;
+      border-radius: 10px;
+    }
+
+    .g-input-box{
+      .g-input-label{
+        margin-bottom: 7px;
+        margin-left: 10px;
+        font-family: Raleway;
+        font-style: normal;
+        font-weight: normal;
+        font-size: 14px;
+        line-height: 20px;
+        letter-spacing: 0.25px;
+        text-align: left;
+        color: rgba(19, 22, 36, 0.6);
+        height: 20px;
+      }
+      .g-input-container{
+        background: #FFFFFF;
+        border: 1px solid #A7D8FA;
+        box-sizing: border-box;
+        border-radius: 10px;
+        height: 48px;
+        &input{
+          &::placeholder{
+            font-family: Raleway;
+            font-style: normal;
+            font-weight: normal;
+            font-size: 16px;
+            line-height: 24px;
+            letter-spacing: 0.5px;
+            color: rgba(19, 22, 36, 0.6);  
+          }
+        }
+      }
+    }
+  }
+
+  .g-basic-button{
+    height: 40px;
+    background: #80A2FA;
+    border-radius: 10px;
+    font-family: Raleway;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 40px;
+    letter-spacing: 1.25px;
+    text-transform: uppercase;
+    color: #FFFFFF;
+    &.enabled{
+      background-color: #366EE7;
+    }
+  }
+}
