@@ -1,6 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import './Prospects.scss'
+import Menu from '../../components/Menu'
 import ProspectList from '../../components/ProspectList'
 import AddProspectForm from '../../components/AddProspectForm'
 import { createProspect } from '../../redux/actions'
@@ -23,7 +24,7 @@ export class Prospects extends React.Component {
   closeOpenAddProspect() {
     const wrapper = this.wrapperRef.current
     wrapper.classList.toggle('is-add-prospect-open')
-    this.setState({addingProspect: !this.state.addingProspect})
+    this.setState({ addingProspect: !this.state.addingProspect })
   }
   
   handleAddClick() {
@@ -48,16 +49,19 @@ export class Prospects extends React.Component {
     const { addingProspect, prospectToUpdate } = this.state
     return (
       <div className="prospects">
-        <div className='prospects-header'>
-          <div className='prospects-title'>Prospects</div>
-          <div className='add-button' onClick={this.handleAddClick}>{addingProspect ? '-' : '+'}</div>
-        </div>
+        <Menu />
+        <div className='g-page-background-with-nav'>
+          <div className='prospects-header'>
+            <div className='prospects-title'>Prospects</div>
+            <div className='add-button' onClick={this.handleAddClick}>{addingProspect ? '-' : '+'}</div>
+          </div>
 
-        <div className='add-prospect-wrapper' ref={this.wrapperRef}>
-          <AddProspectForm addProspect={this.handleAddProspect} prospectToUpdate={ prospectToUpdate }/>
-        </div>
+          <div className='add-prospect-wrapper' ref={this.wrapperRef}>
+            <AddProspectForm addProspect={this.handleAddProspect} prospectToUpdate={prospectToUpdate} />
+          </div>
 
-        <ProspectList prospects={this.props.prospects} updateProspect={ this.handleUpdatingProspect}/>
+          <ProspectList prospects={this.props.prospects} updateProspect={this.handleUpdatingProspect} />
+        </div>
       </div>
     )
   }

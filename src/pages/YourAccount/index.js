@@ -1,12 +1,21 @@
 import React from 'react'
+import { withRouter } from 'react-router-dom'
+import Menu from '../../components/Menu'
+import BasicButton from '../../components/BasicButton'
 import './YourAccount.scss'
 
-const YourAccount = () => {
+const YourAccount = (props) => {
   return (
     <div className="your-account">
-    <h1>This is Your Account</h1>
-  </div>
+      <Menu />
+      <div className='g-page-background-with-nav'>
+        <h1>This is Your Account</h1>
+        <BasicButton title='Logout' enabled={true} buttonPushed={(e) => {
+          props.history.replace('/login')
+        }}/>
+      </div>
+    </div>
   )
 }
 
-export default YourAccount
+export default withRouter(YourAccount);

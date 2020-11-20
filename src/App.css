@@ -1,6 +1,7 @@
 .App {
   text-align: center;
   background-color: white;
+  user-select: none;
 }
 
 .App-header {

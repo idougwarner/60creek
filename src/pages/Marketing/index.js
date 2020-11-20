@@ -2,6 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import {Elements} from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
+import Menu from '../../components/Menu'
 import './Marketing.scss'
 import MarketingCampaignList from '../../components/MarketingCampaignList'
 import { createMarketingCampaign } from '../../redux/actions'
@@ -78,17 +79,21 @@ export class Marketing extends React.Component {
     return (
       <Elements stripe={stripePromise}>
         <div className="markets">
-          <div className='markets-header'>
-            <div className='markets-title'>Marketing</div>
-            <div className='add-button' onClick={this.handleAddClick}>{addingMarket ? '-' : '+'}</div>
-          </div>
+          <Menu />
+          <div className='g-page-background-with-nav'>
+          
+            <div className='markets-header'>
+              <div className='markets-title'>Marketing</div>
+              <div className='add-button' onClick={this.handleAddClick}>{addingMarket ? '-' : '+'}</div>
+            </div>
 
-          <div className='add-market-wrapper' ref={this.wrapperRef}>
-            {addingMarketForm}
-          </div>
+            <div className='add-market-wrapper' ref={this.wrapperRef}>
+              {addingMarketForm}
+            </div>
 
-          <MarketingCampaignList markets={this.props.markets} updateMarketingCampaign={this.handleUpdatingMarketingCampaign}
-            short={addingMarket} />
+            <MarketingCampaignList markets={this.props.markets} updateMarketingCampaign={this.handleUpdatingMarketingCampaign}
+              short={addingMarket} />
+          </div>
         </div>
       </Elements>
     )

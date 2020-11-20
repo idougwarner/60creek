@@ -6,6 +6,38 @@
   line-height: 24px;
   letter-spacing: 0.15px;
   color: rgba(19, 22, 36, 0.6);
+  text-align: left;
+  &.small{
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: 0.25px;
+  }
+  &.medium{
+    font-size: 16px;
+    line-height: 24px;
+    letter-spacing: 0.5px;
+  }
+  &.large{
+    font-size: 20px;
+    line-height: 24px;
+    letter-spacing: 0.15px;
+  }
+}
+
+.g-error-label{
+  font-family: Raleway;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 20px;
+  line-height: 24px;
+  letter-spacing: 0.15px;
+  color: #D95746;
+  text-align: left;
+  &.smallest{
+    font-size: 12px;
+    line-height: 16px;
+    letter-spacing: 0.4px;
+  }
   &.small{
     font-size: 14px;
     line-height: 20px;
@@ -103,6 +135,24 @@
     }
 
     .g-input-box{
+      margin-bottom: 24px;
+      &.error{
+        margin-bottom: 0px;
+        .error-label{
+          margin-top: 4px;
+          margin-bottom: 4px;
+          margin-left: 10px;
+          height: 16px;
+          font-family: Raleway;
+          font-style: normal;
+          font-weight: normal;
+          color: #D95746;
+          text-align: left;
+          font-size: 12px;
+          line-height: 16px;
+          letter-spacing: 0.4px;
+        }
+      }
       .g-input-label{
         margin-bottom: 7px;
         margin-left: 10px;
@@ -136,6 +186,7 @@
       }
     }
   }
+}
 
   .g-basic-button{
     height: 40px;
@@ -149,8 +200,8 @@
     letter-spacing: 1.25px;
     text-transform: uppercase;
     color: #FFFFFF;
+    cursor: pointer;
     &.enabled{
       background-color: #366EE7;
     }
-  }
 }

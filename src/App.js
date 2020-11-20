@@ -2,13 +2,11 @@ import './App.css';
 import React from 'react'
 import { BrowserRouter, Switch } from "react-router-dom"
 import { MakeRoutesWithSubRoutes } from './MakeRoutesWithSubRoutes';
-import Home from './pages/Home'
 import Login from './pages/Login'
 import Prospects from './pages/Prospects'
 import Marketing from './pages/Marketing'
 import YourAccount from './pages/YourAccount'
 import Dashboard from './pages/Dashboard'
-import Menu from './components/Menu'
 import About from './pages/About'
 
 const appRoutes = [
