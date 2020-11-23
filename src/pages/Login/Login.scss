@@ -9,7 +9,7 @@
         .eye-icon{
           background-image: url(../../assets/images/eye-open-icon.svg);
           background-repeat: no-repeat;
-          background-size: 18px 18px;
+          background-size: 16px 16px;
           position: absolute;
           width: 16px;
           height: 16px;
@@ -18,8 +18,8 @@
           cursor: pointer;
           z-index: 10;
         
-          &.open{
-            background-size: 16px 16px;
+          &.showing-password{
+            background-size: 18px 18px;
             width: 18px;
             height: 18px;
             top: 43px;

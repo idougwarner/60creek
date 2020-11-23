@@ -48,7 +48,7 @@ const Login = (props) => {
           </div>
           <div className={'g-input-box' + (userNameErrorValue ? ' error' : '')}>
             <div className='g-input-label'>Password</div>
-            <div className={'eye-icon' + (displayPasswordValue ? ' open' : '')} onClick={(e) => {
+            <div className={'eye-icon' + (displayPasswordValue ? ' showing-password' : '')} onClick={(e) => {
               setDisplayPasswordValue(!displayPasswordValue)
             }} />
             <input className='g-input-container'
