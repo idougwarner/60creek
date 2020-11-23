@@ -5,9 +5,9 @@ import './Login.scss'
 import Header from '../../components/Header'
 import BasicButton from '../../components/BasicButton'
 
+var inputElement = null
 const Login = (props) => {
 
-  let inputElement = null
   const { history } = props
   const validateEmail = (email) => {
     if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(email)) {
@@ -32,12 +32,6 @@ const Login = (props) => {
           <div className='g-input-box'>
             <div className='g-input-label'>Username</div>
             <input className='g-input-container'
-              ref={(element) => {
-                if (element && !inputElement) {
-                  inputElement = element
-                  inputElement.focus()
-                }
-              }}
               type='text'
               placeholder='Enter your email address'
               value={userNameValue}

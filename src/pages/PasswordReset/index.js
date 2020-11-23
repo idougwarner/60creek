@@ -31,12 +31,6 @@ const PasswordReset = (props) => {
           <div className={'g-input-box' + (userNameErrorValue ? ' error' : '')}>
             <div className='g-input-label'>Email</div>
             <input className='g-input-container'
-              ref={(element) => {
-                if (element && !inputElement) {
-                  inputElement = element
-                  inputElement.focus()
-                }
-              }}
               type='text'
               placeholder='Enter your email address'
               value={userNameValue}
