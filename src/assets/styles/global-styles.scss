@@ -7,6 +7,15 @@
   letter-spacing: 0.15px;
   color: rgba(19, 22, 36, 0.6);
   text-align: left;
+  &.italics{
+    font-style: italic;
+  }
+  &.smallest{
+    font-size: 12px;
+    line-height: 16px;
+    text-align: center;
+    letter-spacing: 0.4px;  
+  }
   &.small{
     font-size: 14px;
     line-height: 20px;
@@ -24,6 +33,17 @@
   }
 }
 
+.g-instruction-block{
+  font-family: Raleway;
+  font-size: 16px;
+  line-height: 24px;
+  text-align: center;
+  letter-spacing: 0.5px;
+  color: #131624;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .g-error-label{
   font-family: Raleway;
   font-style: normal;
@@ -33,6 +53,7 @@
   letter-spacing: 0.15px;
   color: #D95746;
   text-align: left;
+  font-style: italic;
   &.smallest{
     font-size: 12px;
     line-height: 16px;
@@ -55,7 +76,7 @@
   }
 }
 
-.g-clickable-label{
+.g-link-item{
   font-family: Raleway;
   font-style: normal;
   font-weight: 600;
@@ -65,6 +86,9 @@
   text-align: left;
   color: #366EE7;
   cursor: pointer;
+  text-decoration: none;
+  width: 100%;
+  margin-left: 0px;
   &.small{
     font-size: 14px;
     line-height: 20px;
@@ -83,40 +107,43 @@
 }
 
 .g-page-background{
-  position: fixed;
-  left: 0px;
-  top: 0px;
-  background-color: #F5F7FA;
-  width: 100vw;
-  height: calc(100vw - 84px);
-}
-
-.g-page-background-with-nav{
-  position: fixed;
-  left: 179px;
-  top: 0px;
-  background-color: #F5F7FA;
-  width: calc(100vw - 178px);
-  height: 100vw;
-}
-
-.g-centered-form{
   position: absolute;
   left: 0px;
   top: 0px;
+  background-color: #F5F7FA;
   width: 100%;
-  height: 58%;
+  height: 100%;
+}
+
+.g-page-background-with-nav{
+  position: absolute;
+  left: 179px;
+  top: 0px;
+  background-color: #F5F7FA;
+  width: calc(100% - 178px);
+  height: 100%;
+}
+
+.g-centered-form-with-header{
+  position: absolute;
+  left: 0px;
+  width: 100%;
+  top: 85px;
+  height: calc(100vh - 85px);
   display: flex;
   justify-content: center;
   align-items: center;
+
   .g-form-container{
     position: relative;
     background-color: white;
     border-radius: 10px;
     flex-shrink: 0;
     padding: 32px;
+    display: flex;
+    flex-direction: column;
     .g-caption{
-      position: absolute;
+      position: relative;
       font-family: Raleway;
       font-style: normal;
       font-weight: normal;
@@ -124,8 +151,10 @@
       line-height: 36px;
       color: #131624;
       width: 100%;
-      height: 36px;
-      top: -64px;
+      height: 0px;
+      top: -106px;
+      margin-left: auto;
+      margin-right: auto;
       text-align: center;
     }
 
@@ -136,12 +165,14 @@
 
     .g-input-box{
       margin-bottom: 24px;
+      position: relative;
+      width: 100%;
       &.error{
         margin-bottom: 0px;
         .error-label{
           margin-top: 4px;
           margin-bottom: 4px;
-          margin-left: 10px;
+          margin-left: 0px;
           height: 16px;
           font-family: Raleway;
           font-style: normal;
@@ -172,6 +203,8 @@
         box-sizing: border-box;
         border-radius: 10px;
         height: 48px;
+        padding: 16px;
+        width: 100%;
         &input{
           &::placeholder{
             font-family: Raleway;
@@ -188,20 +221,38 @@
   }
 }
 
-  .g-basic-button{
-    height: 40px;
-    background: #80A2FA;
-    border-radius: 10px;
-    font-family: Raleway;
-    font-style: normal;
-    font-weight: 600;
-    font-size: 14px;
-    line-height: 40px;
-    letter-spacing: 1.25px;
-    text-transform: uppercase;
-    color: #FFFFFF;
-    cursor: pointer;
-    &.enabled{
-      background-color: #366EE7;
-    }
+.g-basic-button{
+  height: 40px;
+  background: #ABC4FF;
+  border-radius: 10px;
+  font-family: Raleway;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 40px;
+  letter-spacing: 1.25px;
+  text-transform: uppercase;
+  color: #FFFFFF;
+  cursor: pointer;
+  &.enabled{
+    background-color: #366EE7;
+  }
+}
+
+.g-link-button{
+  height: 40px;
+  background: white;
+  border: 1px solid #366EE7;
+  box-sizing: border-box;
+  border-radius: 10px;
+  font-family: Raleway;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 40px;
+  letter-spacing: 1.25px;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: #366EE7;
+  cursor: pointer;
 }
