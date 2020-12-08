@@ -1,10 +1,11 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { serializeProspectLists } from '../../redux/store'
 import './Prospects.scss'
 import Menu from '../../components/Menu'
 import ProspectList from '../../components/ProspectList'
 import AddProspectForm from '../../components/AddProspectForm'
-import { createProspect } from '../../redux/actions'
+import { createProspectInStore, createProspectListInStore } from '../../redux/actions'
 
 export class Prospects extends React.Component {
   constructor(props) {
@@ -15,6 +16,7 @@ export class Prospects extends React.Component {
 
     this.handleAddClick = this.handleAddClick.bind(this)
     this.handleAddProspect = this.handleAddProspect.bind(this)
+    this.handleCreateProspectList = this.handleCreateProspectList.bind(this)
     this.closeOpenAddProspect = this.closeOpenAddProspect.bind(this)
     this.handleUpdatingProspect = this.handleUpdatingProspect.bind(this)
 
@@ -38,6 +40,11 @@ export class Prospects extends React.Component {
     this.setState({ prospectToUpdate: null })
   }
 
+  handleCreateProspectList(newProspectList) {
+    const { onCreateProspectList } = this.props
+    onCreateProspectList(newProspectList)
+  }
+
   handleUpdatingProspect(prospect) {
     this.setState({ prospectToUpdate: prospect }, () => {
       this.closeOpenAddProspect()
@@ -47,6 +54,7 @@ export class Prospects extends React.Component {
   render() {
 
     const { addingProspect, prospectToUpdate } = this.state
+    const { prospectLists } = this.props
     return (
       <div className="prospects">
         <Menu />
@@ -57,10 +65,11 @@ export class Prospects extends React.Component {
           </div>
 
           <div className='add-prospect-wrapper' ref={this.wrapperRef}>
-            <AddProspectForm addProspect={this.handleAddProspect} prospectToUpdate={prospectToUpdate} />
+            <AddProspectForm prospectLists={prospectLists}
+              createProspectListInStore={this.handleCreateProspectList} addProspect={this.handleAddProspect} prospectToUpdate={prospectToUpdate} />
           </div>
 
-          <ProspectList prospects={this.props.prospects} updateProspect={this.handleUpdatingProspect} />
+          <ProspectList prospectLists={prospectLists} updateProspectInStore={this.handleUpdatingProspect} />
         </div>
       </div>
     )
@@ -68,11 +77,12 @@ export class Prospects extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  prospects:  state.prospects,
+  prospectLists: serializeProspectLists(state.prospectLists), 
 })
 
 const mapDispatchToProps = dispatch => ({
-  onCreatePressed: prospect => dispatch(createProspect(prospect))
+  onCreatePressed: prospect => dispatch(createProspectInStore(prospect)),
+  onCreateProspectList: prospectList => dispatch(createProspectListInStore(prospectList))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Prospects)

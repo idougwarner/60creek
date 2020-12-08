@@ -20,29 +20,29 @@ const MarketingCampaignList = (props) => {
     return realDate.getMonth() + '/' + realDate.getDate() + '/' + realDate.getFullYear() + ' ' +
       hours + ':' + (realDate.getMinutes() < 10 ? '0' : '') + realDate.getMinutes() + amPm
   }
-  const { markets, updateMarketingCampaign } = props
+  const { marketingCampaigns, updateMarketingCampaignInStore } = props
   let marketingList = <div className='none-found'>No Campaigns Created Yet</div>
-  if (markets && markets.length) {
-    marketingList = markets.map((market, key) => {
+  if (marketingCampaigns && marketingCampaigns.length) {
+    marketingList = marketingCampaigns.map((marketingCampaign, key) => {
       return (
-        <div className='marketing-list-row' key={key} onClick={(e) => updateMarketingCampaign(market)}>
-          <div className='detail-item'>{market.title}</div>
-          <div className='detail-item'>{market.targetList ? market.targetList.name : null}</div>
-          <div className='detail-item'>{market.automatedEmail ? 'Yes - $.25 a Target' : 'No'}</div>
-          <div className='detail-item'>{market.automatedText ? 'Yes - $.25 a Target' : 'No'}</div>
-          <div className='detail-item'>{market.automatedRinglessVoicemail ? 'Yes - $.25 a Target' : 'No'}</div>
-          <div className='detail-item'>{market.automatedPostCard ? 'Yes - $1.25 a Target' : 'No'}</div>
-          <div className='detail-item'>{formatDateTime(market.startDateTime)}</div>
-          <div className='detail-item'>{market.consent ? 'Yes' : 'No'}</div>
-          <div className='detail-item'>{market.total ? '$' + market.total.toFixed(2) : '$0.00'}</div>
+        <div className='marketing-campaign-list-row' key={key} onClick={(e) => updateMarketingCampaignInStore(marketingCampaign)}>
+          <div className='detail-item'>{marketingCampaign.title}</div>
+          <div className='detail-item'>{marketingCampaign.prospectList ? marketingCampaign.prospectList.name : null}</div>
+          <div className='detail-item'>{marketingCampaign.automatedEmail ? 'Yes - $.25 a Target' : 'No'}</div>
+          <div className='detail-item'>{marketingCampaign.automatedText ? 'Yes - $.25 a Target' : 'No'}</div>
+          <div className='detail-item'>{marketingCampaign.automatedRinglessVoicemail ? 'Yes - $.25 a Target' : 'No'}</div>
+          <div className='detail-item'>{marketingCampaign.automatedPostCard ? 'Yes - $1.25 a Target' : 'No'}</div>
+          <div className='detail-item'>{formatDateTime(marketingCampaign.startDateTime)}</div>
+          <div className='detail-item'>{marketingCampaign.consent ? 'Yes' : 'No'}</div>
+          <div className='detail-item'>{marketingCampaign.total ? '$' + marketingCampaign.total.toFixed(2) : '$0.00'}</div>
         </div>
       )
     }
     )
   }
   return (
-    <div className={'marketing-list'}>
-      <div className="marketing-list-header">
+    <div className={'marketing-campaign-list'}>
+      <div className="marketing-campaign-list-header">
         <div className='header-item'><span>Title</span></div>
         <div className='header-item'><span>Target List</span></div>
         <div className='header-item'><span>Automated Email</span></div>
@@ -53,7 +53,7 @@ const MarketingCampaignList = (props) => {
         <div className='header-item'><span>Consent</span></div>
         <div className='header-item'><span>Total</span></div>
       </div>
-      <div className={'marketing-list-items' + (props.short ? ' short' : '')}>
+      <div className={'marketing-campaign-list-items' + (props.short ? ' short' : '')}>
         {marketingList}
       </div>
     </div>
@@ -61,7 +61,6 @@ const MarketingCampaignList = (props) => {
 }
 
 const mapStateToProps = (state) => ({
-  marketing: state.marketing,
 })
   
 

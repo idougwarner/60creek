@@ -1,20 +1,47 @@
-import { CREATE_PROSPECT, UPDATE_PROSPECT, REMOVE_PROSPECT, CREATE_MARKETING_CAMPAIGN } from './actions'
+import {
+  CREATE_PROSPECT_LIST_IN_STORE, REMOVE_PROSPECT_LIST_FROM_STORE, CREATE_PROSPECT_IN_STORE, UPDATE_PROSPECT_IN_STORE, REMOVE_PROSPECT_FROM_STORE,
+  CREATE_MARKETING_CAMPAIGN_IN_STORE, UPDATE_MARKETING_CAMPAIGN_IN_STORE, REMOVE_MARKETING_CAMPAIGN_FROM_STORE
+} from './actions'
+
+export const prospectLists = (state = [], action) => {
+  const { type, payload } = action
+  switch (type) {
+    case CREATE_PROSPECT_LIST_IN_STORE: {
+      const mutableProspectList = { ...payload }
+      if (!state.find(prospectList => prospectList.id === mutableProspectList.id)) {
+        return state.concat(mutableProspectList)
+      }
+      else {
+        return state
+      }
+    }
+      
+    case REMOVE_PROSPECT_LIST_FROM_STORE: {
+      const { id } = payload
+      return state.filter(prospectList => {
+        return (prospectList.id !== id) 
+      })
+    }
+      
+    default:
+      return state
+  }
+}
 
 export const prospects = (state = [], action) => {
   const { type, payload } = action
   switch (type) {
-    case CREATE_PROSPECT: {
-      const { id, status, prospectList, firstName, lastName, companyName, enhancedPhone, enhancedEmail, enhancedFacebookHandle, details } = payload
-      const newProspect = { id, status, prospectList, firstName, lastName, companyName, enhancedPhone, enhancedEmail, enhancedFacebookHandle, details }
-      if (!state.find(prospect => prospect.id === id)) {
-        return state.concat(newProspect)
+    case CREATE_PROSPECT_IN_STORE:
+    case UPDATE_PROSPECT_IN_STORE: {
+      const mutableProspect = { ...payload }
+      const prospect = state.find(prospect => prospect.id === mutableProspect.id)
+      if (!prospect) {
+        return state.concat(mutableProspect)
       }
       else {
-
-        // If it already exists, just update it
         return state.map(prospect => {
-          if (prospect.id === newProspect.id) {
-            return newProspect
+          if (prospect.id === mutableProspect.id) {
+            return mutableProspect
           }
           else {
             return prospect
@@ -23,51 +50,45 @@ export const prospects = (state = [], action) => {
       }
     }
       
-    case UPDATE_PROSPECT: {
-      const { id, status, prospectList, firstName, lastName, companyName, enhancedPhone, enhancedEmail, enhancedFacebookHandle, details } = payload
-      const updatedProspect = { id, status, prospectList, firstName, lastName, companyName, enhancedPhone, enhancedEmail, enhancedFacebookHandle, details }
-      return state.map(prospect => {
-        if (prospect.id === updatedProspect.id) {
-          return updatedProspect
-        }
-        else {
-          return prospect
-        }
-      })
-    }
-      
-    case REMOVE_PROSPECT: {
+    case REMOVE_PROSPECT_FROM_STORE: {
       const { id } = payload
-      return state.filter(prospect => prospect.id === id)
+      return state.filter(prospect => {
+        return (prospect.id !== id) 
+      })
     }
     default:
       return state
   }
 }
 
-export const markets = (state = [], action) => {
+export const marketingCampaigns = (state = [], action) => {
   const { type, payload } = action
   switch (type) {
-    case CREATE_MARKETING_CAMPAIGN: {
-      
-      const newCampaign = Object.assign({}, payload)
-      if (!state.find(campaign => campaign.id === newCampaign.id)) {
-        return state.concat(newCampaign)
+    case CREATE_MARKETING_CAMPAIGN_IN_STORE:
+    case UPDATE_MARKETING_CAMPAIGN_IN_STORE: {
+      const mutableMarketingCampaign = { ...payload }
+      if (!state.find(marketingCampaign => marketingCampaign.id === mutableMarketingCampaign.id)) {
+        return state.concat(mutableMarketingCampaign)
       }
       else {
-
-        // If it already exists, just update it
-        return state.map(campaign => {
-          if (campaign.id === newCampaign.id) {
-            return newCampaign
+        return state.map(pl => {
+          if (pl.id === mutableMarketingCampaign.id) {
+            return mutableMarketingCampaign
           }
           else {
-            return campaign
+            return pl
           }
         })
       }
     }
       
+    case REMOVE_MARKETING_CAMPAIGN_FROM_STORE: {
+      const { id } = payload
+      return state.filter(marketingCampaign => {
+        return (marketingCampaign.id !== id) 
+      })
+    }
+     
     default:
       return state
   }

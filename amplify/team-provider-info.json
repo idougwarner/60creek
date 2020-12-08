@@ -1,0 +1,15 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-60creek-dev-92132-authRole",
+      "UnauthRoleArn": "arn:aws:iam::764739072793:role/amplify-60creek-dev-92132-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::764739072793:role/amplify-60creek-dev-92132-authRole",
+      "Region": "us-east-2",
+      "DeploymentBucketName": "amplify-60creek-dev-92132-deployment",
+      "UnauthRoleName": "amplify-60creek-dev-92132-unauthRole",
+      "StackName": "amplify-60creek-dev-92132",
+      "StackId": "arn:aws:cloudformation:us-east-2:764739072793:stack/amplify-60creek-dev-92132/9da08810-364c-11eb-83fa-026f6d3a35c4",
+      "AmplifyAppId": "d1d91n88jhehuf"
+    }
+  }
+}

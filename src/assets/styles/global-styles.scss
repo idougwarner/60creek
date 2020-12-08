@@ -24,7 +24,7 @@
   &.medium{
     font-size: 16px;
     line-height: 24px;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.15px;
   }
   &.large{
     font-size: 20px;
@@ -122,8 +122,57 @@
   background-color: #F5F7FA;
   width: calc(100% - 178px);
   height: 100%;
-}
+  padding-left: 77px;
+  display: flex;
+  flex-direction: column;
 
+  .g-page-header{
+    height: 104px;
+    width: 100%;
+    .g-page-title{
+      line-height: 104px;
+      font-family: Raleway;
+      font-size: 34px;
+      text-align: left;
+      color: #000000;
+    }
+  }
+
+  .g-page-content{
+    width: 100%;
+    overflow: auto;
+    display: flex;
+    .g-page-content-column{
+      display: flex;
+      flex-direction: column;
+      margin-right: 30px;
+      .g-page-section{
+        width: calc(100% - 100px);
+        height: calc(100% - 32px);
+        margin-bottom: 32px;
+        padding-left: 50px;
+        padding-right: 50px;
+        padding-bottom: 32px;
+        background-color: white;
+        border-radius: 10px;
+        .g-section-header{
+          height: 72px;
+          width: 100%;
+          .g-section-title{
+            padding-top: 32px;
+            width: 100%;
+            text-align: left;
+            font-family: Raleway;
+            font-size: 24px;
+            letter-spacing: 0.18px;
+            color: #131624;      
+          }
+        }
+    
+      }
+    }
+  }
+}
 .g-centered-form-with-header{
   position: absolute;
   left: 0px;

@@ -2,10 +2,11 @@ import React from 'react'
 import { connect } from 'react-redux'
 import {Elements} from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
+import { serializeProspectLists, serializeMarketingCampaigns } from '../../redux/store'
 import Menu from '../../components/Menu'
 import './Marketing.scss'
 import MarketingCampaignList from '../../components/MarketingCampaignList'
-import { createMarketingCampaign } from '../../redux/actions'
+import { createMarketingCampaignInStore } from '../../redux/actions'
 import AddMarketingCampaignForm from '../../components/AddMarketingCampaignForm'
 
 const stripePromise = loadStripe('pk_test_JJ1eMdKN0Hp4UFJ6kWXWO4ix00jtXzq5XG');
@@ -29,7 +30,7 @@ export class Marketing extends React.Component {
 
   closeAddMarket() {
     const wrapper = this.wrapperRef.current
-    wrapper.classList.toggle('is-add-market-open')
+    wrapper.classList.toggle('is-add-marketingCampaign-open')
     this.setState({ addingMarket: false, marketingCampaignToUpdate: null }, () => {
       setTimeout(() => {
         this.setState({addingMarketOpened: false})
@@ -40,7 +41,7 @@ export class Marketing extends React.Component {
   openAddMarket() {
     const wrapper = this.wrapperRef.current
     this.setState({ addingMarketOpened: true }, () => {
-      wrapper.classList.toggle('is-add-market-open')
+      wrapper.classList.toggle('is-add-marketingCampaign-open')
       this.setState({ addingMarket: true })
     })
   }
@@ -60,9 +61,9 @@ export class Marketing extends React.Component {
     onCreatePressed(newCampaign)
   }
 
-  handleUpdatingMarketingCampaign(market) {
+  handleUpdatingMarketingCampaign(marketingCampaign) {
     if (!this.state.addingMarketOpened) {
-      this.setState({ marketingCampaignToUpdate: market }, () => {
+      this.setState({ marketingCampaignToUpdate: marketingCampaign }, () => {
         this.openAddMarket()
       })
     }
@@ -74,24 +75,25 @@ export class Marketing extends React.Component {
     let addingMarketForm = null
     if (addingMarketOpened) {
       addingMarketForm = <AddMarketingCampaignForm
+        prospectLists={this.props.prospectLists}
         addMarketingCampaign={this.handleAddMarketingCampaign} marketingCampaignToUpdate={marketingCampaignToUpdate} />
     }
     return (
       <Elements stripe={stripePromise}>
-        <div className="markets">
+        <div className="marketing-campaign">
           <Menu />
           <div className='g-page-background-with-nav'>
           
-            <div className='markets-header'>
-              <div className='markets-title'>Marketing</div>
+            <div className='marketing-campaign-header'>
+              <div className='marketing-campaign-title'>Marketing</div>
               <div className='add-button' onClick={this.handleAddClick}>{addingMarket ? '-' : '+'}</div>
             </div>
 
-            <div className='add-market-wrapper' ref={this.wrapperRef}>
+            <div className='add-marketingCampaign-wrapper' ref={this.wrapperRef}>
               {addingMarketForm}
             </div>
 
-            <MarketingCampaignList markets={this.props.markets} updateMarketingCampaign={this.handleUpdatingMarketingCampaign}
+            <MarketingCampaignList marketingCampaigns={this.props.marketingCampaigns} updateMarketingCampaignInStore={this.handleUpdatingMarketingCampaign}
               short={addingMarket} />
           </div>
         </div>
@@ -101,11 +103,12 @@ export class Marketing extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  markets:  state.markets,
+  marketingCampaigns: serializeMarketingCampaigns(state.marketingCampaigns),
+  prospectLists: serializeProspectLists(state.prospectLists), 
 })
 
 const mapDispatchToProps = dispatch => ({
-  onCreatePressed: market => dispatch(createMarketingCampaign(market))
+  onCreatePressed: marketingCampaign => dispatch(createMarketingCampaignInStore(marketingCampaign))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Marketing)

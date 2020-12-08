@@ -1,10 +1,10 @@
-.marketing-list{
+.marketing-campaign-list{
   margin-left: 20px;
   margin-right: 20px;
-  width: calc(100% - 40px);
+  width: calc(100% - 160px);
   border-bottom: 1px solid black;
   margin-bottom: 40px;
-  .marketing-list-header{
+  .marketing-campaign-list-header{
     width: calc(100% - 2px);
     display: flex;
     border: solid 1px black;
@@ -28,14 +28,14 @@
       }
     }
   }
-  .marketing-list-items{
+  .marketing-campaign-list-items{
     width: 100%;
     overflow-y: auto;
     max-height: calc(100vh - 200px);
     &.short{
       max-height: calc(100vh - 663px);
     }
-    .marketing-list-row{
+    .marketing-campaign-list-row{
       width: calc(100% - 2px);
       display: flex;
       height: auto;

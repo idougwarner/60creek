@@ -6,13 +6,6 @@ import Globalize from 'globalize';
 import globalizeLocalizer from 'react-widgets-globalize';
 import { Combobox, SelectList, DateTimePicker } from 'react-widgets';
 
-const targetList = [
-  { name: 'List 1', targets: ['Target 1', 'Target 2', 'Target 3', 'Target 4', 'Target 5'] },
-  { name: 'List 2', targets: ['Target 1', 'Target 2', 'Target 3', 'Target 4', 'Target 5'] },
-  { name: 'List 3', targets: ['Target 1', 'Target 2', 'Target 3', 'Target 4', 'Target 5'] },
-  { name: 'List 4', targets: ['Target 1', 'Target 2', 'Target 3', 'Target 4', 'Target 5'] },
-]
-
 const CARD_OPTIONS = {
   iconStyle: 'solid',
   style: {
@@ -105,7 +98,7 @@ const AddMarketingCampaignForm = (props) => {
   const [changedValue, setChangedValue] = useState(false)
   const [idValue, setIdValue] = useState(Math.ceil(Math.random() * 9999999))
   const [titleValue, setTitleValue] = useState('')
-  const [targetListValue, setTargetListValue] = useState('')
+  const [prospectListValue, setTargetListValue] = useState('')
   const [automatedEmailValue, setAutomatedEmailValue] = useState(false)
   const [automatedTextValue, setAutomatedTextValue] = useState(false)
   const [automatedRinglessVoicemailValue, setAutomatedRinglessVoicemailValue] = useState(false)
@@ -133,63 +126,63 @@ const AddMarketingCampaignForm = (props) => {
 
     let totalAmount = 0
     if (automatedEmailValue) {
-      totalAmount += (.25 * (targetListValue ? targetListValue.targets.length : 0))
+      totalAmount += (.25 * (prospectListValue ? prospectListValue.prospects.length : 0))
     }
     if (automatedPostcardValue) {
-      totalAmount += (1.25 * (targetListValue ? targetListValue.targets.length : 0))
+      totalAmount += (1.25 * (prospectListValue ? prospectListValue.prospects.length : 0))
     }
     if (automatedTextValue) {
-      totalAmount += (.25 * (targetListValue ? targetListValue.targets.length : 0))
+      totalAmount += (.25 * (prospectListValue ? prospectListValue.prospects.length : 0))
     }
     if (automatedRinglessVoicemailValue) {
-      totalAmount += (.25 * (targetListValue ? targetListValue.targets.length : 0))
+      totalAmount += (.25 * (prospectListValue ? prospectListValue.prospects.length : 0))
     }
 
     let stripeError = false
-    const stripe = useStripe();
-    const elements = useElements();
-    if (totalAmount > 0) {
+    // const stripe = useStripe();
+    // const elements = useElements();
+    // if (totalAmount > 0) {
 
-      if (!stripe || !elements) {
-        // Stripe.js has not loaded yet. Make sure to disable
-        // form submission until Stripe.js has loaded.
-        return;
-      }
+    //   if (!stripe || !elements) {
+    //     // Stripe.js has not loaded yet. Make sure to disable
+    //     // form submission until Stripe.js has loaded.
+    //     return;
+    //   }
 
-      // Get a reference to a mounted CardElement. Elements knows how
-      // to find your CardElement because there can only ever be one of
-      // each type of element.
-      const cardElement = elements.getElement(CardElement);
-      if (error) {
-        elements.getElement('card').focus();
-        return;
-      }
+    //   // Get a reference to a mounted CardElement. Elements knows how
+    //   // to find your CardElement because there can only ever be one of
+    //   // each type of element.
+    //   const cardElement = elements.getElement(CardElement);
+    //   if (error) {
+    //     elements.getElement('card').focus();
+    //     return;
+    //   }
   
-      if (cardComplete) {
-        setProcessing(true);
-      }
+    //   if (cardComplete) {
+    //     setProcessing(true);
+    //   }
   
-      const payload = await stripe.createPaymentMethod({
-        type: 'card',
-        card: elements.getElement(CardElement),
-        billing_details: billingDetails,
-      });
+    //   const payload = await stripe.createPaymentMethod({
+    //     type: 'card',
+    //     card: elements.getElement(CardElement),
+    //     billing_details: billingDetails,
+    //   });
   
-      setProcessing(false);
+    //   setProcessing(false);
   
-      if (payload.error) {
-        setError(payload.error);
-        stripeError = true
-      } else {
-        setPaymentMethod(payload.paymentMethod);
-      }
-    }
+    //   if (payload.error) {
+    //     setError(payload.error);
+    //     stripeError = true
+    //   } else {
+    //     setPaymentMethod(payload.paymentMethod);
+    //   }
+    // }
 
     if (!stripeError) {
       props.addMarketingCampaign({
         id: marketingCampaignToUpdate ? marketingCampaignToUpdate.id : idValue,
         title: titleValue,
-        targetList: targetListValue,
+        prospectListId: prospectListValue.id,
         automatedEmail: automatedEmailValue,
         automatedPostCard: automatedPostcardValue,
         automatedText: automatedTextValue,
@@ -322,11 +315,16 @@ const AddMarketingCampaignForm = (props) => {
   Globalize.locale('en-US')
   globalizeLocalizer()
 
-  if (marketingCampaignToUpdate && titleValue !== marketingCampaignToUpdate.title) {
+  const { prospectLists } = props
+
+  if (marketingCampaignToUpdate && titleValue !== marketingCampaignToUpdate.title && !changedValue) {
+    const prospectList = prospectLists.find(pl => {
+      return pl.id === marketingCampaignToUpdate.prospectListId
+    })
     setIdValue(marketingCampaignToUpdate.id)
     setChangedValue(false)
     setTitleValue(marketingCampaignToUpdate.title)
-    setTargetListValue(marketingCampaignToUpdate.targetList)
+    setTargetListValue(prospectList)
     setAutomatedEmailValue(marketingCampaignToUpdate.automatedEmail)
     setAutomatedPostcardValue(marketingCampaignToUpdate.automatedPostCard)
     setAutomatedTextValue(marketingCampaignToUpdate.automatedText)
@@ -353,7 +351,7 @@ const AddMarketingCampaignForm = (props) => {
                   setChangedValue(true)
                 }}
                 type='text'
-                name='title'
+                placeholder='Enter Title'
               />
             </div>
           </div>
@@ -361,12 +359,12 @@ const AddMarketingCampaignForm = (props) => {
             <div className='label'>Target List</div>
             <div className='input-container'>
               <Combobox
-                value={targetListValue ? targetListValue.name : ''}
+                value={prospectListValue ? prospectListValue.name : ''}
                 onChange={(value) => {
-                  setTargetListValue(targetList.find(target => { return target.name === value }))
+                  setTargetListValue(prospectLists.find(prospectList => { return prospectList.name === value }))
                   setChangedValue(true)
                 }}
-                data={targetList.map(target => { return target.name })}
+                data={prospectLists.map(prospectList => { return prospectList.name })}
               />
             </div>
           </div>

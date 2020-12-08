@@ -1,4 +1,15 @@
 @import '../../assets/styles/global-styles.scss';
 
 .sixty-creek-dashboard{
+  .g-page-background-with-nav{
+    .g-page-content{
+      .g-page-content-column{
+        display: flex;
+        flex-direction: column;
+        margin-right: 30px;
+        width: 450px;
+        margin-bottom: 32px;
+      }
+    }
+  }
 }

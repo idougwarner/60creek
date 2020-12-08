@@ -1,0 +1,87 @@
+  .dashboard-prospects{
+    width: 100%;
+    height: 260px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    position: relative;
+    .g-page-section{
+      width: 100%;
+      height: calc(100% - 64px) !important;
+
+      .section-section{
+        .section-label{
+          margin-top: 32px;
+          font-weight: 600;
+        }
+        .section-section-header{
+          margin-top: 16px;
+          display: flex;
+          width: 100%;
+          .section-section-caption{
+            &.list-caption{
+              width: 121px;
+            }
+            &.total-caption{
+              width: 118px;
+            }
+            &.contacted-caption{
+              width: 75px;
+            }
+            font-family: Raleway;
+            font-weight: 500;
+            font-size: 10px;
+            line-height: 16px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: rgba(19, 22, 36, 0.6);
+            text-align: left;
+          }
+        }
+        .section-section-data{
+          margin-top: 16px;
+          display: flex;
+          flex-direction: column;
+          width: 100%;
+          .section-section-data-row{
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+            height: 20px;
+            margin-bottom: 24px;
+            &:last-child{
+              margin-bottom: 16px;
+            }
+            .data-item{
+              &.list-data{
+                width: 121px;
+              }
+              &.total-data{
+                width: 118px;
+              }
+              &.contacted-data{
+                width: 75px;
+              }
+              overflow: hidden;
+              white-space: nowrap;
+              text-overflow: ellipsis;
+              font-family: Raleway;
+              font-style: normal;
+              font-weight: normal;
+              font-size: 14px;
+              line-height: 20px;
+              letter-spacing: 0.25px;
+              color: #131624;
+              text-align: left;
+            }
+          }
+        }
+      }
+     }
+    .dashboard-add-prospects-button{
+      position: absolute;
+      top: 24px;
+      right: 50px;
+      padding-left: 24px;
+      padding-right: 24px;
+    }
+}

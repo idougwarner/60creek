@@ -1,16 +1,17 @@
 import React, { useState } from 'react'
 import './AddProspectForm.scss'
 import 'react-widgets/lib/scss/react-widgets.scss'
-import {Combobox} from 'react-widgets';
+import {Combobox, DropdownList} from 'react-widgets';
 
 const AddProspectForm = (props) => {
-  const { prospectToUpdate } = props
+  const { prospectToUpdate, prospectLists, createProspectListInStore } = props
   const [changedValue, setChangedValue] = useState(false)
   const [idValue, setIdValue] = useState('')
   const [statusValue, setStatusValue] = useState('')
   const [firstNameValue, setFirstNameValue] = useState('')
   const [lastNameValue, setLastNameValue] = useState('')
   const [companyNameValue, setCompanyNameValue] = useState('')
+  const [prospectListValue, setProspectListValue] = useState(null)
   const [detailsValue, setDetailsValue] = useState('')
 
   function resetValues() {
@@ -21,14 +22,16 @@ const AddProspectForm = (props) => {
     setLastNameValue('')
     setCompanyNameValue('')
     setDetailsValue('')
+    setProspectListValue(null)
   }
-  if (prospectToUpdate && statusValue !== prospectToUpdate.statusValue) {
+  if (prospectToUpdate && statusValue !== prospectToUpdate.status) {
     setIdValue(prospectToUpdate.id)
     setStatusValue(prospectToUpdate.status)
     setFirstNameValue(prospectToUpdate.firstName)
     setLastNameValue(prospectToUpdate.lastName)
     setCompanyNameValue(prospectToUpdate.companyName)
     setDetailsValue(prospectToUpdate.details)
+    setProspectListValue(prospectToUpdate.prospectList)
     setChangedValue(false)
   }
   else if (!idValue) {
@@ -51,7 +54,7 @@ const AddProspectForm = (props) => {
                   setStatusValue(value)
                   setChangedValue(true)
                 }}
-                data={['raw', 'contacting', 'ready', 'customer']}
+                data={['Prospect', 'Contacted', 'Responded', 'Cold', 'Warm', 'Do Not Contact']}
               />
             </div>
           </div>
@@ -113,6 +116,41 @@ const AddProspectForm = (props) => {
               />
             </div>
           </div>
+          <div className='input-box'>
+            <div className='label'>Prospect List</div>
+            <div className='input-container'>
+              <DropdownList
+                allowCreate={true}
+                value={prospectListValue ? prospectListValue.name : null}
+                onCreate={(value) => {
+                  if (prospectLists) {
+                    let newName = 'Prospect List 1'
+                    if (prospectLists.length) {
+                      const lastName = prospectLists[prospectLists.length - 1].name
+                      const splitName = lastName.split(' ')
+                      newName = splitName[0] + ' ' + splitName[1] + ' ' + (parseInt(splitName[2], 10) + 1)
+                    }
+                    const prospectList = { id: Math.ceil(Math.random() * 100000000), name: newName }
+                    createProspectListInStore(prospectList)
+                  }
+                }
+                }
+                onSelect={(value) => {
+                  if (prospectLists) {
+                    let prospectList = prospectLists.find(pl => {
+                      return pl.name === value
+                    })
+                    if (prospectList) {
+                      setProspectListValue(prospectList)
+                      setChangedValue(true)
+                    }
+                  }
+                }
+                }
+                data={prospectLists && prospectLists.length ? prospectLists.map(pl => { return pl.name }) : []}
+              />
+            </div>
+          </div>
         </div>
       </div>
       <div className={'add-button' + (changedValue ? ' enabled' : '')} onClick={changedValue ? (e) => {
@@ -123,6 +161,7 @@ const AddProspectForm = (props) => {
           lastName: lastNameValue,
           companyName: companyNameValue,
           details: detailsValue,
+          prospectList: prospectListValue,
         })
         resetValues()
     
