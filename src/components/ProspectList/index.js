@@ -3,7 +3,13 @@ import { connect } from 'react-redux'
 import { serializeProspectLists } from '../../redux/store'
 import './ProspectList.scss'
 
-// Unskinned prospect list
+//******************************************************************
+//*
+//* Prospect List: Handles display of prospect list (NEEDS NEW SKINNING)
+//*   This is a function component
+//*
+//******************************************************************
+
 
 const ProspectList = (props) => {
   const { prospectLists, updateProspectInStore } = props
