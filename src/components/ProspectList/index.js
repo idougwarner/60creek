@@ -3,8 +3,12 @@ import { connect } from 'react-redux'
 import { serializeProspectLists } from '../../redux/store'
 import './ProspectList.scss'
 
+// Unskinned prospect list
+
 const ProspectList = (props) => {
   const { prospectLists, updateProspectInStore } = props
+
+  // Set not found in case there are none.
   let prospectList = <div className='none-found'>No Prospects Created Yet</div>
   if (prospectLists && prospectLists.length) {
     let prospects = []

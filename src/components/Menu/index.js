@@ -3,6 +3,8 @@ import './Menu.scss'
 import { Link } from 'react-router-dom'
 import { withRouter } from 'react-router-dom'
 
+// Left sideboard menu
+
 const Menu = (props) => {
   return <div className="menu">
     <Link className='logo' to='/about'/>

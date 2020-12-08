@@ -90,11 +90,11 @@ export const fetchProspectLists = async () => {
     })
 }
 
-function normalizeProspect(prospect) {
+function normalizeProspect(prospect, fromAPI) {
   let mutableProspect = { ...prospect }
   if (mutableProspect.projectList) {
     mutableProspect.prospectListId = mutableProspect.prospectList.id
-    delete mutableProspect.projectList
+    delete mutableProspect.prospectList
   }
   return mutableProspect
 }

@@ -26,21 +26,18 @@ export const configureStore = () => {
   return store
 }
 
-export const serializeMarketingCampaign = (id) => {
-  if (store.getState().marketingCampaigns) {
-    let marketingCampaign = store.getState().marketingCampaigns.find(mc => {
-      return mc.id === id
-    })
-    if (marketingCampaign) {
+export const serializeMarketingCampaign = (marketingCampaign) => {
+  if (marketingCampaign) {
+    let mutableMarketingCampaign = { ...marketingCampaign }
+    if (!mutableMarketingCampaign.prospectList) {
       const prospectList = store.getState().prospectLists.find(pl => {
         return pl.id === marketingCampaign.prospectListId
       })
-      let mutableMarketingCampaign = { ...marketingCampaign }
       if (prospectList) {
         mutableMarketingCampaign.prospectList = { ...prospectList }
-        return mutableMarketingCampaign
       }
     }
+    return mutableMarketingCampaign
   }
   return null
 }
@@ -48,7 +45,7 @@ export const serializeMarketingCampaign = (id) => {
 export const serializeMarketingCampaigns = (marketingCampaigns) => {
   if (marketingCampaigns && marketingCampaigns.length) {
     let mutableMarketingCampaigns = marketingCampaigns.map(mc => {
-      let mutableMarketingCampaign = serializeMarketingCampaign(mc.id)
+      let mutableMarketingCampaign = serializeMarketingCampaign(mc)
       return mutableMarketingCampaign
     })
     return mutableMarketingCampaigns
@@ -56,40 +53,30 @@ export const serializeMarketingCampaigns = (marketingCampaigns) => {
   return []
 }
 
-export const serializeProspectList = (id) => {
-  if (store.getState().prospectLists) {
-    let prospectList = store.getState().prospectLists.find(pl => {
-      return pl.id === id
+export const serializeProspectList = (prospectList) => {
+  if (prospectList) {
+    let mutableProspectList = { ...prospectList }
+    mutableProspectList.prospects = []
+    store.getState().prospects.forEach(prospect => {
+      if (prospect.prospectListId === mutableProspectList.id) {
+        mutableProspectList.prospects.push({ ...prospect })
+      }
     })
-    if (prospectList) {
-      let mutableProspectList = { ...prospectList }
-      mutableProspectList.prospects = []
-      store.getState().prospects.forEach(prospect => {
-        if (prospect.prospectListId === id) {
-          mutableProspectList.prospects.push({ ...prospect })
-        }
-      })
-      return mutableProspectList
-    }
+    return mutableProspectList
   }
   return null
 }
 
-export const serializeProspect = (id) => {
-  if (store.getState().prospects) {
-    let prospect = store.getState().prospects.find(pl => {
-      return pl.id === id
-    })
-    if (prospect) {
-      let mutableProspect = { ...prospect }
-      if (mutableProspect.prospectListId) {
-        const prospectList = store.getState().prospectLists.find(pl => { return pl.id === mutableProspect.prospectListId })
-        if (prospectList) {
-          mutableProspect.prospectList = { ...prospectList }
-        }
+export const serializeProspect = (prospect) => {
+  if (prospect) {
+    let mutableProspect = { ...prospect }
+    if (mutableProspect.prospectListId && !mutableProspect.prospectList) {
+      const prospectList = store.getState().prospectLists.find(pl => { return pl.id === mutableProspect.prospectListId })
+      if (prospectList) {
+        mutableProspect.prospectList = { ...prospectList }
       }
-      return mutableProspect
     }
+    return mutableProspect
   }
   return null
 }
