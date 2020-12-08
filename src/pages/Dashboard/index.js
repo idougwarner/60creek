@@ -14,9 +14,6 @@ export class Dashboard extends React.Component {
     this.state = {}
   }
 
-  componentDidMount() {
-  }
-
   render() {
     const { marketingCampaigns, prospectLists } = this.props
     return (
