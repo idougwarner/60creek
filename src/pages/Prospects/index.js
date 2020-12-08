@@ -7,6 +7,13 @@ import ProspectList from '../../components/ProspectList'
 import AddProspectForm from '../../components/AddProspectForm'
 import { createProspectInStore, createProspectListInStore } from '../../redux/actions'
 
+//******************************************************************
+//*
+//* Prospects (also known as targets) (NEEDS NEW SKINNING)
+//*   This is a class object-- candidate for becoming a function component
+//*
+//******************************************************************
+
 export class Prospects extends React.Component {
   constructor(props) {
     super(props)

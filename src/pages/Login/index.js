@@ -5,6 +5,12 @@ import './Login.scss'
 import Header from '../../components/Header'
 import BasicButton from '../../components/BasicButton'
 
+//******************************************************************
+//*
+//* Login: function component
+//*
+//******************************************************************
+
 var inputElement = null
 const Login = (props) => {
 

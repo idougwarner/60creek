@@ -11,6 +11,13 @@ import AddMarketingCampaignForm from '../../components/AddMarketingCampaignForm'
 
 const stripePromise = loadStripe('pk_test_JJ1eMdKN0Hp4UFJ6kWXWO4ix00jtXzq5XG');
 
+//******************************************************************
+//*
+//* Marketing: Handles display of marketing campaigns (NEEDS NEW SKINNING)
+//*   This is a class object-- candidate for becoming a function component
+//*
+//******************************************************************
+
 export class Marketing extends React.Component {
   constructor(props) {
     super(props)

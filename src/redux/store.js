@@ -4,6 +4,12 @@ import { persistReducer } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2'
 
+//******************************************************************
+//*
+//* Reducers-- Redux reducers AND persist store
+//*
+//******************************************************************
+
 const reducers = {
   prospectLists,
   prospects,
@@ -25,6 +31,12 @@ export const configureStore = () => {
   store = createStore(persistedReducer)
   return store
 }
+
+//******************************************************************
+//*
+//* Serializers-- expand record to include sub-records where possible
+//*
+//******************************************************************
 
 export const serializeMarketingCampaign = (marketingCampaign) => {
   if (marketingCampaign) {

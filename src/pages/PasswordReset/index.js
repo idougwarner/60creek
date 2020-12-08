@@ -5,11 +5,16 @@ import './PasswordReset.scss'
 import Header from '../../components/Header'
 import BasicButton from '../../components/BasicButton'
 
+//******************************************************************
+//*
+//* Password reset: function component
+//*
+//******************************************************************
+
 const PasswordReset = (props) => {
 
   const { history } = props
 
-  let inputElement = null
   const validateEmail = (email) => {
     if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(email)) {
       return (true)
