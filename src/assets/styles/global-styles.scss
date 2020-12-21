@@ -122,13 +122,13 @@
   background-color: #F5F7FA;
   width: calc(100% - 178px);
   height: 100%;
-  padding-left: 77px;
   display: flex;
   flex-direction: column;
 
   .g-page-header{
     height: 104px;
     width: 100%;
+    margin-left: 77px;
     .g-page-title{
       line-height: 104px;
       font-family: Raleway;
@@ -140,12 +140,24 @@
 
   .g-page-content{
     width: 100%;
+    height: 100%;
     overflow: auto;
     display: flex;
+    .g-page-content-standard{
+      margin-left: 77px;
+      margin: 33px 80px;
+      background-color: white;
+      border-radius: 10px;
+      width: calc(100% - 80px);
+    }
+
     .g-page-content-column{
       display: flex;
       flex-direction: column;
       margin-right: 30px;
+      &.column-one{
+        padding-left: 77px;
+      }
       .g-page-section{
         width: calc(100% - 100px);
         height: calc(100% - 32px);

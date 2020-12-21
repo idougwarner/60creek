@@ -1,7 +1,7 @@
 import React from 'react'
 import { withRouter } from 'react-router-dom'
 import Menu from '../../components/Menu'
-import BasicButton from '../../components/BasicButton'
+import BasicButton from '../../components/controls/BasicButton'
 import './YourAccount.scss'
 
 const YourAccount = (props) => {

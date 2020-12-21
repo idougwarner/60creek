@@ -25,7 +25,7 @@ export class Dashboard extends React.Component {
           </div>
 
           <div className="g-page-content">
-            <div className='g-page-content-column'>
+            <div className='g-page-content-column column-one'>
               <DashboardMarketingSection marketingCampaigns={marketingCampaigns} />
               <DashboardProspectsSection prospectLists={prospectLists} />
             </div>

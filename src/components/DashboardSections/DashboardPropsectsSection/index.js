@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { serializeProspectLists } from '../../../redux/store'
-import BasicButton from '../../../components/BasicButton'
+import BasicButton from '../../../components/controls/BasicButton'
 import './DashboardProspectsSection.scss'
 
 const DashboardProspectsSection = (props) => {

@@ -71,6 +71,9 @@ export const serializeProspectList = (prospectList) => {
     mutableProspectList.prospects = []
     store.getState().prospects.forEach(prospect => {
       if (prospect.prospectListId === mutableProspectList.id) {
+        mutableProspectList.prospects.push(serializeProspect (prospect))
+      }
+      else if (prospect.prospectList && prospect.prospectList.id === mutableProspectList.id) {
         mutableProspectList.prospects.push({ ...prospect })
       }
     })
@@ -96,7 +99,7 @@ export const serializeProspect = (prospect) => {
 export const serializeProspectLists = (prospectLists) => {
   if (prospectLists && prospectLists.length) {
     let mutableProspectLists = prospectLists.map(pl => {
-      let mutableProspectList = serializeProspectList(pl.id)
+      let mutableProspectList = serializeProspectList(pl)
       return mutableProspectList
     })
     return mutableProspectLists

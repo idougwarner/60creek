@@ -161,7 +161,7 @@ const AddProspectForm = (props) => {
           lastName: lastNameValue,
           companyName: companyNameValue,
           details: detailsValue,
-          prospectList: prospectListValue,
+          prospectListId: prospectListValue ? prospectListValue.id : null,
         })
         resetValues()
     

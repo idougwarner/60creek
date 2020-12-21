@@ -23,7 +23,8 @@
     position: absolute;
     top: 118px;
     left: 0px;
-    margin-left: 32px;
+    margin-left: 16px;
+    margin-right: 16px;
     width: 100%;
     height: calc(100% - 118px);
     background-color: white;
@@ -33,10 +34,13 @@
       font-style: normal;
       font-weight: 600;
       font-size: 14px;
-      line-height: 24px;
+      line-height: 40px;
       color: rgba(19, 22, 36, 0.6);
       letter-spacing: 0.1px;
+      height: 40px;
+      width: calc(100% - 44px);
       margin-bottom: 32px;
+      padding: 0px 8px;
       text-align: left;
       text-decoration: none;
 
@@ -44,6 +48,8 @@
       
       &.selected{
         color: #2F64DC;
+        background: #EAF2F8;
+        border-radius: 10px;
       }
     }
 

@@ -1,16 +1,7 @@
-.prospect-list{
-  width: calc(100% - 160px);
-  margin-left: 20px;
-  margin-right: 20px;
-  .prospect-list-header{
+.data-table-list{
+  .data-table-list-items{
     width: 100%;
-    display: flex;
-    height: 60px;
-    margin-left: 6px;
-  }
-  .prospect-list-items{
-    width: 100%;
-    .prospect-list-row{
+    .data-table-list-row{
       width: 100%;
       display: flex;
       height: 60px;
@@ -25,6 +16,20 @@
         text-align: left;
         :first-child{
           margin-left: 0px;
+        }
+        &.contact-info{
+          display: flex;
+          .facebook{
+            margin-top: 0px;
+          }
+          .email{
+            margin-top: 3px;
+            margin-left: 24px;
+          }
+          .phone{
+            margin-top: 0px;
+            margin-left: 24px;
+          }
         }
         .detail-item-text{
           line-height: 28px;

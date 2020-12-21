@@ -1,0 +1,17 @@
+.checkbox{
+  width: 24px;
+  height: 24px;
+  border: 1px solid rgba(189, 226, 251, 1);
+  box-sizing: border-box;
+  border-radius: 10px;
+  cursor: pointer;
+  position: relative;
+  &.checked{
+    background: #366EE7;
+  }
+  img{
+    position: absolute;
+    left: 4px;
+    top: 5px;
+  }
+}

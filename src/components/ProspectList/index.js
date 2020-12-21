@@ -1,6 +1,8 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { serializeProspectLists } from '../../redux/store'
+import SortableHeaderCell from '../DataTable/DataTableHeader/SortableHeaderCell'
+import CheckBox from '../../components/controls/CheckBox'
 import './ProspectList.scss'
 
 //******************************************************************
@@ -10,6 +12,18 @@ import './ProspectList.scss'
 //*
 //******************************************************************
 
+const columnWidths = [
+  '24px',
+  '94px',
+  'calc(16% - 60px)',
+  'calc(16% - 60px)',
+  'calc(16% - 60px)',
+  'calc(16% - 60px)',
+  'calc(16% - 60px)',
+  '48px',
+  '44px',
+  '96px',
+]
 
 const ProspectList = (props) => {
   const { prospectLists, updateProspectInStore } = props
@@ -32,14 +46,33 @@ const ProspectList = (props) => {
       prospectList = prospects.map((prospect, key) => {
         return (
           <div className='prospect-list-row' key={key} onClick={(e) => updateProspectInStore(prospect)}>
-            <div className='detail-item'>{prospect.status}</div>
-            <div className='detail-item'>{prospect.prospectList ? prospect.prospectList.name : 'None'}</div>
-            <div className='detail-item'>{prospect.firstName}</div>
-            <div className='detail-item'>{prospect.lastName}</div>
-            <div className='detail-item'>{prospect.companyName}</div>
-            <div className='detail-item'>{prospect.enhancedEmailAddress}</div>
-            <div className='detail-item'>{prospect.enhancedFacebookHandle}</div>
-            <div className='detail-item allow-hover'>{prospect.details}</div>
+            <div className='detail-item item-checkbox' style={{ width: columnWidths[0] }}>
+              <CheckBox />
+            </div>
+            <div className='detail-item' style={{ width: columnWidths[1] }}>
+              <span className='detail-item-text framed'>{prospect.status}</span>
+              </div>
+            <div className='detail-item' style={{ width: columnWidths[2] }}>
+              <span className='detail-item-text'>{prospect.firstName}</span>
+            </div>
+            <div className='detail-item' style={{ width: columnWidths[3] }}>
+              <span className='detail-item-text'>{prospect.lastName}</span>
+            </div>
+            <div className='detail-item' style={{ width: columnWidths[4] }}>
+              <span className='detail-item-text'>{prospect.companyName}</span>
+            </div>
+            <div className='detail-item' style={{ width: columnWidths[5] }}>
+              <span className='detail-item-text'>{prospect.stree}</span>
+            </div>
+            <div className='detail-item' style={{ width: columnWidths[6] }}>
+              <span className='detail-item-text'>{prospect.city}</span>
+            </div>
+            <div className='detail-item' style={{ width: columnWidths[7] }}>
+              <span className='detail-item-text'>{prospect.state}</span>
+            </div>
+            <div className='detail-item' style={{ width: columnWidths[8] }}>
+              <span className='detail-item-text'>{prospect.zip}</span>
+            </div>
           </div>
         )
       }
@@ -49,14 +82,16 @@ const ProspectList = (props) => {
   return (
     <div className='prospect-list'>
       <div className="prospect-list-header">
-        <div className='header-item'><span>Status</span></div>
-        <div className='header-item'><span>Prospect List</span></div>
-        <div className='header-item'><span>First Name</span></div>
-        <div className='header-item'><span>Last Name</span></div>
-        <div className='header-item'><span>Company Name</span></div>
-        <div className='header-item'><span>Enhanced Email Address</span></div>
-        <div className='header-item'><span>Enhanded Facebook Handle</span></div>
-        <div className='header-item'><span>Details</span></div>
+        <SortableHeaderCell width={columnWidths[0]} headerCellTitle=''/>
+        <SortableHeaderCell width={columnWidths[1]} headerCellTitle='Status' sortDirection='none' />
+        <SortableHeaderCell width={columnWidths[2]} headerCellTitle='First' sortDirection='none' />
+        <SortableHeaderCell width={columnWidths[3]} headerCellTitle='Last' sortDirection='none' />
+        <SortableHeaderCell width={columnWidths[4]} headerCellTitle='Company' sortDirection='none' />
+        <SortableHeaderCell width={columnWidths[5]} headerCellTitle='Street' sortDirection='none' />
+        <SortableHeaderCell width={columnWidths[6]} headerCellTitle='City' sortDirection='none' />
+        <SortableHeaderCell width={columnWidths[7]} headerCellTitle='State' sortDirection='none' />
+        <SortableHeaderCell width={columnWidths[8]} headerCellTitle='Zip' sortDirection='none' />
+        <SortableHeaderCell width={columnWidths[9]} headerCellTitle='Contact Info' />
       </div>
       <div className='prospect-list-items'>
         {prospectList}

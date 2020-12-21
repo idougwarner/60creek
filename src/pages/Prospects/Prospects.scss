@@ -1,51 +1,115 @@
 @import '../../assets/styles/global-styles.scss';
 
-.prospects{
-  position: absolute;
-  top: 0px;
-  left: 0px;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  .prospects-header{
-    height: 38px;
-    display: flex;
-    margin-bottom: 20px;
-    margin-top: 20px;
-    .prospects-title{
-      font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-      font-size: 16;
-      font-weight: 500;
-      margin-left: 90px;
-      text-align: left;
+.sixty-creek-prospects{
+  .g-page-background-with-nav{
+    .g-basic-button{
+      position: absolute;
+      top: 92px;
+      left: 77px;
+      width: 177px;
     }
-    .add-button{
-      width: 20px;
-      height: 20px;
-      margin-top: 8px;
-      margin-left: 5px;
-      border: 1px solid black;
-      border-radius: 50%;
-      font-family: 'Arial, Helvetica, sans-serif';
-      font-size: 16px;
-      line-height: 18px;
-      text-align: center;
-      background-color: white;
-      color: black;
-      &:hover{
-        background-color: black;
-        color: white;
+    .g-page-content{
+      .g-page-content-standard{
+        margin: 60px 80px 33px 80px;
+        position: relative;
+        .search-control{
+          position: absolute;
+          width: 320px;
+          height: 40px;
+          top: 24px;
+          left: 50px;
+          border: 1px solid #A7D8FA;
+          box-sizing: border-box;
+          border-radius: 10px;
+          .search-icon{
+            position: absolute;
+            top: 12px;
+            left: 12px;
+          }
+          .search-input{
+            border: none;
+            outline: none;
+            position: absolute;
+            height: 24px;
+            top: 8px;
+            left: 39px;
+          }
+        }
+        .menu-dots{
+          position: absolute;
+          top: 24px;
+          right: 40px;
+        }
+        .number-selected{
+          position: absolute;
+          top: 73px;
+          left: 50px;
+          font-family: Raleway;
+          font-style: italic;
+          font-weight: normal;
+          font-size: 12px;
+          line-height: 16px;
+          /* identical to box height, or 133% */
+          
+          letter-spacing: 0.4px;
+          
+          /* 60% */
+          
+          color: rgba(19, 22, 36, 0.6);          
+        }
+
+        .filter{
+          position: absolute;
+          left: 50px;
+          top: 102px;
+          display: flex;
+          .filter-text{
+            font-family: Raleway;
+            font-style: normal;
+            font-weight: 600;
+            font-size: 14px;
+            line-height: 16px;
+            /* identical to box height, or 114% */
+            
+            letter-spacing: 1.25px;
+            text-transform: uppercase;
+            
+            color: #000000;
+          }
+          .arrow-icon{
+            margin-left: 3px;
+          }
+        }
+        .showing-prospects{
+          position: absolute;
+          top: 91px;
+          right: 27px;
+          .showing-text{
+            font-family: Raleway;
+            font-style: normal;
+            font-weight: normal;
+            font-size: 16px;
+            line-height: 24px;
+            /* identical to box height, or 150% */
+
+            letter-spacing: 0.5px;
+
+            /* 60% */
+
+            color: rgba(19, 22, 36, 0.6);
+            &.bold{
+              font-weight: 600;
+            }
+          }
+        }
+        .prospects-list{
+          position: absolute;
+          width: calc(100% - 40px);
+          top: 136px;
+          margin-left: 20px;
+          margin-right: 20px;
+        }
       }
-    }
-  }
-  .add-prospect-wrapper{
-    overflow: hidden;
-    height: 0px;
-    width: 100%;
-    transition: height .5s;
-    &.is-add-prospect-open{
-      height: 340px;
     }
   }
 }
