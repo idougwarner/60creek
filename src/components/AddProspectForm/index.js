@@ -10,6 +10,10 @@ const AddProspectForm = (props) => {
   const [statusValue, setStatusValue] = useState('')
   const [firstNameValue, setFirstNameValue] = useState('')
   const [lastNameValue, setLastNameValue] = useState('')
+  const [addressValue, setAddressValue] = useState('')
+  const [cityValue, setCityValue] = useState('')
+  const [stateValue, setStateValue] = useState('')
+  const [zipValue, setZipValue] = useState('')
   const [companyNameValue, setCompanyNameValue] = useState('')
   const [prospectListValue, setProspectListValue] = useState(null)
   const [detailsValue, setDetailsValue] = useState('')
@@ -20,6 +24,10 @@ const AddProspectForm = (props) => {
     setStatusValue('')
     setFirstNameValue('')
     setLastNameValue('')
+    setAddressValue('')
+    setCityValue('')
+    setStateValue('')
+    setZipValue('')
     setCompanyNameValue('')
     setDetailsValue('')
     setProspectListValue(null)
@@ -29,6 +37,10 @@ const AddProspectForm = (props) => {
     setStatusValue(prospectToUpdate.status)
     setFirstNameValue(prospectToUpdate.firstName)
     setLastNameValue(prospectToUpdate.lastName)
+    setAddressValue(prospectToUpdate.address)
+    setCityValue(prospectToUpdate.city)
+    setStateValue(prospectToUpdate.state)
+    setZipValue(prospectToUpdate.zip)
     setCompanyNameValue(prospectToUpdate.companyName)
     setDetailsValue(prospectToUpdate.details)
     setProspectListValue(prospectToUpdate.prospectList)
@@ -83,6 +95,64 @@ const AddProspectForm = (props) => {
                 }}
                 type='text'
                 name='firstName'
+              />
+            </div>
+          </div>
+        </div>
+        <div className="middle-side">
+          <div className='input-box'>
+            <div className='label'>Address</div>
+            <div className='input-container'>
+              <input
+                value={addressValue}
+                onChange={(e) => {
+                  setAddressValue(e.target.value)
+                  setChangedValue(true)
+                }}
+                type='text'
+                name='address'
+              />
+            </div>
+          </div>
+          <div className='input-box'>
+            <div className='label'>City</div>
+            <div className='input-container'>
+              <input
+                value={cityValue}
+                onChange={(e) => {
+                  setCityValue(e.target.value)
+                  setChangedValue(true)
+                }}
+                type='text'
+                name='city'
+              />
+            </div>
+          </div>
+          <div className='input-box'>
+            <div className='label'>State</div>
+            <div className='input-container'>
+              <input
+                value={stateValue}
+                onChange={(e) => {
+                  setStateValue(e.target.value)
+                  setChangedValue(true)
+                }}
+                type='text'
+                name='state'
+              />
+            </div>
+          </div>
+          <div className='input-box'>
+            <div className='label'>Zip</div>
+            <div className='input-container'>
+              <input
+                value={zipValue}
+                onChange={(e) => {
+                  setZipValue(e.target.value)
+                  setChangedValue(true)
+                }}
+                type='text'
+                name='zip'
               />
             </div>
           </div>
@@ -159,6 +229,10 @@ const AddProspectForm = (props) => {
           status: statusValue,
           firstName: firstNameValue,
           lastName: lastNameValue,
+          address: addressValue,
+          city: cityValue,
+          state: stateValue,
+          zip: zipValue,
           companyName: companyNameValue,
           details: detailsValue,
           prospectListId: prospectListValue ? prospectListValue.id : null,

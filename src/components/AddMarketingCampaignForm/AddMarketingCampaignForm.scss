@@ -3,7 +3,11 @@
   height: 418px;
   margin: 20px;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-  position: relative;
+  position: absolute;
+  top: 220px;
+  left: calc(50% - 325px);
+  z-index: 99;
+  background-color: white;
 
   .title-box{
     padding-top: 10px;

@@ -9,6 +9,8 @@ import searchIcon from '../../assets/images/search-icon.svg'
 import downArrowIcon from '../../assets/images/sort-down.svg'
 import menuDots from '../../assets/images/more-dots.svg'
 import BasicButton from '../../components/controls/BasicButton'
+import AddMarketingCampaignForm from '../../components/AddMarketingCampaignForm'
+import { createMarketingCampaignInStore } from '../../redux/actions'
 
 const marketingTableDescriptor = [
   { width: '24px', fieldName: 'selectCheckbox', headerCellTitle: '', isCheckBox: true, checked: false },
@@ -58,6 +60,7 @@ export class Marketing extends React.Component {
     this.handleAddMarketButtonPushed = this.handleAddMarketButtonPushed.bind(this)
     this.handleSearchInput = this.handleSearchInput.bind(this)
     this.handleSearchKeyDown = this.handleSearchKeyDown.bind(this)
+    this.handleAddMarketingCampaign = this.handleAddMarketingCampaign.bind(this)
   }
 
   componentDidMount() {
@@ -72,7 +75,7 @@ export class Marketing extends React.Component {
   }
 
   handleAddMarketButtonPushed() {
-    
+    this.setState({ showAddMarket: true })
   }
 
   handleTableSort(sortField, sortDirection) {
@@ -165,8 +168,14 @@ export class Marketing extends React.Component {
     }
   }
 
+  handleAddMarketingCampaign(newCampaign) {
+    const { onCreatePressed } = this.props
+    onCreatePressed(newCampaign)
+    this.setState({showAddMarket: false})
+  }
+
   render() {
-    const { flattenedMarkets, marketingTableDescriptor } = this.state
+    const { flattenedMarkets, marketingTableDescriptor, showAddMarket, marketingCampaignToUpdate } = this.state
     const numberSelected = flattenedMarkets.filter(market => {
       return market.checked
     }).length
@@ -179,9 +188,18 @@ export class Marketing extends React.Component {
             <div className='g-page-title'>Marketing</div>
           </div>
 
-          <BasicButton title='Add Marketing' enabled={true} buttonPushed={this.handleAddMarketButtonPushed}/>
+          <BasicButton title='Add Marketing' enabled={true} buttonPushed={this.handleAddMarketButtonPushed} />
+          
+          {this.state.showAddMarket ?
+            <AddMarketingCampaignForm
+              prospectLists={this.props.prospectLists}
+              addMarketingCampaign={this.handleAddMarketingCampaign}
+              marketingCampaignToUpdate={marketingCampaignToUpdate} />
+            :
+            null
+          }
 
-          <div className="g-page-content">
+          <div className="g-page-content" onClick={() => {this.setState({showAddMarket: false})}}>
             <div className='g-page-content-standard'>
               <div className='search-control'>
                 <img className='search-icon' src={searchIcon} alt='search' />
@@ -224,7 +242,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  // onCreatePressed: marketingCampaign => dispatch(createMarketingCampaignInStore(marketingCampaign))
+  onCreatePressed: marketingCampaign => dispatch(createMarketingCampaignInStore(marketingCampaign))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Marketing)

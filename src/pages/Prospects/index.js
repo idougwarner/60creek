@@ -17,8 +17,8 @@ const prospectsTableDescriptor = [
   { sortDirection: 'none', width: '94px', fieldName: 'status', headerCellTitle: 'Status', isFramed: true },
   { sortDirection: 'none', width: 'calc(19.2% - 70px)', fieldName: 'firstName', headerCellTitle: 'First Name' },
   { sortDirection: 'none', width: 'calc(19.2% - 70px)', fieldName: 'lastName', headerCellTitle: 'Last Name' },
-  { sortDirection: 'none', width: 'calc(19.2% - 70px)', fieldName: 'company', headerCellTitle: 'Company' },
-  { sortDirection: 'none', width: 'calc(19.2% - 70px)', fieldName: 'street', headerCellTitle: 'Street' },
+  { sortDirection: 'none', width: 'calc(19.2% - 70px)', fieldName: 'companyName', headerCellTitle: 'Company' },
+  { sortDirection: 'none', width: 'calc(19.2% - 70px)', fieldName: 'address', headerCellTitle: 'Street' },
   { sortDirection: 'none', width: 'calc(19.2% - 70px)', fieldName: 'city', headerCellTitle: 'City' },
   { sortDirection: 'none', width: '48px', fieldName: 'state', headerCellTitle: 'State' },
   { sortDirection: 'none', width: '44px', fieldName: 'zip', headerCellTitle: 'Zip' },
@@ -43,6 +43,8 @@ export class Prospects extends React.Component {
     this.handleAddProspectButtonPushed = this.handleAddProspectButtonPushed.bind(this)
     this.handleSearchInput = this.handleSearchInput.bind(this)
     this.handleSearchKeyDown = this.handleSearchKeyDown.bind(this)
+    this.handleCreateProspectList = this.handleCreateProspectList.bind(this)
+    this.handleAddProspect = this.handleAddProspect.bind(this)
   }
 
   componentDidMount() {
@@ -63,7 +65,7 @@ export class Prospects extends React.Component {
   }
 
   handleAddProspectButtonPushed() {
-    
+    this.setState({ showAddProspect: true })
   }
 
   handleTableSort(sortField, sortDirection) {
@@ -156,8 +158,20 @@ export class Prospects extends React.Component {
     }
   }
 
+  handleAddProspect(newProspect) {
+    const { onCreatePressed } = this.props
+    onCreatePressed(newProspect)
+    this.setState({ prospectToUpdate: null, showAddProspect: false })
+  }
+
+  handleCreateProspectList(newProspectList) {
+    const { onCreateProspectList } = this.props
+    onCreateProspectList(newProspectList)
+  }
+
   render() {
-    const { flattenedProspects, prospectsTableDescriptor } = this.state
+    const { flattenedProspects, prospectsTableDescriptor, prospectToUpdate } = this.state
+    const { prospectLists } = this.props
     const numberSelected = flattenedProspects.filter(prospect => {
       return prospect.checked
     }).length
@@ -171,8 +185,13 @@ export class Prospects extends React.Component {
           </div>
 
           <BasicButton title='Add Prospects' enabled={true} buttonPushed={this.handleAddProspectButtonPushed}/>
-
-          <div className="g-page-content">
+          {this.state.showAddProspect ?
+            <AddProspectForm prospectLists={prospectLists}
+              createProspectListInStore={this.handleCreateProspectList}
+              addProspect={this.handleAddProspect}
+              prospectToUpdate={prospectToUpdate}
+            /> : null}
+          <div className="g-page-content" onClick={() => {this.setState({showAddProspect: false})}}>
             <div className='g-page-content-standard'>
               <div className='search-control'>
                 <img className='search-icon' src={searchIcon} alt='search' />
@@ -208,10 +227,13 @@ export class Prospects extends React.Component {
   }
 }
 
+const mapDispatchToProps = dispatch => ({
+  onCreatePressed: prospect => dispatch(createProspectInStore(prospect)),
+  onCreateProspectList: prospectList => dispatch(createProspectListInStore(prospectList))
+})
+
 const mapStateToProps = (state) => ({
   prospectLists: serializeProspectLists(state.prospectLists), 
 })
-  
 
-
-export default connect(mapStateToProps)(Prospects)
+export default connect(mapStateToProps, mapDispatchToProps)(Prospects)

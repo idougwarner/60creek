@@ -1,9 +1,13 @@
 .add-prospect-form{
-  width: 500px;
-  height: 300px;
+  width: 750px;
+  height: 440px;
   margin: 20px;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-  position: relative;
+  position: absolute;
+  top: 220px;
+  left: calc(40% - 325px);
+  z-index: 99;
+  background-color: white;
 
   .title-box{
     padding-top: 10px;
@@ -17,6 +21,7 @@
   .sides-container{
     display:flex;
     .left-side,
+    .middle-side,
     .right-side{
       width: 250px;
       height: calc(100% - 50px);
@@ -59,6 +64,10 @@
       }
     }
     .left-side{
+      padding-right: 8px;
+      border-right: 1px solid darkgray;
+    }
+    .middle-size{
       padding-right: 8px;
       border-right: 1px solid darkgray;
     }
