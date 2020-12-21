@@ -16,8 +16,8 @@ export default class SortableHeaderCell extends React.Component {
         <span className='header-cell-title'>{headerCellTitle}</span>
         {sortDirection ?
           <img className={'header-cell-sort-button' +
-            (sortDirection === 'asc' ? ' sort-ascending' : sortDirection === 'desc' ? 'sort-descending' : '')}
-            onClick={handleOnSort} alt='sort-button'
+            (sortDirection === 'asc' ? ' sort-ascending' : sortDirection === 'desc' ? ' sort-descending' : '')}
+            onClick={() => handleOnSort(sortDirection === 'asc' ? 'desc' : 'asc')} alt='sort-button'
             src={sortButton} />
           :
           null}

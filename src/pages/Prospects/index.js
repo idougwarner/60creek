@@ -31,7 +31,8 @@ export class Prospects extends React.Component {
     super(props)
     this.state = {
       prospectsTableDescriptor: prospectsTableDescriptor.filter(desc => { return desc }),
-      flattenedProspects: []
+      flattenedProspects: [],
+      searchString: ''
     }
 
     this.flattenProspects = this.flattenProspects.bind(this)
@@ -40,11 +41,19 @@ export class Prospects extends React.Component {
     this.handleRowChecked = this.handleRowChecked.bind(this)
     this.handleEditProspect = this.handleEditProspect.bind(this)
     this.handleAddProspectButtonPushed = this.handleAddProspectButtonPushed.bind(this)
+    this.handleSearchInput = this.handleSearchInput.bind(this)
+    this.handleSearchKeyDown = this.handleSearchKeyDown.bind(this)
   }
 
   componentDidMount() {
     const { prospectLists } = this.props
     if (prospectLists) {
+      this.flattenProspects()
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.prospectLists !== this.props.prospectLists) {
       this.flattenProspects()
     }
   }
@@ -58,7 +67,17 @@ export class Prospects extends React.Component {
   }
 
   handleTableSort(sortField, sortDirection) {
-    const { flattenedProspects } = this.state
+    const { flattenedProspects, prospectsTableDescriptor } = this.state
+
+    prospectsTableDescriptor.forEach(ptd => { 
+      if (ptd.fieldName === sortField) {
+        ptd.sortDirection = sortDirection
+      }
+      else {
+        ptd.sortDirection = 'none'
+      }
+    })
+
     flattenedProspects.sort((row1, row2) => {
       if (row1[sortField] < row2[sortField]) {
         return sortDirection === 'asc' ? -1 : 1
@@ -70,6 +89,7 @@ export class Prospects extends React.Component {
         return 0
       }
     })
+    this.setState({flattenedProspects, prospectsTableDescriptor})
   }
 
   handleHeaderChecked(checked) {
@@ -84,12 +104,6 @@ export class Prospects extends React.Component {
     }
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (prevProps.prospectLists !== this.props.prospectLists) {
-      this.flattenProspects()
-    }
-  }
-
   handleRowChecked(id, checked) {
     const { flattenedProspects } = this.state
     const prospect = flattenedProspects.find(p => {
@@ -101,7 +115,7 @@ export class Prospects extends React.Component {
     }
   }
 
-  flattenProspects() {
+  flattenProspects(searchString) {
     const prospects = []
     const { prospectLists } = this.props
     if (prospectLists) {
@@ -109,13 +123,37 @@ export class Prospects extends React.Component {
         if (prospectList && prospectList.prospects) {
           prospectList.prospects.forEach(prospect => { 
             if (!prospects.find(p => { return prospect.id === p.id })) {
-              prospects.push({ ...prospect })
+              if (searchString) {
+                const nameConcat = (prospect && prospect.firstName ? prospect.firstName : '') + ' '
+                  + (prospect && prospect.lastName ? prospect.lastName : '' )
+                if (nameConcat.toLowerCase().indexOf(searchString.toLowerCase()) >= 0 ||
+                  (prospect.company && prospect.company.toLowerCase().indexOf(searchString.toLowerCase()) >= 0)) {
+                    prospects.push({ ...prospect })
+                  }
+              }
+              else {
+                prospects.push({ ...prospect })
+              }
             }
           })
         }
       })
     }
     this.setState({flattenedProspects: prospects})
+  }
+
+  handleSearchInput(e) {
+    this.setState({ searchString: e.target.value })
+  }
+
+  handleSearchKeyDown(e) {
+    if (e.keyCode === 27) {
+      this.setState({ searchString: '' })
+      this.flattenProspects()
+    }
+    else if (e.keyCode === 13) {
+      this.flattenProspects(this.state.searchString)
+    }
   }
 
   render() {
@@ -138,7 +176,7 @@ export class Prospects extends React.Component {
             <div className='g-page-content-standard'>
               <div className='search-control'>
                 <img className='search-icon' src={searchIcon} alt='search' />
-                <input className='search-input' defaultValue='Search List...'/>
+                <input className='search-input' value={this.state.searchString} placeholder='Search List...' onChange={this.handleSearchInput} onKeyDown={this.handleSearchKeyDown}/>
               </div>
               <img className='menu-dots' src={menuDots} alt='more-menu'/>
               <div className='number-selected'>{numberSelected > 0 ? numberSelected + ' selected' : 'None selected'}</div>

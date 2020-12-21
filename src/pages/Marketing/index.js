@@ -56,6 +56,8 @@ export class Marketing extends React.Component {
     this.handleRowChecked = this.handleRowChecked.bind(this)
     this.handleEditMarket = this.handleEditMarket.bind(this)
     this.handleAddMarketButtonPushed = this.handleAddMarketButtonPushed.bind(this)
+    this.handleSearchInput = this.handleSearchInput.bind(this)
+    this.handleSearchKeyDown = this.handleSearchKeyDown.bind(this)
   }
 
   componentDidMount() {
@@ -117,9 +119,15 @@ export class Marketing extends React.Component {
     }
   }
 
-  flattenMarkets() {
+  flattenMarkets(searchString) {
     const { marketingCampaigns } = this.props
-    const flattenedMarkets = marketingCampaigns.map(mc => {
+    let filteredMarkets = marketingCampaigns
+    if (searchString) {
+      filteredMarkets = marketingCampaigns.filter(mc => {
+        return mc.title.indexOf(searchString) >= 0 || (mc.prospectList && mc.prospectList.name.indexOf(searchString) >= 0)
+      })
+    }
+    const flattenedMarkets = filteredMarkets.map(mc => {
       if (mc.prospectList) {
         mc.prospectListName = mc.prospectList.name
       }
@@ -134,6 +142,27 @@ export class Marketing extends React.Component {
       return mc
     })
     this.setState({flattenedMarkets })
+  }
+
+  handleSearchInput(e) {
+    this.setState({ searchString: e.target.value }, () => {
+      if (!this.state.searchString) {
+        this.flattenMarkets()
+      }
+      else {
+        this.flattenMarkets(this.state.searchString)
+      }
+    })
+  }
+
+  handleSearchKeyDown(e) {
+    if (e.keyCode === 27) {
+      this.setState({ searchString: '' })
+      this.flattenMarkets()
+    }
+    else if (e.keyCode === 13) {
+      this.flattenMarkets(this.state.searchString)
+    }
   }
 
   render() {
@@ -156,7 +185,7 @@ export class Marketing extends React.Component {
             <div className='g-page-content-standard'>
               <div className='search-control'>
                 <img className='search-icon' src={searchIcon} alt='search' />
-                <input className='search-input' defaultValue='Search List...'/>
+                <input className='search-input' value={this.state.searchString} placeholder='Search List...' onChange={this.handleSearchInput} onKeyDown={this.handleSearchKeyDown}/>
               </div>
               <img className='menu-dots' src={menuDots} alt='more-menu'/>
               <div className='number-selected'>{numberSelected > 0 ? numberSelected + ' selected' : 'None selected'}</div>

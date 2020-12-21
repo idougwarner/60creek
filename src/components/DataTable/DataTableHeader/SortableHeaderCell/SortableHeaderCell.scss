@@ -22,14 +22,18 @@
   }
   .header-cell-sort-button{
     margin-left: 4px;
-    margin-top: 6px;
-    width: 8px;
-    height: 4px;
-    transform: rotate(0deg);
+    margin-top: 0px;
+    margin-left: 2px;
+    // width: 8px;
+    // height: 4px;
+    transform: rotate(180deg);
+    cursor: pointer;
     &.sort-ascending{
       transform: rotate(180deg);
     }
     &.sort-descending{
+      // margin-top: 6px;
+      // margin-left: 6px;
       transform: rotate(0deg);
     }
   }

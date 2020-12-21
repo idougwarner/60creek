@@ -21,8 +21,10 @@ const DataTableHeader = (props) => {
       }}/>
     }
     else {
-      return <SortableHeaderCell key={'header-cell-' + desc.fieldName} width={desc.width} sortDirection={desc.sortDirection} handleTableSort={() =>
-        handleTableSort(desc.fieldName)} headerCellTitle={desc.headerCellTitle} />
+      return <SortableHeaderCell key={'header-cell-' + desc.fieldName} width={desc.width} sortDirection={desc.sortDirection} handleOnSort={(sortDirection) => {
+        handleTableSort(desc.fieldName, sortDirection)
+      }
+      } headerCellTitle={desc.headerCellTitle} />
     }
   })
 
