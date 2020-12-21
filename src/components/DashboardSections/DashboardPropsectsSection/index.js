@@ -5,7 +5,7 @@ import BasicButton from '../../../components/controls/BasicButton'
 import './DashboardProspectsSection.scss'
 
 const DashboardProspectsSection = (props) => {
-  const { prospectLists } = props
+  const { prospectLists, addProspect } = props
 
   function getProspectListRows(prospectLists) {
     const prospectListRows = !prospectLists ||
@@ -33,7 +33,8 @@ const DashboardProspectsSection = (props) => {
 
   return (
     <div className='dashboard-prospects'>
-      <BasicButton title='Add Prospects' additionalClass='dashboard-add-prospects-button' enabled={true}/>
+      <BasicButton title='Add Prospects' additionalClass='dashboard-add-prospects-button' enabled={true}
+        buttonPushed={addProspect}/>
       <div className='g-page-section'>
         <div className='g-section-header'>
           <div className='g-section-title'>Prospects</div>
