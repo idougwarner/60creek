@@ -89,6 +89,9 @@
   text-decoration: none;
   width: 100%;
   margin-left: 0px;
+  &.underlined{
+    text-decoration: underline;
+  }
   &.small{
     font-size: 14px;
     line-height: 20px;
@@ -224,6 +227,95 @@
       border-radius: 10px;
     }
 
+    .g-form-line{
+      display: flex;
+      width: 100%;
+      .g-half-input-box{
+        margin-bottom: 24px;
+        position: relative;
+        width: calc(50% - 10px);
+        margin-left: 10px;
+        &:first-child{
+          margin-right: 10px;
+          margin-left: 0px;
+        }
+        .g-input-label{
+          margin-bottom: 7px;
+          margin-left: 10px;
+          font-family: Raleway;
+          font-style: normal;
+          font-weight: normal;
+          font-size: 14px;
+          line-height: 20px;
+          letter-spacing: 0.25px;
+          text-align: left;
+          color: rgba(19, 22, 36, 0.6);
+          height: 20px;
+        }
+        .g-input-container{
+          background: #FFFFFF;
+          border: 1px solid #A7D8FA;
+          box-sizing: border-box;
+          border-radius: 10px;
+          height: 48px;
+          padding: 16px;
+          width: 100%;
+          outline: none;
+          &.combobox{
+            border: none;
+            padding: 0px;
+          }
+          &input{
+            &::placeholder{
+              font-family: Raleway;
+              font-style: normal;
+              font-weight: normal;
+              font-size: 16px;
+              line-height: 24px;
+              letter-spacing: 0.5px;
+              color: rgba(19, 22, 36, 0.6);  
+            }
+            outline:  none;
+          }
+          .rw-widget{
+            font-size: 12px;
+            .rw-widget-container {
+              background-color: #fff;
+              border: #A7D8FA 1px solid;
+              border-radius: 10px;
+              .rw-select-bordered {
+                border-left: #A7D8FA 1px solid;
+              }
+          }
+          }
+          input{
+            width: 95%;
+            height: 48px;
+          }
+          .rw-select-list-label{
+            text-align: left;
+            input{
+              width: auto;
+            }
+          }
+          .rw-popup-container{
+            text-align: left;
+          }
+        }      
+      }
+    }
+
+    .g-linear-input-box{
+      display: flex;
+      height: 60px;
+      
+      .checkbox{
+        margin-right: 10px;
+      }
+      .g-linear-input-item{
+        line-height: 46px;
+      }
+    }
     .g-input-box{
       margin-bottom: 24px;
       position: relative;
@@ -266,6 +358,7 @@
         height: 48px;
         padding: 16px;
         width: 100%;
+        outline: none;
         &input{
           &::placeholder{
             font-family: Raleway;
@@ -276,6 +369,23 @@
             letter-spacing: 0.5px;
             color: rgba(19, 22, 36, 0.6);  
           }
+          outline: none;
+        }
+        .rw-widget{
+          font-size: 12px;
+        }
+        input{
+          width: 95%;
+          height: 24px;
+        }
+        .rw-select-list-label{
+          text-align: left;
+          input{
+            width: auto;
+          }
+        }
+        .rw-popup-container{
+          text-align: left;
         }
       }
     }

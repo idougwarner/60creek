@@ -11,9 +11,10 @@
       .detail-item{
         margin-top: 9px;
         margin-bottom: 9px;
-        margin-left: 10px;
+        margin-left: 7px;
         height: 32px;
         text-align: left;
+        line-height: 20px;
         :first-child{
           margin-left: 0px;
         }
@@ -42,6 +43,7 @@
           text-overflow: ellipsis;
           text-align: left;
           width: auto;
+          color: rgba(0, 0, 0, 1);
           &.framed{
             background: #EAF2F8;
             border-radius: 10px;
@@ -49,7 +51,7 @@
           }
         }
         &.item-checkbox{
-          margin-top: 18px;
+          margin-top: 14px;
           margin-left: 0px;
         }
       }

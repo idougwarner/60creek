@@ -1,5 +1,5 @@
 import { createStore, combineReducers } from 'redux'
-import { prospectLists, prospects, marketingCampaigns } from './reducers'
+import { prospectLists, prospects, marketingCampaigns, users } from './reducers'
 import { persistReducer } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2'
@@ -11,6 +11,7 @@ import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2'
 //******************************************************************
 
 const reducers = {
+  users,
   prospectLists,
   prospects,
   marketingCampaigns,
@@ -22,12 +23,14 @@ const persistConfig = {
   stateReconciler: autoMergeLevel2
 }
 
-const rootReducer = combineReducers(reducers)
-const persistedReducer = persistReducer(persistConfig, rootReducer)
+let rootReducer
+let persistedReducer
 
 export let store = null
 
 export const configureStore = () => {
+  rootReducer = combineReducers(reducers)
+  persistedReducer = persistReducer(persistConfig, rootReducer)
   store = createStore(persistedReducer)
   return store
 }
@@ -94,6 +97,17 @@ export const serializeProspect = (prospect) => {
     return mutableProspect
   }
   return null
+}
+
+export const serializeProspects = (prospects) => {
+  if (prospects && prospects.length) {
+    let mutableProspects = prospects.map(p => {
+      let mutableProspect = serializeProspect(p)
+      return mutableProspect
+    })
+    return mutableProspects
+  }
+  return []
 }
 
 export const serializeProspectLists = (prospectLists) => {

@@ -1,0 +1,684 @@
+/* eslint-disable */
+// this is an auto generated file. This will be overwritten
+
+export const user = /* GraphQL */ `
+  mutation User(
+    $id: ID
+    $firstName: String
+    $lastName: String
+    $company: String
+    $address1: String
+    $address2: String
+    $city: String
+    $state: String
+    $zip: String
+    $phone: String
+    $email: String
+    $signature: String
+  ) {
+    user(
+      id: $id
+      firstName: $firstName
+      lastName: $lastName
+      company: $company
+      address1: $address1
+      address2: $address2
+      city: $city
+      state: $state
+      zip: $zip
+      phone: $phone
+      email: $email
+      signature: $signature
+    ) {
+      id
+      cognitoUserName
+      firstName
+      lastName
+      company
+      address1
+      address2
+      city
+      state
+      zip
+      phone
+      email
+      signature
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const prospectList = /* GraphQL */ `
+  mutation ProspectList($id: ID, $name: String, $owningUserId: Int) {
+    prospectList(id: $id, name: $name, owningUserId: $owningUserId) {
+      id
+      name
+      owningUserId
+      prospects {
+        id
+        status
+        prospectListId
+        firstName
+        lastName
+        company
+        address1
+        address2
+        city
+        state
+        zip
+        phone
+        email
+        facebook
+        owningUserId
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const prospect = /* GraphQL */ `
+  mutation Prospect(
+    $id: ID
+    $prospectListId: Int
+    $firstName: String
+    $lastName: String
+    $company: String
+    $address1: String
+    $address2: String
+    $city: String
+    $state: String
+    $zip: String
+    $phone: String
+    $email: String
+    $facebook: String
+    $owningUserId: Int
+  ) {
+    prospect(
+      id: $id
+      prospectListId: $prospectListId
+      firstName: $firstName
+      lastName: $lastName
+      company: $company
+      address1: $address1
+      address2: $address2
+      city: $city
+      state: $state
+      zip: $zip
+      phone: $phone
+      email: $email
+      facebook: $facebook
+      owningUserId: $owningUserId
+    ) {
+      id
+      status
+      prospectListId
+      firstName
+      lastName
+      company
+      address1
+      address2
+      city
+      state
+      zip
+      phone
+      email
+      facebook
+      owningUserId
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const paymentMethod = /* GraphQL */ `
+  mutation PaymentMethod(
+    $id: ID
+    $userId: Int
+    $title: String
+    $stripeInfo: String
+    $name: String
+    $email: String
+    $phone: String
+  ) {
+    paymentMethod(
+      id: $id
+      userId: $userId
+      title: $title
+      stripeInfo: $stripeInfo
+      name: $name
+      email: $email
+      phone: $phone
+    ) {
+      id
+      userId
+      title
+      stripeInfo
+      name
+      email
+      phone
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const marketingCampaign = /* GraphQL */ `
+  mutation MarketingCampaign(
+    $id: ID
+    $title: String
+    $prospectListId: Int
+    $startDateTime: String
+    $autmatedEmail: Boolean
+    $automatedText: Boolean
+    $automatedRinglessVoiceMail: Boolean
+    $automatedPostcard: Boolean
+    $paymentMethodId: Int
+    $consent: Boolean
+    $owningUserId: Int
+  ) {
+    marketingCampaign(
+      id: $id
+      title: $title
+      prospectListId: $prospectListId
+      startDateTime: $startDateTime
+      autmatedEmail: $autmatedEmail
+      automatedText: $automatedText
+      automatedRinglessVoiceMail: $automatedRinglessVoiceMail
+      automatedPostcard: $automatedPostcard
+      paymentMethodId: $paymentMethodId
+      consent: $consent
+      owningUserId: $owningUserId
+    ) {
+      id
+      title
+      prospectListId
+      startDateTime
+      autmatedEmail
+      automatedText
+      automatedRinglessVoiceMail
+      automatedPostcard
+      paymentMethodId
+      consent
+      owningUserId
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deletedUser = /* GraphQL */ `
+  mutation DeletedUser($id: ID!) {
+    deletedUser(id: $id) {
+      id
+      cognitoUserName
+      firstName
+      lastName
+      company
+      address1
+      address2
+      city
+      state
+      zip
+      phone
+      email
+      signature
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deletedProspectLists = /* GraphQL */ `
+  mutation DeletedProspectLists($id: ID!) {
+    deletedProspectLists(id: $id) {
+      id
+      name
+      owningUserId
+      prospects {
+        id
+        status
+        prospectListId
+        firstName
+        lastName
+        company
+        address1
+        address2
+        city
+        state
+        zip
+        phone
+        email
+        facebook
+        owningUserId
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deletedProspect = /* GraphQL */ `
+  mutation DeletedProspect($id: ID!) {
+    deletedProspect(id: $id) {
+      id
+      status
+      prospectListId
+      firstName
+      lastName
+      company
+      address1
+      address2
+      city
+      state
+      zip
+      phone
+      email
+      facebook
+      owningUserId
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deletedPaymentMethod = /* GraphQL */ `
+  mutation DeletedPaymentMethod($id: ID!) {
+    deletedPaymentMethod(id: $id) {
+      id
+      userId
+      title
+      stripeInfo
+      name
+      email
+      phone
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deletedMarketingCampaign = /* GraphQL */ `
+  mutation DeletedMarketingCampaign($id: ID!) {
+    deletedMarketingCampaign(id: $id) {
+      id
+      title
+      prospectListId
+      startDateTime
+      autmatedEmail
+      automatedText
+      automatedRinglessVoiceMail
+      automatedPostcard
+      paymentMethodId
+      consent
+      owningUserId
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const createUser = /* GraphQL */ `
+  mutation CreateUser(
+    $input: CreateUserInput!
+    $condition: ModelUserConditionInput
+  ) {
+    createUser(input: $input, condition: $condition) {
+      id
+      cognitoUserName
+      firstName
+      lastName
+      company
+      address1
+      address2
+      city
+      state
+      zip
+      phone
+      email
+      signature
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateUser = /* GraphQL */ `
+  mutation UpdateUser(
+    $input: UpdateUserInput!
+    $condition: ModelUserConditionInput
+  ) {
+    updateUser(input: $input, condition: $condition) {
+      id
+      cognitoUserName
+      firstName
+      lastName
+      company
+      address1
+      address2
+      city
+      state
+      zip
+      phone
+      email
+      signature
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteUser = /* GraphQL */ `
+  mutation DeleteUser(
+    $input: DeleteUserInput!
+    $condition: ModelUserConditionInput
+  ) {
+    deleteUser(input: $input, condition: $condition) {
+      id
+      cognitoUserName
+      firstName
+      lastName
+      company
+      address1
+      address2
+      city
+      state
+      zip
+      phone
+      email
+      signature
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const createProspectList = /* GraphQL */ `
+  mutation CreateProspectList(
+    $input: CreateProspectListInput!
+    $condition: ModelProspectListConditionInput
+  ) {
+    createProspectList(input: $input, condition: $condition) {
+      id
+      name
+      owningUserId
+      prospects {
+        id
+        status
+        prospectListId
+        firstName
+        lastName
+        company
+        address1
+        address2
+        city
+        state
+        zip
+        phone
+        email
+        facebook
+        owningUserId
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateProspectList = /* GraphQL */ `
+  mutation UpdateProspectList(
+    $input: UpdateProspectListInput!
+    $condition: ModelProspectListConditionInput
+  ) {
+    updateProspectList(input: $input, condition: $condition) {
+      id
+      name
+      owningUserId
+      prospects {
+        id
+        status
+        prospectListId
+        firstName
+        lastName
+        company
+        address1
+        address2
+        city
+        state
+        zip
+        phone
+        email
+        facebook
+        owningUserId
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteProspectList = /* GraphQL */ `
+  mutation DeleteProspectList(
+    $input: DeleteProspectListInput!
+    $condition: ModelProspectListConditionInput
+  ) {
+    deleteProspectList(input: $input, condition: $condition) {
+      id
+      name
+      owningUserId
+      prospects {
+        id
+        status
+        prospectListId
+        firstName
+        lastName
+        company
+        address1
+        address2
+        city
+        state
+        zip
+        phone
+        email
+        facebook
+        owningUserId
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const createProspect = /* GraphQL */ `
+  mutation CreateProspect(
+    $input: CreateProspectInput!
+    $condition: ModelProspectConditionInput
+  ) {
+    createProspect(input: $input, condition: $condition) {
+      id
+      status
+      prospectListId
+      firstName
+      lastName
+      company
+      address1
+      address2
+      city
+      state
+      zip
+      phone
+      email
+      facebook
+      owningUserId
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateProspect = /* GraphQL */ `
+  mutation UpdateProspect(
+    $input: UpdateProspectInput!
+    $condition: ModelProspectConditionInput
+  ) {
+    updateProspect(input: $input, condition: $condition) {
+      id
+      status
+      prospectListId
+      firstName
+      lastName
+      company
+      address1
+      address2
+      city
+      state
+      zip
+      phone
+      email
+      facebook
+      owningUserId
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteProspect = /* GraphQL */ `
+  mutation DeleteProspect(
+    $input: DeleteProspectInput!
+    $condition: ModelProspectConditionInput
+  ) {
+    deleteProspect(input: $input, condition: $condition) {
+      id
+      status
+      prospectListId
+      firstName
+      lastName
+      company
+      address1
+      address2
+      city
+      state
+      zip
+      phone
+      email
+      facebook
+      owningUserId
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const createPaymentMethod = /* GraphQL */ `
+  mutation CreatePaymentMethod(
+    $input: CreatePaymentMethodInput!
+    $condition: ModelPaymentMethodConditionInput
+  ) {
+    createPaymentMethod(input: $input, condition: $condition) {
+      id
+      userId
+      title
+      stripeInfo
+      name
+      email
+      phone
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updatePaymentMethod = /* GraphQL */ `
+  mutation UpdatePaymentMethod(
+    $input: UpdatePaymentMethodInput!
+    $condition: ModelPaymentMethodConditionInput
+  ) {
+    updatePaymentMethod(input: $input, condition: $condition) {
+      id
+      userId
+      title
+      stripeInfo
+      name
+      email
+      phone
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deletePaymentMethod = /* GraphQL */ `
+  mutation DeletePaymentMethod(
+    $input: DeletePaymentMethodInput!
+    $condition: ModelPaymentMethodConditionInput
+  ) {
+    deletePaymentMethod(input: $input, condition: $condition) {
+      id
+      userId
+      title
+      stripeInfo
+      name
+      email
+      phone
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const createMarketingCampaign = /* GraphQL */ `
+  mutation CreateMarketingCampaign(
+    $input: CreateMarketingCampaignInput!
+    $condition: ModelMarketingCampaignConditionInput
+  ) {
+    createMarketingCampaign(input: $input, condition: $condition) {
+      id
+      title
+      prospectListId
+      startDateTime
+      autmatedEmail
+      automatedText
+      automatedRinglessVoiceMail
+      automatedPostcard
+      paymentMethodId
+      consent
+      owningUserId
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateMarketingCampaign = /* GraphQL */ `
+  mutation UpdateMarketingCampaign(
+    $input: UpdateMarketingCampaignInput!
+    $condition: ModelMarketingCampaignConditionInput
+  ) {
+    updateMarketingCampaign(input: $input, condition: $condition) {
+      id
+      title
+      prospectListId
+      startDateTime
+      autmatedEmail
+      automatedText
+      automatedRinglessVoiceMail
+      automatedPostcard
+      paymentMethodId
+      consent
+      owningUserId
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteMarketingCampaign = /* GraphQL */ `
+  mutation DeleteMarketingCampaign(
+    $input: DeleteMarketingCampaignInput!
+    $condition: ModelMarketingCampaignConditionInput
+  ) {
+    deleteMarketingCampaign(input: $input, condition: $condition) {
+      id
+      title
+      prospectListId
+      startDateTime
+      autmatedEmail
+      automatedText
+      automatedRinglessVoiceMail
+      automatedPostcard
+      paymentMethodId
+      consent
+      owningUserId
+      createdAt
+      updatedAt
+    }
+  }
+`;

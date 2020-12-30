@@ -1,6 +1,8 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { serializeProspectLists } from '../../redux/store'
+import { API } from 'aws-amplify';
+import { serializeProspectLists, serializeProspects } from '../../redux/store'
+import { AUTH_USER_TOKEN_KEY } from '../../helpers/constants';
 import './Prospects.scss'
 import Menu from '../../components/Menu'
 import DataTableHeader from '../../components/DataTable/DataTableHeader'
@@ -11,18 +13,20 @@ import menuDots from '../../assets/images/more-dots.svg'
 import BasicButton from '../../components/controls/BasicButton'
 import AddProspectForm from '../../components/AddProspectForm'
 import { createProspectInStore, createProspectListInStore } from '../../redux/actions'
+import { listProspects, listProspectLists } from '../../graphql/queries';
+import { prospect, prospectList } from '../../graphql/mutations';
 
 const prospectsTableDescriptor = [
   { width: '24px', fieldName: 'selectCheckbox', headerCellTitle: '', isCheckBox: true, checked: false },
   { sortDirection: 'none', width: '94px', fieldName: 'status', headerCellTitle: 'Status', isFramed: true },
-  { sortDirection: 'none', width: 'calc(19.2% - 70px)', fieldName: 'firstName', headerCellTitle: 'First Name' },
-  { sortDirection: 'none', width: 'calc(19.2% - 70px)', fieldName: 'lastName', headerCellTitle: 'Last Name' },
-  { sortDirection: 'none', width: 'calc(19.2% - 70px)', fieldName: 'companyName', headerCellTitle: 'Company' },
-  { sortDirection: 'none', width: 'calc(19.2% - 70px)', fieldName: 'address', headerCellTitle: 'Street' },
-  { sortDirection: 'none', width: 'calc(19.2% - 70px)', fieldName: 'city', headerCellTitle: 'City' },
-  { sortDirection: 'none', width: '48px', fieldName: 'state', headerCellTitle: 'State' },
-  { sortDirection: 'none', width: '44px', fieldName: 'zip', headerCellTitle: 'Zip' },
-  { sortDirection: 'none', width: '104px', fieldName: 'contactInfo', headerCellTitle: 'Contact Info', isContactInfo: true },
+  { sortDirection: 'none', width: 'calc(19.2% - 68px)', fieldName: 'firstName', headerCellTitle: 'First Name' },
+  { sortDirection: 'none', width: 'calc(19.2% - 68px)', fieldName: 'lastName', headerCellTitle: 'Last Name' },
+  { sortDirection: 'none', width: 'calc(19.2% - 68px)', fieldName: 'company', headerCellTitle: 'Company' },
+  { sortDirection: 'none', width: 'calc(19.2% - 68px)', fieldName: 'address1', headerCellTitle: 'Street' },
+  { sortDirection: 'none', width: 'calc(19.2% - 68px)', fieldName: 'city', headerCellTitle: 'City' },
+  { sortDirection: 'none', width: '52px', fieldName: 'state', headerCellTitle: 'State' },
+  { sortDirection: 'none', width: '48px', fieldName: 'zip', headerCellTitle: 'Zip' },
+  { sortDirection: 'none', width: '106px', fieldName: 'contactInfo', headerCellTitle: 'Contact Info', isContactInfo: true },
 ]
 
 export class Prospects extends React.Component {
@@ -31,11 +35,11 @@ export class Prospects extends React.Component {
     super(props)
     this.state = {
       prospectsTableDescriptor: prospectsTableDescriptor.filter(desc => { return desc }),
-      flattenedProspects: [],
+      filteredProspects: [],
       searchString: ''
     }
 
-    this.flattenProspects = this.flattenProspects.bind(this)
+    this.filterProspects = this.filterProspects.bind(this)
     this.handleTableSort = this.handleTableSort.bind(this)
     this.handleHeaderChecked = this.handleHeaderChecked.bind(this)
     this.handleRowChecked = this.handleRowChecked.bind(this)
@@ -44,20 +48,59 @@ export class Prospects extends React.Component {
     this.handleSearchInput = this.handleSearchInput.bind(this)
     this.handleSearchKeyDown = this.handleSearchKeyDown.bind(this)
     this.handleCreateProspectList = this.handleCreateProspectList.bind(this)
-    this.handleAddProspect = this.handleAddProspect.bind(this)
+    this.handleCreateProspect = this.handleCreateProspect.bind(this)
+    this.fetchProspects = this.fetchProspects.bind(this)
+    this.fetchProspectsList = this.fetchProspectsList.bind(this)
   }
 
   componentDidMount() {
-    const { prospectLists } = this.props
-    if (prospectLists) {
-      this.flattenProspects()
-    }
+    this.fetchProspectsList()
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevProps.prospectLists !== this.props.prospectLists) {
-      this.flattenProspects()
+    if (prevProps.prospectLists !== this.props.prospectLists || prevProps.prospects !== this.props.prospects) {
+      this.filterProspects()
     }
+  }
+
+  async fetchProspects() {
+    API.graphql({
+      query: listProspects, auth: {
+        type: 'AMAZON_COGNITO_USER_POOLS',
+        jwtToken: localStorage.getItem(AUTH_USER_TOKEN_KEY)
+      }
+    }).then(listProspectsResults => {
+      const fetchedProspects = []
+      if (listProspectsResults.data.listProspects.items && listProspectsResults.data.listProspects.items.length > 0) {
+        listProspectsResults.data.listProspects.items.forEach(prospect => {
+          this.props.onAddProspectToStore(prospect)
+          fetchedProspects.push(prospect)
+        })
+        this.setState({ filteredProspects: fetchedProspects })
+      }
+    }).catch(err => {
+      alert(err.message)
+    })
+  }
+
+  async fetchProspectsList() {
+    API.graphql({
+      query: listProspectLists, auth: {
+        type: 'AMAZON_COGNITO_USER_POOLS',
+        jwtToken: localStorage.getItem(AUTH_USER_TOKEN_KEY)
+      }
+    }).then(listProspectListsResults => {
+      if (listProspectListsResults.data.listProspectLists.items && listProspectListsResults.data.listProspectLists.items.length > 0) {
+        listProspectListsResults.data.listProspectLists.items.forEach(pl => {
+          this.props.onAddProspectListToStore()
+        })
+
+        this.fetchProspects()
+      }
+  
+    }).catch(err => {
+      alert(err.message)
+    })
   }
 
   handleEditProspect(prospect) {
@@ -69,7 +112,7 @@ export class Prospects extends React.Component {
   }
 
   handleTableSort(sortField, sortDirection) {
-    const { flattenedProspects, prospectsTableDescriptor } = this.state
+    const { filteredProspects, prospectsTableDescriptor } = this.state
 
     prospectsTableDescriptor.forEach(ptd => { 
       if (ptd.fieldName === sortField) {
@@ -80,7 +123,7 @@ export class Prospects extends React.Component {
       }
     })
 
-    flattenedProspects.sort((row1, row2) => {
+    filteredProspects.sort((row1, row2) => {
       if (row1[sortField] < row2[sortField]) {
         return sortDirection === 'asc' ? -1 : 1
       }
@@ -91,57 +134,50 @@ export class Prospects extends React.Component {
         return 0
       }
     })
-    this.setState({flattenedProspects, prospectsTableDescriptor})
+    this.setState({filteredProspects, prospectsTableDescriptor})
   }
 
   handleHeaderChecked(checked) {
-    const { prospectsTableDescriptor, flattenedProspects } = this.state
+    const { prospectsTableDescriptor, filteredProspects } = this.state
     if (prospectsTableDescriptor[0].checked !== checked) {
       prospectsTableDescriptor[0].checked = checked
-      const checkedProspects = flattenedProspects.map(p => {
+      const checkedProspects = filteredProspects.map(p => {
         p.checked = checked
         return p
       })
-      this.setState({ prospectsTableDescriptor, flattenedProspects: checkedProspects })
+      this.setState({ prospectsTableDescriptor, filteredProspects: checkedProspects })
     }
   }
 
   handleRowChecked(id, checked) {
-    const { flattenedProspects } = this.state
-    const prospect = flattenedProspects.find(p => {
+    const { filteredProspects } = this.state
+    const prospect = filteredProspects.find(p => {
       return p.id === id
     })
     if (prospect) {
       prospect.checked = checked
-      this.setState({ flattenedProspects })
+      this.setState({ filteredProspects })
     }
   }
 
-  flattenProspects(searchString) {
-    const prospects = []
-    const { prospectLists } = this.props
-    if (prospectLists) {
-      prospectLists.forEach(prospectList => {
-        if (prospectList && prospectList.prospects) {
-          prospectList.prospects.forEach(prospect => { 
-            if (!prospects.find(p => { return prospect.id === p.id })) {
-              if (searchString) {
-                const nameConcat = (prospect && prospect.firstName ? prospect.firstName : '') + ' '
-                  + (prospect && prospect.lastName ? prospect.lastName : '' )
-                if (nameConcat.toLowerCase().indexOf(searchString.toLowerCase()) >= 0 ||
-                  (prospect.company && prospect.company.toLowerCase().indexOf(searchString.toLowerCase()) >= 0)) {
-                    prospects.push({ ...prospect })
-                  }
-              }
-              else {
-                prospects.push({ ...prospect })
-              }
-            }
-          })
+  filterProspects(searchString) {
+    const prospects = !this.props.prospects? [] : this.props.prospects.filter(prospect => {
+      if (searchString) {
+        const nameConcat = (prospect && prospect.firstName ? prospect.firstName : '') + ' '
+          + (prospect && prospect.lastName ? prospect.lastName : '')
+        if (nameConcat.toLowerCase().indexOf(searchString.toLowerCase()) >= 0 ||
+          (prospect.company && prospect.company.toLowerCase().indexOf(searchString.toLowerCase()) >= 0)) {
+          return true
         }
-      })
-    }
-    this.setState({flattenedProspects: prospects})
+        else {
+          return false
+        }
+      }
+      else {
+        return true
+      }
+    })
+    this.setState({ filteredProspects: prospects })
   }
 
   handleSearchInput(e) {
@@ -151,31 +187,58 @@ export class Prospects extends React.Component {
   handleSearchKeyDown(e) {
     if (e.keyCode === 27) {
       this.setState({ searchString: '' })
-      this.flattenProspects()
+      this.filterProspects()
     }
     else if (e.keyCode === 13) {
-      this.flattenProspects(this.state.searchString)
+      this.filterProspects(this.state.searchString)
     }
   }
 
-  handleAddProspect(newProspect) {
+  handleCreateProspect(newProspect) {
     const { onCreatePressed } = this.props
-    onCreatePressed(newProspect)
-    this.setState({ prospectToUpdate: null, showAddProspect: false })
+    if (newProspect.prospectList || newProspect.prospectListId) {
+      if (newProspect.prospectList) {
+        newProspect.prospectListId = newProspect.prospectList.id
+      }
+      API.graphql({
+        mutation: prospect, variables: { input: newProspect }, auth: {
+          type: 'AMAZON_COGNITO_USER_POOLS',
+          jwtToken: localStorage.getItem(AUTH_USER_TOKEN_KEY)
+        }
+      }).then(newProspect => {
+        onCreatePressed(newProspect)
+        this.setState({ prospectToUpdate: null, showAddProspect: false })
+      }).catch(err => {
+        alert(err.message)
+      })
+    }
+    else {
+      alert('Prospect List Required')
+    }
   }
 
   handleCreateProspectList(newProspectList) {
-    const { onCreateProspectList } = this.props
-    onCreateProspectList(newProspectList)
+    newProspectList.owningUserId = 555
+    API.graphql({
+      mutation: prospectList, variables: { input: newProspectList }, auth: {
+        type: 'AMAZON_COGNITO_USER_POOLS',
+        jwtToken: localStorage.getItem(AUTH_USER_TOKEN_KEY)
+      }
+    }).then(prospectList => {
+      const { onCreateProspectList } = this.props
+      onCreateProspectList(newProspectList)
+    }).catch(err => {
+      alert(err.message)
+    })
   }
 
   render() {
-    const { flattenedProspects, prospectsTableDescriptor, prospectToUpdate } = this.state
+    const { filteredProspects, prospectsTableDescriptor, prospectToUpdate } = this.state
     const { prospectLists } = this.props
-    const numberSelected = flattenedProspects.filter(prospect => {
+    const numberSelected = filteredProspects.filter(prospect => {
       return prospect.checked
     }).length
-    const totalProspectsShowing = flattenedProspects.length
+    const totalProspectsShowing = filteredProspects.length
     return (
       <div className='sixty-creek-prospects'>
         <Menu />
@@ -187,8 +250,8 @@ export class Prospects extends React.Component {
           <BasicButton title='Add Prospects' enabled={true} buttonPushed={this.handleAddProspectButtonPushed}/>
           {this.state.showAddProspect ?
             <AddProspectForm prospectLists={prospectLists}
-              createProspectListInStore={this.handleCreateProspectList}
-              addProspect={this.handleAddProspect}
+              createProspectList={this.handleCreateProspectList}
+              createProspect={this.handleCreateProspect}
               prospectToUpdate={prospectToUpdate}
             /> : null}
           <div className="g-page-content" onClick={() => {this.setState({showAddProspect: false})}}>
@@ -205,7 +268,7 @@ export class Prospects extends React.Component {
               </div>
               <div className='showing-prospects'>
                 <span className='showing-text not-bold'>{'Showing '}</span><span className='showing-text bold'>{totalProspectsShowing}</span>
-                <span className='showing-text not-bold'>{' of '}</span><span className='showing-text bold'>{flattenedProspects.length}</span>
+                <span className='showing-text not-bold'>{' of '}</span><span className='showing-text bold'>{filteredProspects.length}</span>
                 <span className='showing-text not-bold'>{' prospects'}</span>
               </div>
               <div className='prospects-list'>
@@ -213,7 +276,7 @@ export class Prospects extends React.Component {
                   handleTableSort={this.handleTableSort} handleCheck={this.handleHeaderChecked} />
                 <DataTableContents tableColumnsDescriptor={prospectsTableDescriptor}
                   tableTitle={'Prospects'}
-                  data={flattenedProspects}
+                  data={filteredProspects}
                   editData={this.handleEditProspect}
                   handleCheck={this.handleRowChecked}
                 />
@@ -228,12 +291,13 @@ export class Prospects extends React.Component {
 }
 
 const mapDispatchToProps = dispatch => ({
-  onCreatePressed: prospect => dispatch(createProspectInStore(prospect)),
-  onCreateProspectList: prospectList => dispatch(createProspectListInStore(prospectList))
+  onAddProspectToStore: prospect => dispatch(createProspectInStore(prospect)),
+  onAddProspectListToStore: prospectList => dispatch(createProspectListInStore(prospectList))
 })
 
 const mapStateToProps = (state) => ({
   prospectLists: serializeProspectLists(state.prospectLists), 
+  prospects: serializeProspects(state.prospects)
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Prospects)

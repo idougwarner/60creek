@@ -1,0 +1,72 @@
+CREATE TABLE IF NOT EXISTS Users (
+  id serial PRIMARY KEY,
+  firstName varchar(80),
+  lastName varchar(80),
+  company varchar(80),
+  address1 varchar(80),
+  address2 varchar(80),
+  city varchar(80),
+  state varchar(2),
+  zip varchar(10),
+  phone varchar(10),
+  email varchar(80) UNIQUE NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS ProspectLists (
+  id serial PRIMARY KEY,
+  name varchar(80),
+  owningUserId int,
+  FOREIGN KEY (owningUserId)
+      REFERENCES Users (id)
+);
+
+CREATE TABLE IF NOT EXISTS Prospects (
+  id serial PRIMARY KEY,
+  prospectListId int,
+  firstName varchar(80),
+  lastName varchar(80),
+  company varchar(80),
+  address1 varchar(80),
+  address2 varchar(80),
+  city varchar(80),
+  state varchar(2),
+  zip varchar(10),
+  phone varchar(10),
+  email varchar(80),
+  facebook varchar(80),
+  owningUserId int,
+  FOREIGN KEY (owningUserId)
+      REFERENCES Users (id),
+  FOREIGN KEY (prospectListId)
+    REFERENCES ProspectLists(id)
+);
+
+CREATE TABLE IF NOT EXISTS PaymentMethods(
+  id serial PRIMARY KEY,
+  userId int,
+  title varchar(80),
+  stripeInfo varchar(80),
+  name varchar(80),
+  email varchar(80),
+  phone varchar(10)
+);
+
+CREATE TABLE IF NOT EXISTS MarketingCampaigns (
+  id serial PRIMARY KEY,
+  title varchar(80),
+  prospectListId int,
+  startDateTime timestamp,
+  autmatedEmail BOOL,
+  automatedText BOOL,
+  automatedRinglessVoiceMail BOOL,
+  automatedPostcard BOOL,
+  paymentMethodId int,
+  consent BOOL,
+  owningUserId int,
+  FOREIGN KEY (owningUserId)
+      REFERENCES Users (id),
+  FOREIGN KEY (paymentMethodId)
+      REFERENCES PaymentMethods (id),
+  FOREIGN KEY (prospectListId)
+    REFERENCES ProspectLists(id)
+);

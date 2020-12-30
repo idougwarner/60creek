@@ -1,7 +1,33 @@
 import {
+  CREATE_USER_IN_STORE, REMOVE_USER_FROM_STORE,
   CREATE_PROSPECT_LIST_IN_STORE, REMOVE_PROSPECT_LIST_FROM_STORE, CREATE_PROSPECT_IN_STORE, UPDATE_PROSPECT_IN_STORE, REMOVE_PROSPECT_FROM_STORE,
   CREATE_MARKETING_CAMPAIGN_IN_STORE, UPDATE_MARKETING_CAMPAIGN_IN_STORE, REMOVE_MARKETING_CAMPAIGN_FROM_STORE
 } from './actions'
+
+export const users = (state = [], action) => {
+  const { type, payload } = action
+  switch (type) {
+    case CREATE_USER_IN_STORE: {
+      const mutableuser = { ...payload }
+      if (!state.find(user => user.id === mutableuser.id)) {
+        return state.concat(mutableuser)
+      }
+      else {
+        return state
+      }
+    }
+      
+    case REMOVE_USER_FROM_STORE: {
+      const { id } = payload
+      return state.filter(user => {
+        return (user.id !== id) 
+      })
+    }
+      
+    default:
+      return state
+  }
+}
 
 export const prospectLists = (state = [], action) => {
   const { type, payload } = action

@@ -9,12 +9,17 @@ import Prospects from './pages/Prospects'
 import Marketing from './pages/Marketing'
 import YourAccount from './pages/YourAccount'
 import Dashboard from './pages/Dashboard'
+import Signup from './pages/Signup'
 import About from './pages/About'
+import Amplify from 'aws-amplify';
+import awsconfig from './aws-exports';
+Amplify.configure(awsconfig);
 
 const appRoutes = [
   /** WEB ROUTES */
   // { path: "/", component: ProjectsContainer },
   { path: '/login', component:Login},
+  { path: '/signup', component:Signup},
   { path: '/password-reset', component:PasswordReset},
   { path: '/link-sent', component:ResetLinkSent},
   { path: '/prospects', component:Prospects},

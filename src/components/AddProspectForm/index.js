@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import './AddProspectForm.scss'
 import 'react-widgets/lib/scss/react-widgets.scss'
-import {Combobox, DropdownList} from 'react-widgets';
+import { Combobox, DropdownList } from 'react-widgets';
 
 const AddProspectForm = (props) => {
-  const { prospectToUpdate, prospectLists, createProspectListInStore } = props
+  const { prospectToUpdate, prospectLists, createProspectList } = props
   const [changedValue, setChangedValue] = useState(false)
   const [idValue, setIdValue] = useState('')
   const [statusValue, setStatusValue] = useState('')
@@ -201,7 +201,7 @@ const AddProspectForm = (props) => {
                       newName = splitName[0] + ' ' + splitName[1] + ' ' + (parseInt(splitName[2], 10) + 1)
                     }
                     const prospectList = { id: Math.ceil(Math.random() * 100000000), name: newName }
-                    createProspectListInStore(prospectList)
+                    createProspectList(prospectList)
                   }
                 }
                 }
@@ -224,7 +224,7 @@ const AddProspectForm = (props) => {
         </div>
       </div>
       <div className={'add-button' + (changedValue ? ' enabled' : '')} onClick={changedValue ? (e) => {
-        props.addProspect({
+        props.createProspect({
           id: prospectToUpdate ? prospectToUpdate.id : idValue,
           status: statusValue,
           firstName: firstNameValue,

@@ -1,0 +1,25 @@
+.more-pips{
+  position: absolute;
+  bottom: 20px;
+  width: 100%;
+  .pip-array{
+    margin-left: calc(50% - 67px);
+    display: flex;
+    .pip{
+      width: 10px;
+      height: 10px;
+      border: 1px solid #366EE7;
+      border-radius: 50%;
+      margin-left: 4px;
+      :first-of-type{
+        margin-left: 0px;
+      }
+      &.completed{
+        background-color: #b0c0e0;
+      }
+      &.current{
+        background-color: #366EE7;
+      }
+    }
+  }
+}

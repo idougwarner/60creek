@@ -7,6 +7,19 @@ function normalizeProspectList(prospectList) {
   delete mutableProspectList.prospects
   return mutableProspectList
 }
+
+export const CREATE_USER_IN_STORE = 'CREATE_USER_IN_STORE'
+export const createUserInStore = (user) => ({
+  type: CREATE_USER_IN_STORE,
+  payload: user,
+})
+
+export const REMOVE_USER_FROM_STORE = 'REMOVE_USER_FROM_STORE'
+export const removeUserFromStore = (user) => ({
+  type: REMOVE_USER_FROM_STORE,
+  payload: user,
+})
+
 export const CREATE_PROSPECT_LIST_IN_STORE = 'CREATE_PROSPECT_LIST_IN_STORE'
 export const createProspectListInStore = (prospectList) => ({
   type: CREATE_PROSPECT_LIST_IN_STORE,
@@ -18,19 +31,6 @@ export const removeProspectListFromStore = (prospectList) => ({
   type: REMOVE_PROSPECT_LIST_FROM_STORE,
   payload: normalizeProspectList(prospectList),
 })
-
-export const FETCH_PROSPECT_LIST = 'FETCH_PROSPECT_LIST'
-export const fetchProspectList = async (id) => {
-  fetch(`${apiServer}/prospects/prospect-list/${id}`,
-    {
-      cache: 'no-cache',
-      method: 'get',
-    })
-    .then(response => response.json())
-    .then(prospectList => {
-      return serializeProspectList(prospectList)
-    })
-}
 
 export const CREATE_PROSPECT_LIST = 'CREATE_PROSPECT_LIST'
 export const createProspectList = async (prospectList) => {
@@ -75,18 +75,6 @@ export const deleteProspectList = async (id) => {
     .then(response => response.json())
     .then(prospectList => {
       return serializeProspectList(prospectList)
-    })
-}
-
-export const FETCH_PROSPECT_LISTS = 'FETCH_PROSPECT_LISTS'
-export const fetchProspectLists = async () => {
-  fetch(`${apiServer}/prospects`, {
-    method: 'get',
-    cache: 'no-cache'
-  })
-    .then(response => response.json())
-    .then(prospectLists => {
-      return serializeProspectLists(prospectLists)
     })
 }
 
