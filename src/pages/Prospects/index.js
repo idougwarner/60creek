@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { API } from 'aws-amplify';
+import { API, graphqlOperation } from 'aws-amplify';
 import { serializeProspectLists, serializeProspects } from '../../redux/store'
 import { AUTH_USER_TOKEN_KEY } from '../../helpers/constants';
 import './Prospects.scss'
@@ -14,7 +14,7 @@ import BasicButton from '../../components/controls/BasicButton'
 import AddProspectForm from '../../components/AddProspectForm'
 import { createProspectInStore, createProspectListInStore } from '../../redux/actions'
 import { listProspects, listProspectLists } from '../../graphql/queries';
-import { prospect, prospectList } from '../../graphql/mutations';
+import { createProspect, createProspectList } from '../../graphql/mutations';
 
 const prospectsTableDescriptor = [
   { width: '24px', fieldName: 'selectCheckbox', headerCellTitle: '', isCheckBox: true, checked: false },
@@ -79,7 +79,7 @@ export class Prospects extends React.Component {
         this.setState({ filteredProspects: fetchedProspects })
       }
     }).catch(err => {
-      alert(err.message)
+      alert(err.message? err.message : 'Error in fetchProspects')
     })
   }
 
@@ -92,14 +92,14 @@ export class Prospects extends React.Component {
     }).then(listProspectListsResults => {
       if (listProspectListsResults.data.listProspectLists.items && listProspectListsResults.data.listProspectLists.items.length > 0) {
         listProspectListsResults.data.listProspectLists.items.forEach(pl => {
-          this.props.onAddProspectListToStore()
+          this.props.onAddProspectListToStore(pl)
         })
 
         this.fetchProspects()
       }
   
     }).catch(err => {
-      alert(err.message)
+      alert(err.message? err.message : 'Error in fetchProspectsList')
     })
   }
 
@@ -195,21 +195,16 @@ export class Prospects extends React.Component {
   }
 
   handleCreateProspect(newProspect) {
-    const { onCreatePressed } = this.props
+    const { onAddProspectToStore } = this.props
     if (newProspect.prospectList || newProspect.prospectListId) {
       if (newProspect.prospectList) {
         newProspect.prospectListId = newProspect.prospectList.id
       }
-      API.graphql({
-        mutation: prospect, variables: { input: newProspect }, auth: {
-          type: 'AMAZON_COGNITO_USER_POOLS',
-          jwtToken: localStorage.getItem(AUTH_USER_TOKEN_KEY)
-        }
-      }).then(newProspect => {
-        onCreatePressed(newProspect)
+      API.graphql(graphqlOperation(createProspect, {input: newProspect})).then(createdProspect => {
+        onAddProspectToStore(createdProspect.data.createProspect)
         this.setState({ prospectToUpdate: null, showAddProspect: false })
       }).catch(err => {
-        alert(err.message)
+        alert(err.message? err.message : 'Error in create prospect')
       })
     }
     else {
@@ -219,16 +214,11 @@ export class Prospects extends React.Component {
 
   handleCreateProspectList(newProspectList) {
     newProspectList.owningUserId = 555
-    API.graphql({
-      mutation: prospectList, variables: { input: newProspectList }, auth: {
-        type: 'AMAZON_COGNITO_USER_POOLS',
-        jwtToken: localStorage.getItem(AUTH_USER_TOKEN_KEY)
-      }
-    }).then(prospectList => {
+    API.graphql(createProspectList, {input: newProspectList}).then(createdProspectList => {
       const { onCreateProspectList } = this.props
-      onCreateProspectList(newProspectList)
+      onCreateProspectList(createdProspectList.data.createProspectList)
     }).catch(err => {
-      alert(err.message)
+      alert(err.message? err.message : 'Error in create prospect list')
     })
   }
 

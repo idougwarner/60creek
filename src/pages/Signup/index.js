@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import { withRouter, Link } from 'react-router-dom'
+import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
+import { API, graphqlOperation } from 'aws-amplify';
 import { Auth } from 'aws-amplify'
 import { AUTH_USER_TOKEN_KEY } from '../../helpers/constants';
+import { createUserInStore } from '../../redux/actions'
 
 import './Signup.scss'
 
@@ -11,24 +14,37 @@ import Signup2 from './Signup2'
 import Signup3 from './Signup3'
 import Signup4 from './Signup4'
 
+import { createUser } from '../../graphql/mutations';
+import ConfirmEmail from './ConfirmEmail';
+
+
 //******************************************************************
 //*
 //* Signup: function component
 //*
 //******************************************************************
 
-const Signup = (props) => {
+export const Signup = (props) => {
 
   const pipsConfig = [{ current: false, completed: false }, { current: false, completed: false }, { current: false, completed: false },
     { current: false, completed: false }]
 
-  function confirm(email, confirmationCode) {
-    Auth.confirmSignUp(email, confirmationCode)
-      .then(() => {
-        console.log('signup success')
+  const [cognitoUserNameValue, setCognitoUserName] = useState('')
+  const signup = (firstName, lastName, email, password) => {
+    Auth.signUp({
+      username: email,
+      password,
+      attributes: {
+        email,
+        name: firstName + ' ' + lastName
+      }
+    })
+      .then((signupResults) => {
+        setCognitoUserName(signupResults.userSub)
+        setWhichPageValue(4)
       })
       .catch(err => {
-        console.log(err.message)
+        alert(err.message)
       });
   }
 
@@ -53,6 +69,34 @@ const Signup = (props) => {
   const [privacyPolicyValue, setPrivacyPolicyValue] = useState(null)
   const [signatureValue, setSignatureValue]  = useState(null)
 
+  function confirm(email, confirmationCode) {
+    Auth.confirmSignUp(email, confirmationCode)
+      .then(() => {
+        const newUser = {
+          firstName: firstNameValue,
+          lastName: lastNameValue,
+          company: companyNameValue,
+          address1: address1Value,
+          address2: address2Value,
+          city: cityValue,
+          state: stateValue,
+          zip: zipValue,
+          phone: phoneValue,
+          email: emailAddressValue,
+          signature: signatureValue,
+          cognitoUserName: cognitoUserNameValue
+        }
+        API.graphql(graphqlOperation(createUser, {input: newUser})).then(createdUser => {
+          props.onAddUserToStore(createdUser.data.createUser)
+          props.history.replace('/login')
+        }).catch(err => {
+          alert(err.message)
+        })
+        })
+      .catch(err => {
+        alert(err.message)
+      });
+  }
 
   const [signupErrorValue, setSignupErrorValue] = useState('')
 
@@ -92,15 +136,20 @@ const Signup = (props) => {
     setSubscriptionAgreementValue(subscriptionAgreement)
     setPrivacyPolicyValue(privacyPolicy)
     setSignatureValue(signature)
-    if (isNext) {
-      setWhichPageValue(whichPageValue + 1)
-    }
-    else {
+    if (!isNext) {
       setWhichPageValue(whichPageValue - 1)
     }
     pipsConfigValue[2].completed = signature && subscriptionAgreement && privacyPolicy
     pipsConfigValue[2].current = false
     setPipsConfigValue(pipsConfigValue)
+
+    if (isNext) {
+      signup(firstNameValue, lastNameValue, emailAddressValue, passwordValue)
+    }
+  }
+
+  const handleEmailConfirmation = (confirmationCode) => {
+    confirm(emailAddressValue, confirmationCode)
   }
   
   const defaultPage = <Signup1 firstName={firstNameValue} lastName={lastNameValue} emailAddress={emailAddressValue} password={passwordValue}
@@ -109,22 +158,6 @@ const Signup = (props) => {
   
   const [currentPageValue, setCurrentPageValue] = useState(defaultPage)
   
-  const signup = (firstName, lastName, email, password) => {
-    Auth.signUp({
-      username: email,
-      password,
-      attributes: {
-        email,
-        name: 'Randall Wright'
-      }
-    })
-      .then(() => {
-      })
-      .catch(err => {
-        setSignupErrorValue(err.message)
-      });
-  }
-
   useEffect(() => {
     let currentPage = null
     switch (whichPageValue) {
@@ -133,26 +166,30 @@ const Signup = (props) => {
         setPipsConfigValue(pipsConfigValue)
         currentPage = <Signup1 firstName={firstNameValue} lastName={lastNameValue} emailAddress={emailAddressValue} password={passwordValue}
           defaultPasswordConfirm={passwordValue}
-        next={handleFirstPage} cancel={handleCancel}
-        pipsConfig={pipsConfigValue} />
+          next={handleFirstPage} cancel={handleCancel}
+          pipsConfig={pipsConfigValue} />
         break
       case 2:
         pipsConfigValue[1].current = true
         setPipsConfigValue(pipsConfigValue)
         currentPage = <Signup2 companyName={companyNameValue}
-                phone={phoneValue} address1={address1Value} address2={address2Value} city={cityValue} state={stateValue} zip={zipValue}
-                next={handleSecondPage} previous={handleSecondPage}
-                pipsConfig={pipsConfigValue} />
-          break
-          case 3:
-            pipsConfigValue[2].current = true
-            setPipsConfigValue(pipsConfigValue)
+          phone={phoneValue} address1={address1Value} address2={address2Value} city={cityValue} state={stateValue} zip={zipValue}
+          next={handleSecondPage} previous={handleSecondPage}
+          pipsConfig={pipsConfigValue} />
+        break
+      case 3:
+        pipsConfigValue[2].current = true
+        setPipsConfigValue(pipsConfigValue)
         currentPage = <Signup3 subscriptionAgreement={subscriptionAgreementValue} privacyPolicy={privacyPolicyValue}
           signature={signatureValue}
-                    next={handleThirdPage} previous={handleThirdPage}
-                    pipsConfig={pipsConfigValue} />
-              break
-            default:
+          next={handleThirdPage} previous={handleThirdPage}
+          pipsConfig={pipsConfigValue} />
+        break
+      case 4:
+        pipsConfigValue[3].current = true
+        currentPage = <ConfirmEmail confirm={handleEmailConfirmation} pipsConfig={pipsConfigValue}/>
+        break
+      default:
         currentPage = null
     }
     setCurrentPageValue(currentPage)
@@ -168,4 +205,8 @@ const Signup = (props) => {
   </div>
 }
 
-export default withRouter(Signup);
+const mapDispatchToProps = dispatch => ({
+  onAddUserToStore: user => dispatch(createUserInStore(user))
+})
+
+export default connect(null, mapDispatchToProps)(Signup)

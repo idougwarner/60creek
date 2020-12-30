@@ -197,7 +197,7 @@ const AddProspectForm = (props) => {
                     let newName = 'Prospect List 1'
                     if (prospectLists.length) {
                       const lastName = prospectLists[prospectLists.length - 1].name
-                      const splitName = lastName.split(' ')
+                      const splitName = lastName ? lastName.split(' ') : newName.split(' ')
                       newName = splitName[0] + ' ' + splitName[1] + ' ' + (parseInt(splitName[2], 10) + 1)
                     }
                     const prospectList = { id: Math.ceil(Math.random() * 100000000), name: newName }
@@ -229,12 +229,11 @@ const AddProspectForm = (props) => {
           status: statusValue,
           firstName: firstNameValue,
           lastName: lastNameValue,
-          address: addressValue,
+          address1: addressValue,
           city: cityValue,
           state: stateValue,
           zip: zipValue,
-          companyName: companyNameValue,
-          details: detailsValue,
+          company: companyNameValue,
           prospectListId: prospectListValue ? prospectListValue.id : null,
         })
         resetValues()
