@@ -1,6 +1,6 @@
 {
   "auth": {
-    "sixtycreek": {
+    "60creek8853cd69": {
       "service": "Cognito",
       "providerPlugin": "awscloudformation",
       "dependsOn": [],
@@ -8,7 +8,7 @@
     }
   },
   "api": {
-    "sixtycreekapi": {
+    "60creek": {
       "service": "AppSync",
       "providerPlugin": "awscloudformation",
       "output": {
@@ -17,12 +17,29 @@
             "authenticationType": "API_KEY",
             "apiKeyConfig": {
               "apiKeyExpirationDays": 7,
-              "description": "Cognito API Key"
+              "description": "60creek GraphQL API key"
             }
           },
           "additionalAuthenticationProviders": []
         }
       }
+    }
+  },
+  "function": {
+    "applyCouponCode": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "createStripeSubscription": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "preSignUp": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
     }
   }
 }

@@ -1,8 +1,8 @@
 {
-    "identityPoolName": "sixtycreek_identitypool_03ae262e",
+    "identityPoolName": "60creek8853cd69_identitypool_8853cd69",
     "allowUnauthenticatedIdentities": false,
-    "resourceNameTruncated": "sixtyc348b9c61",
-    "userPoolName": "sixty_creek_user_pool",
+    "resourceNameTruncated": "60cree8853cd69",
+    "userPoolName": "60creek8853cd69_userpool_8853cd69",
     "autoVerifiedAttributes": [
         "email"
     ],
@@ -14,7 +14,7 @@
     "smsVerificationMessage": "Your verification code is {####}",
     "emailVerificationSubject": "Your verification code",
     "emailVerificationMessage": "Your verification code is {####}",
-    "defaultPasswordPolicy": true,
+    "defaultPasswordPolicy": false,
     "passwordPolicyMinLength": 8,
     "passwordPolicyCharacters": [],
     "requiredAttributes": [
@@ -28,10 +28,10 @@
     "userpoolClientReadAttributes": [
         "email"
     ],
-    "userpoolClientLambdaRole": "sixtyc348b9c61_userpoolclient_lambda_role",
+    "userpoolClientLambdaRole": "60cree8853cd69_userpoolclient_lambda_role",
     "userpoolClientSetAttributes": false,
-    "sharedId": "348b9c61",
-    "resourceName": "sixtycreek",
+    "sharedId": "8853cd69",
+    "resourceName": "60creek8853cd69",
     "authSelections": "identityPoolAndUserPool",
     "authRoleArn": {
         "Fn::GetAtt": [
@@ -49,16 +49,7 @@
     "usernameAttributes": [
         "email"
     ],
-    "userPoolGroups": false,
-    "adminQueries": false,
-    "triggers": "{}",
-    "hostedUI": false,
     "userPoolGroupList": [],
     "serviceName": "Cognito",
-    "usernameCaseSensitive": false,
-    "parentStack": {
-        "Ref": "AWS::StackId"
-    },
-    "permissions": [],
     "dependsOn": []
 }

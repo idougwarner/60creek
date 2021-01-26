@@ -79,12 +79,20 @@ export const paymentMethod = /* GraphQL */ `
   query PaymentMethod {
     paymentMethod {
       id
-      userId
-      title
-      stripeInfo
+      address
       name
       email
       phone
+      paymentMethodId
+      subscriptionId
+      customerId
+      cardType
+      expMonth
+      expYear
+      last4
+      subscriptionType
+      discount
+      unitAmount
       createdAt
       updatedAt
     }
@@ -282,12 +290,20 @@ export const getPaymentMethod = /* GraphQL */ `
   query GetPaymentMethod($id: ID!) {
     getPaymentMethod(id: $id) {
       id
-      userId
-      title
-      stripeInfo
+      address
       name
       email
       phone
+      paymentMethodId
+      subscriptionId
+      customerId
+      cardType
+      expMonth
+      expYear
+      last4
+      subscriptionType
+      discount
+      unitAmount
       createdAt
       updatedAt
     }
@@ -302,12 +318,20 @@ export const listPaymentMethods = /* GraphQL */ `
     listPaymentMethods(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
-        userId
-        title
-        stripeInfo
+        address
         name
         email
         phone
+        paymentMethodId
+        subscriptionId
+        customerId
+        cardType
+        expMonth
+        expYear
+        last4
+        subscriptionType
+        discount
+        unitAmount
         createdAt
         updatedAt
       }

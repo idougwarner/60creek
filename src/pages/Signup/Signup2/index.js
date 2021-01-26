@@ -92,32 +92,30 @@ const Signup2 = (props) => {
   }, [companyNameValue, phoneValue, address1Value, address2Value, cityValue, stateValue, zipValue]);
 
 
-  return <div className='sixty-creek-signup g-page-background'>
-    <div className='g-form-container'>
-      <div className='g-caption'>Sign Up</div>
-      <div className='g-input-box'>
-        <div className='g-input-label'>{`Company Name${!companyNameValue ? ' (Required)' : ''}`}</div>
-        <input className='g-input-container'
-          type='text'
-          placeholder='Enter Company Name'
-          value={companyNameValue}
-          onChange={(e) => {
-            setCompanyNameValue(e.target.value)
-          }} />
-      </div>
-      <div className='g-input-box'>
-        <div className='g-input-label'>{`Phone Number${!phoneValue ? ' (Required)' : ''}`}</div>
-        <input className='g-input-container'
-          type='text'
-          placeholder='Enter Phone Number'
-          value={phoneValue}
-          onChange={(e) => {
-            setPhoneValue(e.target.value)
-          }} />
-      </div>
-      <div className='g-form-line'>
-        <div className={'g-half-input-box'}>
-        <div className='g-input-label'>{`Street Address${!address1Value ? ' (Required)' : ''}`}</div>
+  return (<>
+    <div className='g-input-box'>
+      <div className='g-input-label required'>Company Name</div>
+      <input className='g-input-container'
+        type='text'
+        placeholder='Enter Company Name'
+        value={companyNameValue}
+        onChange={(e) => {
+          setCompanyNameValue(e.target.value)
+        }} />
+    </div>
+    <div className='g-input-box'>
+      <div className='g-input-label required'>Phone Number</div>
+      <input className='g-input-container'
+        type='text'
+        placeholder='Enter Phone Number'
+        value={phoneValue}
+        onChange={(e) => {
+          setPhoneValue(e.target.value)
+        }} />
+    </div>
+    <div className='g-form-line'>
+      <div className={'g-input-box g-half-input-box'}>
+        <div className='g-input-label required'>Street Address</div>
         <input className='g-input-container'
           type='text'
           placeholder='Enter Street Address'
@@ -142,55 +140,54 @@ const Signup2 = (props) => {
             setAddress2Value(e.target.value)
           }} />
       </div>
+    </div>
+    <div className={'g-input-box'}>
+      <div className='g-input-label required'>City</div>
+      <input className='g-input-container'
+        type={'text'}
+        placeholder='Enter City'
+        value={cityValue}
+        onChange={(e) => {
+          setCityValue(e.target.value)
+        }} />
+    </div>
+    <div className='g-form-line'>
+      <div className={'g-input-box g-half-input-box'}>
+        <div className='g-input-label required'>State</div>
+        <div className='g-input-container combobox'>
+          <Combobox
+            value={stateValue}
+            onSelect={(value) => {
+              setStateValue(value)
+            }
+            }
+            data={
+              usStates
+            }
+          />
+        </div>
       </div>
-      <div className={'g-input-box'}>
-        <div className='g-input-label'>{`City${!cityValue ? ' (Required)' : ''}`}</div>
+      <div className={'g-input-box g-half-input-box'}>
+        <div className='g-input-label required'>Zip</div>
         <input className='g-input-container'
           type={'text'}
-          placeholder='Enter City'
-          value={cityValue}
+          placeholder='Zip'
+          value={zipValue}
           onChange={(e) => {
-            setCityValue(e.target.value)
+            setZipValue(e.target.value)
           }} />
       </div>
-      <div className='g-form-line'>
-        <div className={'g-half-input-box'}>
-          <div className='g-input-label'>{`State${!stateValue ? ' (Required)' : ''}`}</div>
-          <div className='g-input-container combobox'>
-          <Combobox
-                value={stateValue}
-              onSelect={(value) => {
-                  setStateValue(value)
-                }
-              }
-              data={
-                  usStates
-                }
-              />            
-            </div>
-        </div>
-        <div className={'g-half-input-box'}>
-          <div className='g-input-label'>{`Zip${!zipValue ? ' (Required)' : ''}`}</div>
-          <input className='g-input-container'
-            type={'text'}
-            placeholder='Zip'
-            value={zipValue}
-            onChange={(e) => {
-              setZipValue(e.target.value)
-            }} />
-        </div>
-      </div>
-      <BasicButton title='Previous' additionalClass='previous-button' enabled={true} buttonPushed={(e) => {
-        props.previous(false, companyNameValue, phoneValue, address1Value, address2Value, cityValue, stateValue, zipValue)
-      }}
-      />
-      <BasicButton title='next' additionalClass='next-button' enabled={nextButtonEnabledValue} buttonPushed={(e) => {
-        props.next(true, companyNameValue, phoneValue, address1Value, address2Value, cityValue, stateValue, zipValue)
-      }}
-      />
-      <MorePips pipsConfig={props.pipsConfig} />
     </div>
-  </div>
+    <BasicButton title='next' additionalClass='next-button' enabled={nextButtonEnabledValue} buttonPushed={(e) => {
+      props.next(true, companyNameValue, phoneValue, address1Value, address2Value, cityValue, stateValue, zipValue)
+    }}
+    />
+    <BasicButton title='Previous' additionalClass='previous-button' enabled={true} buttonPushed={(e) => {
+      props.previous(false, companyNameValue, phoneValue, address1Value, address2Value, cityValue, stateValue, zipValue)
+    }}
+    />
+    <MorePips pipsConfig={props.pipsConfig} />
+  </>);
 }
 
 export default Signup2

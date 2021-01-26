@@ -1,12 +1,13 @@
-@import '../../assets/styles/global-styles.scss';
+@import "../../assets/styles/global-styles.scss";
 
-.sixty-creek-login-header{
+.sixty-creek-login-header {
   display: flex;
+  min-height: 84px;
   height: 84px;
   width: 100%;
   position: relative;
   background-color: white;
-  .sixty-creek-icon{
+  .sixty-creek-icon {
     margin-left: 32px;
     margin-top: 24px;
     background-image: url(../../assets/images/60-Creek-Logo_isolated-BG_full-color.png);
@@ -15,19 +16,19 @@
     width: 66px;
     height: 36px;
   }
-  .not-a-member-box{
+  .not-a-member-box {
     position: absolute;
-    width: 300px;;
+    width: 300px;
     height: 84px;
     right: 32px;
     display: flex;
     flex-direction: row-reverse;
     text-align: right;
-    .header-label{
+    .header-label {
       margin-top: 30px;
       margin-right: 18px;
     }
-    .g-link-item{
+    .g-link-item {
       margin-top: 30px;
       width: auto;
     }

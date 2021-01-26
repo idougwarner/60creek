@@ -227,12 +227,20 @@ export const onCreatePaymentMethod = /* GraphQL */ `
   subscription OnCreatePaymentMethod {
     onCreatePaymentMethod {
       id
-      userId
-      title
-      stripeInfo
+      address
       name
       email
       phone
+      paymentMethodId
+      subscriptionId
+      customerId
+      cardType
+      expMonth
+      expYear
+      last4
+      subscriptionType
+      discount
+      unitAmount
       createdAt
       updatedAt
     }
@@ -242,12 +250,20 @@ export const onUpdatePaymentMethod = /* GraphQL */ `
   subscription OnUpdatePaymentMethod {
     onUpdatePaymentMethod {
       id
-      userId
-      title
-      stripeInfo
+      address
       name
       email
       phone
+      paymentMethodId
+      subscriptionId
+      customerId
+      cardType
+      expMonth
+      expYear
+      last4
+      subscriptionType
+      discount
+      unitAmount
       createdAt
       updatedAt
     }
@@ -257,12 +273,20 @@ export const onDeletePaymentMethod = /* GraphQL */ `
   subscription OnDeletePaymentMethod {
     onDeletePaymentMethod {
       id
-      userId
-      title
-      stripeInfo
+      address
       name
       email
       phone
+      paymentMethodId
+      subscriptionId
+      customerId
+      cardType
+      expMonth
+      expYear
+      last4
+      subscriptionType
+      discount
+      unitAmount
       createdAt
       updatedAt
     }

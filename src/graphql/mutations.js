@@ -151,12 +151,20 @@ export const paymentMethod = /* GraphQL */ `
       phone: $phone
     ) {
       id
-      userId
-      title
-      stripeInfo
+      address
       name
       email
       phone
+      paymentMethodId
+      subscriptionId
+      customerId
+      cardType
+      expMonth
+      expYear
+      last4
+      subscriptionType
+      discount
+      unitAmount
       createdAt
       updatedAt
     }
@@ -283,12 +291,20 @@ export const deletedPaymentMethod = /* GraphQL */ `
   mutation DeletedPaymentMethod($id: ID!) {
     deletedPaymentMethod(id: $id) {
       id
-      userId
-      title
-      stripeInfo
+      address
       name
       email
       phone
+      paymentMethodId
+      subscriptionId
+      customerId
+      cardType
+      expMonth
+      expYear
+      last4
+      subscriptionType
+      discount
+      unitAmount
       createdAt
       updatedAt
     }
@@ -310,6 +326,48 @@ export const deletedMarketingCampaign = /* GraphQL */ `
       owningUserId
       createdAt
       updatedAt
+    }
+  }
+`;
+export const createStripeSubscription = /* GraphQL */ `
+  mutation CreateStripeSubscription($input: CreateStripeSubscriptionInput) {
+    createStripeSubscription(input: $input) {
+      data {
+        address
+        name
+        email
+        phone
+        paymentMethodId
+        subscriptionId
+        customerId
+        subscriptionType
+        discount
+        unitAmount
+      }
+      error {
+        message
+      }
+    }
+  }
+`;
+export const applyCouponCode = /* GraphQL */ `
+  mutation ApplyCouponCode($input: ApplyCouponCodeInput) {
+    applyCouponCode(input: $input) {
+      data {
+        address
+        name
+        email
+        phone
+        paymentMethodId
+        subscriptionId
+        customerId
+        subscriptionType
+        discount
+        unitAmount
+      }
+      error {
+        message
+      }
     }
   }
 `;
@@ -569,12 +627,20 @@ export const createPaymentMethod = /* GraphQL */ `
   ) {
     createPaymentMethod(input: $input, condition: $condition) {
       id
-      userId
-      title
-      stripeInfo
+      address
       name
       email
       phone
+      paymentMethodId
+      subscriptionId
+      customerId
+      cardType
+      expMonth
+      expYear
+      last4
+      subscriptionType
+      discount
+      unitAmount
       createdAt
       updatedAt
     }
@@ -587,12 +653,20 @@ export const updatePaymentMethod = /* GraphQL */ `
   ) {
     updatePaymentMethod(input: $input, condition: $condition) {
       id
-      userId
-      title
-      stripeInfo
+      address
       name
       email
       phone
+      paymentMethodId
+      subscriptionId
+      customerId
+      cardType
+      expMonth
+      expYear
+      last4
+      subscriptionType
+      discount
+      unitAmount
       createdAt
       updatedAt
     }
@@ -605,12 +679,20 @@ export const deletePaymentMethod = /* GraphQL */ `
   ) {
     deletePaymentMethod(input: $input, condition: $condition) {
       id
-      userId
-      title
-      stripeInfo
+      address
       name
       email
       phone
+      paymentMethodId
+      subscriptionId
+      customerId
+      cardType
+      expMonth
+      expYear
+      last4
+      subscriptionType
+      discount
+      unitAmount
       createdAt
       updatedAt
     }

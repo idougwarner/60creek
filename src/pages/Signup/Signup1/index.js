@@ -45,11 +45,10 @@ const Signup1 = (props) => {
   }, [firstNameValue, lastNameValue, emailAddressValue, passwordValue, confirmPasswordValue]);
 
 
-  return <div className='sixty-creek-signup g-page-background'>
-    <div className='g-form-container'>
-      <div className='g-caption'>Sign Up</div>
+  return (
+    <div>
       <div className='g-input-box'>
-        <div className='g-input-label'>{`First Name${!firstNameValue ? ' (Required)' : ''}`}</div>
+        <div className='g-input-label required'>First Name</div>
         <input className='g-input-container'
           type='text'
           placeholder='Enter First Name'
@@ -59,7 +58,7 @@ const Signup1 = (props) => {
           }} />
       </div>
       <div className='g-input-box'>
-        <div className='g-input-label'>{`Last Name${!lastNameValue ? ' (Required)' : ''}`}</div>
+        <div className='g-input-label required'>Last Name</div>
         <input className='g-input-container'
           type='text'
           placeholder='Enter Last Name'
@@ -69,7 +68,7 @@ const Signup1 = (props) => {
           }} />
       </div>
       <div className='g-input-box'>
-        <div className='g-input-label'>{`Email Address${!emailAddressValue ? ' (Required)' : ''}`}</div>
+        <div className='g-input-label required'>Email Address</div>
         <input className='g-input-container'
           type='text'
           placeholder='Enter Email Address'
@@ -86,7 +85,7 @@ const Signup1 = (props) => {
           }} />
       </div>
       <div className={'g-input-box' + (userNameErrorValue ? ' error' : '')}>
-        <div className='g-input-label'>{`Password${!passwordValue ? ' (Required)' : ''}`}</div>
+        <div className='g-input-label required'>Password</div>
         <div className={'eye-icon' + (displayPasswordValue ? ' showing-password' : '')} onClick={(e) => {
           setDisplayPasswordValue(!displayPasswordValue)
         }} />
@@ -100,7 +99,7 @@ const Signup1 = (props) => {
         {userNameErrorValue ? <div className='g-error-label smallest'>Invalid Email Address</div> : null}
       </div>
       <div className={'g-input-box' + (userNameErrorValue ? ' error' : '')}>
-        <div className='g-input-label'>{`Confirm Password${!confirmPasswordValue ? ' (Required)' : ''}`}</div>
+        <div className='g-input-label required'>Confirm Password</div>
         <div className={'eye-icon' + (displayPasswordValue ? ' showing-password' : '')} onClick={(e) => {
           setDisplayPasswordValue(!displayPasswordValue)
         }} />
@@ -113,7 +112,6 @@ const Signup1 = (props) => {
           }} />
         {passwordMismatchValue ? <div className='g-error-label smallest'>You must confirm your password</div> : null}
       </div>
-      <div className='cancel-button' onClick={props.cancel}>CANCEL</div>
       <BasicButton title='next' additionalClass='next-button' enabled={nextButtonEnabledValue} buttonPushed={(e) => {
         if (!validateEmail(emailAddressValue)) {
           setUserNameErrorValue(true)
@@ -123,9 +121,9 @@ const Signup1 = (props) => {
         }
       }}
       />
-      <MorePips pipsConfig={props.pipsConfig}/>
+      <MorePips pipsConfig={props.pipsConfig} />
     </div>
-  </div>
+  )
 }
 
 export default Signup1

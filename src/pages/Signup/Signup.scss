@@ -1,18 +1,41 @@
-@import '../../assets/styles/global-styles.scss';
-
-.sixty-creek-signup{
-  position: absolute;
+.sixty-creek-signup {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   width: 100%;
-  height: 100%;;
-.g-centered-form-with-header{
-  margin-top: 50px;
-  margin-left: calc(50% - 200px);
-    .g-form-container{
-      width: 416px;
-      height: 560px;
+  height: 100%;
+
+  .auth-background {
+    background-image: url(../../assets/images/auth-bg.png);
+    background-size: contain;
+    background-repeat: no-repeat;
+    width: 100%;
+  }
+  .sign-up-title {
+    font-size: 34px;
+    line-height: 36px;
+    color: white !important;
+    margin-bottom: 40px;
+  }
+
+  .g-centered-form-with-header {
+    position: relative;
+
+    padding-top: 40px;
+    margin-top: 0;
+    display: flex;
+    top: 0;
+    flex-direction: column;
+    justify-content: flex-start;
+    .g-form-container {
+      background: #ffffff;
+      border-radius: 10px;
+      width: 100%;
+      max-width: 416px;
+      height: unset;
       position: relative;
-      .g-input-box{
-        .eye-icon{
+      .g-input-box {
+        .eye-icon {
           background-image: url(../../assets/images/eye-open-icon.svg);
           background-repeat: no-repeat;
           background-size: 16px 16px;
@@ -23,8 +46,8 @@
           right: 15px;
           cursor: pointer;
           z-index: 10;
-        
-          &.showing-password{
+
+          &.showing-password {
             background-size: 18px 18px;
             width: 18px;
             height: 18px;
@@ -33,23 +56,23 @@
             background-image: url(../../assets/images/eye-icon.svg);
           }
         }
-        
-        .g-error-label{
-          &.smallest{
-          margin-left: 16px;
-          margin-top: 4px;
-          margin-bottom: 4px;
+
+        .g-error-label {
+          &.smallest {
+            margin-left: 16px;
+            margin-top: 4px;
+            margin-bottom: 4px;
           }
-        }        
+        }
       }
-      .g-link-item{
-        &.small{
-          margin-top:16px;
+      .g-link-item {
+        &.small {
+          margin-top: 16px;
           margin-bottom: 32px;
           margin-left: 16px;
         }
       }
-      .cancel-button{
+      .cancel-button {
         position: absolute;
         bottom: 40px;
         left: 32px;
@@ -60,22 +83,20 @@
         font-size: 14px;
         text-align: right;
         text-decoration: underline;
-        color: #366EE7;
+        color: #366ee7;
         cursor: pointer;
       }
-      .g-basic-button{
-        position: absolute;
-        bottom: 50px;
-        width: calc(50% - 40px);
+      .g-basic-button {
+        width: 100%;
         cursor: pointer;
-        &.next-button{
-          right: 32px;
+        &.next-button {
+          margin-bottom: 20px;
         }
-        &.previous-button{
-          left: 32px;
+        &.previous-button {
+          background-color: white;
+          color: #366ee7;
         }
       }
-      
-    } 
+    }
   }
 }

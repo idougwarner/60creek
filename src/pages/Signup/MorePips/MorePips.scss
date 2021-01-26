@@ -1,24 +1,28 @@
-.more-pips{
+.more-pips {
   position: absolute;
-  bottom: 20px;
-  width: 100%;
-  .pip-array{
-    margin-left: calc(50% - 67px);
+  bottom: -32px;
+  left: 0;
+  right: 0;
+  .pip-array {
     display: flex;
-    .pip{
+    justify-content: center;
+    .pip {
       width: 10px;
       height: 10px;
-      border: 1px solid #366EE7;
       border-radius: 50%;
       margin-left: 4px;
-      :first-of-type{
+      border: 1px solid rgba(19, 22, 36, 0.6);
+      background-color: rgba(19, 22, 36, 0.6);
+      :first-of-type {
         margin-left: 0px;
       }
-      &.completed{
+      &.completed {
+        border: 1px solid #366ee7;
         background-color: #b0c0e0;
       }
-      &.current{
-        background-color: #366EE7;
+      &.current {
+        border: 1px solid #366ee7;
+        background-color: #366ee7;
       }
     }
   }

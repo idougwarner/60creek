@@ -1,19 +1,19 @@
 {
   "dev": {
     "awscloudformation": {
-      "AuthRoleName": "amplify-sixtycreekui-dev-152822-authRole",
-      "UnauthRoleArn": "arn:aws:iam::764739072793:role/amplify-sixtycreekui-dev-152822-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::764739072793:role/amplify-sixtycreekui-dev-152822-authRole",
-      "Region": "us-east-2",
-      "DeploymentBucketName": "amplify-sixtycreekui-dev-152822-deployment",
-      "UnauthRoleName": "amplify-sixtycreekui-dev-152822-unauthRole",
-      "StackName": "amplify-sixtycreekui-dev-152822",
-      "StackId": "arn:aws:cloudformation:us-east-2:764739072793:stack/amplify-sixtycreekui-dev-152822/0704cda0-44a5-11eb-a28c-06fab7a3f890",
-      "AmplifyAppId": "d3fmwjk40b9i1n"
+      "AuthRoleName": "amplify-60creek-dev-203758-authRole",
+      "UnauthRoleArn": "arn:aws:iam::313220278604:role/amplify-60creek-dev-203758-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::313220278604:role/amplify-60creek-dev-203758-authRole",
+      "Region": "us-west-2",
+      "DeploymentBucketName": "amplify-60creek-dev-203758-deployment",
+      "UnauthRoleName": "amplify-60creek-dev-203758-unauthRole",
+      "StackName": "amplify-60creek-dev-203758",
+      "StackId": "arn:aws:cloudformation:us-west-2:313220278604:stack/amplify-60creek-dev-203758/22c11c00-5f77-11eb-b74d-0aea264da24f",
+      "AmplifyAppId": "d2uhia5y233ztu"
     },
     "categories": {
       "auth": {
-        "sixtycreek": {}
+        "60creek8853cd69": {}
       }
     }
   }

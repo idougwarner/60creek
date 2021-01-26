@@ -1,0 +1,23 @@
+.account-created {
+  .title {
+    text-align: center;
+    font-size: 34px;
+    line-height: 36px;
+    color: #131624;
+    margin-bottom: 24px;
+  }
+  .description {
+    font-size: 16px;
+    line-height: 24px;
+    text-align: center;
+    letter-spacing: 0.5px;
+    color: #131624;
+    margin-bottom: 40px;
+  }
+  .goto-button {
+    background-color: white;
+    border: 1px solid #366ee7;
+    color: #366ee7;
+    width: 100%;
+  }
+}

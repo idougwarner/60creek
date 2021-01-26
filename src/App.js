@@ -1,4 +1,4 @@
-import './App.css';
+import './App.scss';
 import React from 'react'
 import { BrowserRouter, Switch } from "react-router-dom"
 import { MakeRoutesWithSubRoutes } from './MakeRoutesWithSubRoutes';
@@ -18,15 +18,15 @@ Amplify.configure(awsconfig);
 const appRoutes = [
   /** WEB ROUTES */
   // { path: "/", component: ProjectsContainer },
-  { path: '/login', component:Login},
-  { path: '/signup', component:Signup},
-  { path: '/password-reset', component:PasswordReset},
-  { path: '/link-sent', component:ResetLinkSent},
-  { path: '/prospects', component:Prospects},
-  { path: '/marketing', component:Marketing},
-  { path: '/dashboard', component:Dashboard},
-  { path: '/youraccount', component:YourAccount},
-  { path: '/about', component:About},
+  { path: '/login', component: Login },
+  { path: '/signup', component: Signup },
+  { path: '/password-reset', component: PasswordReset },
+  { path: '/link-sent', component: ResetLinkSent },
+  { path: '/prospects', component: Prospects },
+  { path: '/marketing', component: Marketing },
+  { path: '/dashboard', component: Dashboard },
+  { path: '/youraccount', component: YourAccount },
+  { path: '/about', component: About },
   { path: "/", component: Login },
 ]
 
