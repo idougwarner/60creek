@@ -117,6 +117,39 @@ export const marketingCampaign = /* GraphQL */ `
     }
   }
 `;
+export const subscriptionInfo = /* GraphQL */ `
+  query SubscriptionInfo {
+    subscriptionInfo {
+      data {
+        id
+        object
+        active
+        billing_scheme
+        created
+        currency
+        livemode
+        lookup_key
+        metadata
+        nickname
+        product
+        recurring {
+          aggregate_usage
+          interval
+          interval_count
+          usage_type
+        }
+        tiers_mode
+        transform_quantity
+        type
+        unit_amount
+        unit_amount_decimal
+      }
+      error {
+        message
+      }
+    }
+  }
+`;
 export const getUser = /* GraphQL */ `
   query GetUser($id: ID!) {
     getUser(id: $id) {

@@ -9,6 +9,9 @@ type Query {
   prospect: Prospect
   paymentMethod: PaymentMethod
   marketingCampaign: MarketingCampaign
+
+  subscriptionInfo: SubscriptionInfoResult
+    @function(name: "subscriptionInfo-${env}")
 }
 
 type Mutation {
@@ -73,16 +76,66 @@ type Mutation {
   createStripeSubscription(
     input: CreateStripeSubscriptionInput
   ): PaymentMethodResult @function(name: "createStripeSubscription-${env}")
-  applyCouponCode(input: ApplyCouponCodeInput): PaymentMethodResult
-    @function(name: "applyCouponCode-${env}")
+  validatePromoCode(input: ValidatePromoCodeInput): ValidatePromoCodeResult
+    @function(name: "validatePromoCode-${env}")
+}
+type Recurring {
+  aggregate_usage: String
+  interval: String
+  interval_count: Int
+  usage_type: String
+}
+
+type SubscriptionInfo {
+  id: String
+  object: String
+  active: Boolean
+  billing_scheme: String
+  created: Int
+  currency: String
+  livemode: Boolean
+  lookup_key: String
+  metadata: String
+  nickname: String
+  product: String
+  recurring: Recurring
+  tiers_mode: String
+  transform_quantity: String
+  type: String
+  unit_amount: Int
+  unit_amount_decimal: String
+}
+
+type SubscriptionInfoResult {
+  data: SubscriptionInfo
+  error: ErrorResponse
+}
+type CouponInfo {
+  id: String
+  object: String
+  amount_off: Int
+  created: Int
+  currency: String
+  duration: String
+  duration_in_months: Int
+  livemode: Boolean
+  max_redemptions: Int
+  name: String
+  percent_off: Float
+  redeem_by: Int
+  times_redeemed: Int
+  valid: Boolean
+}
+type ValidatePromoCodeResult {
+  data: CouponInfo
+  error: ErrorResponse
 }
 input CreateStripeSubscriptionInput {
   paymentMethodId: String
   email: String
+  coupon: String
 }
-input ApplyCouponCodeInput {
-  paymentMethodId: String
-  email: String
+input ValidatePromoCodeInput {
   coupon: String
 }
 type User @model @auth(rules: [{ allow: public, provider: apiKey }]) {
@@ -125,7 +178,7 @@ type Prospect @model @auth(rules: [{ allow: public, provider: apiKey }]) {
   facebook: String
   owningUserId: Int
 }
-type PaymentMethodError {
+type ErrorResponse {
   message: String
 }
 type PaymentMethodData {
@@ -143,7 +196,7 @@ type PaymentMethodData {
 }
 type PaymentMethodResult {
   data: PaymentMethodData
-  error: PaymentMethodError
+  error: ErrorResponse
 }
 
 type PaymentMethod @model @auth(rules: [{ allow: public, provider: apiKey }]) {

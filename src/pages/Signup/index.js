@@ -31,24 +31,6 @@ export const Signup = (props) => {
     { current: false, completed: false },]
 
   const [cognitoUserNameValue, setCognitoUserName] = useState('')
-  const signup = async (firstName, lastName, email, password) => {
-    try {
-      let signupResults = await Auth.signUp({
-        username: email,
-        password,
-        attributes: {
-          email,
-          name: firstName + ' ' + lastName
-        }
-      });
-      setCognitoUserName(signupResults.userSub);
-      setWhichPageValue(4)
-      setPipsConfigValue(pipsConfigValue)
-    }
-    catch (err) {
-      alert(err.message)
-    };
-  }
 
   function handleCancel() {
     props.history.replace('/login')
@@ -143,7 +125,7 @@ export const Signup = (props) => {
     if (!isNext) {
       setWhichPageValue(whichPageValue - 1)
     } else {
-      signup(firstNameValue, lastNameValue, emailAddressValue, passwordValue)
+      setWhichPageValue(whichPageValue + 1)
     }
   }
 
@@ -215,7 +197,7 @@ export const Signup = (props) => {
               name: firstNameValue + ' ' + lastNameValue,
               phone: phoneValue
             }
-          } />
+          } password={passwordValue} />
         break
       case 5:
         currentPage = <AccountCreated gotoDashboard={handleGotoDashboard}

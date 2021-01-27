@@ -1,5 +1,5 @@
 import { API, Auth, graphqlOperation } from 'aws-amplify';
-import React from 'react';
+import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import BasicButton from '../../../components/controls/BasicButton';
 import { AUTH_USER_TOKEN_KEY } from '../../../helpers/constants';
@@ -11,6 +11,7 @@ import { useHistory } from 'react-router';
 
 const AccountCreated = ({ email, password, onAddUserToStore }) => {
   const history = useHistory();
+  const [loading, setLoading] = useState(false);
 
   const handleGetUser = (cognitoUserName) => {
     API.graphql(graphqlOperation(listUsers, { filter: { cognitoUserName: { eq: cognitoUserName } } })).then(userResults => {
@@ -31,16 +32,19 @@ const AccountCreated = ({ email, password, onAddUserToStore }) => {
       Your account has been created, a confirmation email has been sent to your linked address.
     </div>
 
-    <BasicButton title='Go To Dashboard' additionalClass='goto-button' enabled={true}
+    <BasicButton title='Go To Dashboard' additionalClass='goto-button' enabled={!loading}
       buttonPushed={(e) => {
         console.log(email, password)
+        setLoading(true);
         Auth.signIn(email, password).then(user => {
           console.log(user)
           handleGetUser(user.username)
           localStorage.setItem(AUTH_USER_TOKEN_KEY, user.signInUserSession.accessToken.jwtToken);
           history.replace('/dashboard')
+          setLoading(false);
         }).catch(err => {
           console.log(err.message)
+          setLoading(false);
         })
       }}
     />

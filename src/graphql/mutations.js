@@ -350,20 +350,24 @@ export const createStripeSubscription = /* GraphQL */ `
     }
   }
 `;
-export const applyCouponCode = /* GraphQL */ `
-  mutation ApplyCouponCode($input: ApplyCouponCodeInput) {
-    applyCouponCode(input: $input) {
+export const validatePromoCode = /* GraphQL */ `
+  mutation ValidatePromoCode($input: ValidatePromoCodeInput) {
+    validatePromoCode(input: $input) {
       data {
-        address
+        id
+        object
+        amount_off
+        created
+        currency
+        duration
+        duration_in_months
+        livemode
+        max_redemptions
         name
-        email
-        phone
-        paymentMethodId
-        subscriptionId
-        customerId
-        subscriptionType
-        discount
-        unitAmount
+        percent_off
+        redeem_by
+        times_redeemed
+        valid
       }
       error {
         message

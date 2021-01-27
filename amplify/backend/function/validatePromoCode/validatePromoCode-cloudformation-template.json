@@ -33,12 +33,12 @@
         "FunctionName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "preSignUp",
+            "validatePromoCode",
             {
               "Fn::Join": [
                 "",
                 [
-                  "preSignUp",
+                  "validatePromoCode",
                   "-",
                   {
                     "Ref": "env"
@@ -69,7 +69,7 @@
         "Timeout": "25",
         "Code": {
           "S3Bucket": "amplify-60creek-devtest-44357-deployment",
-          "S3Key": "amplify-builds/preSignUp-67757445644474312f4f-build.zip"
+          "S3Key": "amplify-builds/validatePromoCode-50385a576e7345733831-build.zip"
         }
       }
     },
@@ -79,12 +79,12 @@
         "RoleName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "60creekLambdaRole5c71d39e",
+            "60creekLambdaRole5cc5d6b0",
             {
               "Fn::Join": [
                 "",
                 [
-                  "60creekLambdaRole5c71d39e",
+                  "60creekLambdaRole5cc5d6b0",
                   "-",
                   {
                     "Ref": "env"

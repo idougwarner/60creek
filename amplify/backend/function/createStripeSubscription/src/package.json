@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
+    "aws-sdk": "^2.831.0",
     "stripe": "^8.132.0"
   },
   "devDependencies": {},

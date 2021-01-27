@@ -12,8 +12,9 @@ import {
 import { loadStripe } from '@stripe/stripe-js';
 import { STRIPE_PUBLIC_KEY } from './config';
 import infoIcon from '../../../assets/images/information-circle.svg';
-import { API, graphqlOperation } from 'aws-amplify';
-import { createPaymentMethod, createStripeSubscription, applyCouponCode } from '../../../graphql/mutations';
+import { API, Auth, graphqlOperation } from 'aws-amplify';
+import { createPaymentMethod, createStripeSubscription, validatePromoCode } from '../../../graphql/mutations';
+import { subscriptionInfo } from '../../../graphql/queries';
 const stripePromise = loadStripe(STRIPE_PUBLIC_KEY);
 
 const createOptions = () => {
@@ -37,10 +38,10 @@ const createOptions = () => {
 
 const CheckOutForm = ({
   next, previous, pipsConfig,
-  email,
   stripe,
   elements,
-  userInfo
+  userInfo,
+  password
 }) => {
   // const [zipCode, setZipCode] = useState('');
   // const [showZipCode, setShowZipCode] = useState(false);
@@ -61,6 +62,7 @@ const CheckOutForm = ({
   const [errorMsg, setErrorMsg] = useState('');
   const [createdSubscription, setCreatedSubscription] = useState(false);
   const [applyingCoupon, setApplyingCoupon] = useState('APPLY');
+  const [couponInfo, setCouponInfo] = useState(null);
 
   useEffect(() => {
     if (cardStatus && cardholderName) {
@@ -96,74 +98,48 @@ const CheckOutForm = ({
   }, [cardNumber, cardExpiry, cardCvc])
 
   useEffect(() => {
-    setTotal(monthly - discount)
-  }, [monthly, discount])
+    if (couponInfo) {
+      if (couponInfo.redeem_by) {
 
-  const handleSubmit = async () => {
-    if (!createdSubscription) {
-      if (!stripe) {
-        console.error('Stripejs has not loaded yet.');
-        return;
-      }
-      setUpdating(true);
-      setErrorMsg('');
-
-      const cardElement = elements.getElement(CardNumberElement);
-      try {
-        const pm = await stripe.createPaymentMethod({
-          type: 'card',
-          card: cardElement,
-          billing_details: {
-            ...userInfo,
-            name: cardholderName
-          }
-        })
-        let rt = await API.graphql(graphqlOperation(createStripeSubscription, {
-          input: {
-            paymentMethodId: pm.paymentMethod.id,
-            email: userInfo.email
-          }
-        }))
-        if (rt.data.createStripeSubscription.data) {
-          setMonthly(rt.data.createStripeSubscription.data.unitAmount);
-          let paymentMethod = await API.graphql(graphqlOperation(createPaymentMethod, {
-            input: {
-              ...rt.data.createStripeSubscription.data,
-              name: userInfo.name,
-              address: userInfo.address.address1 + ', ' + userInfo.address.city + ' ' + userInfo.address.state + ' ' + userInfo.address.postal_code,
-              phone: userInfo.phone,
-              cardType: pm.paymentMethod.card.brand,
-              expMonth: pm.paymentMethod.card.exp_month,
-              expYear: pm.paymentMethod.card.exp_year,
-              last4: pm.paymentMethod.card.last4,
-            }
-          }))
-          setCreatedSubscription(true);
-          next();
-        } else if (rt.data.createStripeSubscription.error) {
-          setErrorMsg(rt.data.createStripeSubscription.error.message);
+        let dt = new Date(couponInfo.redeem_by * 1000);
+        let today = new Date();
+        if (dt < today) {
+          setTotal(monthly);
+          setErrorMsg('This promo code has been expired');
+          return;
+        } else {
+          setErrorMsg('');
         }
-      } catch (err) {
-        setErrorMsg(new Error(err).message)
       }
-      setUpdating(false);
+      if (couponInfo.amount_off) {
+        setTotal(monthly - couponInfo.amount_off / 100)
+      } else {
+        setTotal(monthly - monthly * couponInfo.percent_off / 100)
+      }
     } else {
-      next();
+      setTotal(monthly)
     }
-  };
-
-  const applyCoupon = async () => {
-
+  }, [monthly, couponInfo])
+  useEffect(async () => {
+    const rt = await API.graphql(graphqlOperation(subscriptionInfo));
+    console.log(rt);
+    if (rt.data.subscriptionInfo.data) {
+      setMonthly(rt.data.subscriptionInfo.data.unit_amount / 100);
+    } else {
+      setMonthly(50);
+    }
+  }, []);
+  const handleSubmit = async () => {
     if (!stripe) {
       console.error('Stripejs has not loaded yet.');
       return;
     }
-    setApplyingCoupon('APPLYING');
+    setUpdating(true);
     setErrorMsg('');
 
     const cardElement = elements.getElement(CardNumberElement);
-    let pm;
     try {
+
       const pm = await stripe.createPaymentMethod({
         type: 'card',
         card: cardElement,
@@ -172,20 +148,17 @@ const CheckOutForm = ({
           name: cardholderName
         }
       })
-      let rt = await API.graphql(graphqlOperation(applyCouponCode, {
+      let rt = await API.graphql(graphqlOperation(createStripeSubscription, {
         input: {
           paymentMethodId: pm.paymentMethod.id,
           email: userInfo.email,
-          coupon: discountCode,
+          coupon: couponInfo ? couponInfo.id : null,
         }
       }))
-      console.log(rt);
-      if (rt.data.applyCouponCode.data) {
-        setMonthly(rt.data.applyCouponCode.data.unitAmount);
-        setDiscount(rt.data.applyCouponCode.data.discount)
-        await API.graphql(graphqlOperation(createPaymentMethod, {
+      if (rt.data.createStripeSubscription.data) {
+        let paymentMethod = await API.graphql(graphqlOperation(createPaymentMethod, {
           input: {
-            ...rt.data.applyCouponCode.data,
+            ...rt.data.createStripeSubscription.data,
             name: userInfo.name,
             address: userInfo.address.address1 + ', ' + userInfo.address.city + ' ' + userInfo.address.state + ' ' + userInfo.address.postal_code,
             phone: userInfo.phone,
@@ -195,13 +168,49 @@ const CheckOutForm = ({
             last4: pm.paymentMethod.card.last4,
           }
         }))
+        setCreatedSubscription(true);
+
+        let signupResults = await Auth.signUp({
+          username: userInfo.email,
+          password: password,
+          attributes: {
+            email: userInfo.email,
+            name: userInfo.name,
+          }
+        });
+        console.log(signupResults);
+
+        next();
+      } else if (rt.data.createStripeSubscription.error) {
+        setErrorMsg(rt.data.createStripeSubscription.error.message);
+      }
+    } catch (err) {
+      setErrorMsg(new Error(err).message)
+    }
+    setUpdating(false);
+  };
+
+  const applyCoupon = async () => {
+    setApplyingCoupon('APPLYING');
+    setErrorMsg('');
+
+    try {
+      let rt = await API.graphql(graphqlOperation(validatePromoCode, {
+        input: {
+          coupon: discountCode,
+        }
+      }))
+      if (rt.data.validatePromoCode.data) {
         setApplyingCoupon('APPLIED');
+        setCouponInfo(rt.data.validatePromoCode.data);
+        setDiscount(rt.data.validatePromoCode.data.amount_off / 100);
         setTimeout(() => {
           setApplyingCoupon('APPLY');
         }, 7000)
         setCreatedSubscription(true);
-      } else if (rt.data.applyCouponCode.error) {
-        setErrorMsg(rt.data.applyCouponCode.error.message);
+      } else if (rt.data.validatePromoCode.error) {
+        setCouponInfo(null);
+        setErrorMsg(rt.data.validatePromoCode.error.message);
         setApplyingCoupon('APPLY');
       }
 
@@ -209,7 +218,6 @@ const CheckOutForm = ({
       setErrorMsg(new Error(err).message);
       setApplyingCoupon('APPLY');
     }
-
   }
 
   return (
@@ -223,7 +231,10 @@ const CheckOutForm = ({
       </div>
       <div className="item">
         <div className="item-title">Discount</div>
-        <div className="item-value">{discount ? '$' + discount : '-'}</div>
+        {couponInfo ? <div className="item-value" >
+          ${couponInfo.amount_off ? couponInfo.amount_off / 100 + ' (Fixed)' : monthly * couponInfo.percent_off / 100 + ` (Percentage: ${couponInfo.percent_off}%)`}
+        </div> : '-'
+        }
       </div>
       <div className="item mb-4">
         <div className="item-title">Total</div>
@@ -241,7 +252,7 @@ const CheckOutForm = ({
             }} />
         </div>
         <button className="g-link-item mx-2 apply-btn" onClick={() => applyCoupon()}
-          disabled={!discountCode || !isEnableSubmit || applyingCoupon == 'APPLYING...'}>
+          disabled={!discountCode || applyingCoupon == 'APPLYING...'}>
           {applyingCoupon}</button>
       </div>
       <div className="g-error-label" style={{ fontSize: 14, marginBottom: 24 }}>{errorMsg}</div>
@@ -298,12 +309,12 @@ const CheckOutForm = ({
   );
 };
 
-const InjectedCheckoutForm = ({ next, previous, pipsConfig, userInfo }) => {
+const InjectedCheckoutForm = ({ next, previous, pipsConfig, userInfo, password }) => {
   return (
     <ElementsConsumer>
       {({ elements, stripe }) => {
         return (
-          <CheckOutForm elements={elements} stripe={stripe}
+          <CheckOutForm elements={elements} stripe={stripe} password={password}
             next={next} previous={previous} pipsConfig={pipsConfig} userInfo={userInfo} />
         );
       }}
@@ -311,11 +322,11 @@ const InjectedCheckoutForm = ({ next, previous, pipsConfig, userInfo }) => {
   );
 };
 
-const Singup4 = ({ next, previous, pipsConfig, userInfo }) => {
+const Singup4 = ({ next, previous, pipsConfig, userInfo, password }) => {
   return <div className="signup4-container">
 
     <Elements stripe={stripePromise}>
-      <InjectedCheckoutForm next={next} previous={previous} pipsConfig={pipsConfig} userInfo={userInfo} />
+      <InjectedCheckoutForm next={next} previous={previous} pipsConfig={pipsConfig} userInfo={userInfo} password={password} />
     </Elements>
   </div>
 }

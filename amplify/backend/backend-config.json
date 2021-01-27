@@ -26,17 +26,22 @@
     }
   },
   "function": {
-    "applyCouponCode": {
-      "build": true,
-      "providerPlugin": "awscloudformation",
-      "service": "Lambda"
-    },
     "createStripeSubscription": {
       "build": true,
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
     },
     "preSignUp": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "validatePromoCode": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "subscriptionInfo": {
       "build": true,
       "providerPlugin": "awscloudformation",
       "service": "Lambda"

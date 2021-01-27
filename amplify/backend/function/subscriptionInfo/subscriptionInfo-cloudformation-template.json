@@ -33,12 +33,12 @@
         "FunctionName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "applyCouponCode",
+            "subscriptionInfo",
             {
               "Fn::Join": [
                 "",
                 [
-                  "applyCouponCode",
+                  "subscriptionInfo",
                   "-",
                   {
                     "Ref": "env"
@@ -68,8 +68,8 @@
         "Layers": [],
         "Timeout": "25",
         "Code": {
-          "S3Bucket": "amplify-60creek-dev-203758-deployment",
-          "S3Key": "amplify-builds/applyCouponCode-7a446c787a7338645865-build.zip"
+          "S3Bucket": "amplify-60creek-devtest-44357-deployment",
+          "S3Key": "amplify-builds/subscriptionInfo-2f6937466e4f4852376e-build.zip"
         }
       }
     },
@@ -79,12 +79,12 @@
         "RoleName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "60creekLambdaRole0130ce8d",
+            "60creekLambdaRole5c3a4a4d",
             {
               "Fn::Join": [
                 "",
                 [
-                  "60creekLambdaRole0130ce8d",
+                  "60creekLambdaRole5c3a4a4d",
                   "-",
                   {
                     "Ref": "env"

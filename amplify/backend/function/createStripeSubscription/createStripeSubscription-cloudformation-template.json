@@ -68,8 +68,8 @@
         "Layers": [],
         "Timeout": "25",
         "Code": {
-          "S3Bucket": "amplify-60creek-dev-203758-deployment",
-          "S3Key": "amplify-builds/createStripeSubscription-4b7843677a524871384f-build.zip"
+          "S3Bucket": "amplify-60creek-devtest-44357-deployment",
+          "S3Key": "amplify-builds/createStripeSubscription-67372b6837682b386e55-build.zip"
         }
       }
     },
