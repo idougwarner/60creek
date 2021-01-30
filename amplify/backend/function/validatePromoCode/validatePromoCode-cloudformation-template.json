@@ -69,7 +69,7 @@
         "Timeout": "25",
         "Code": {
           "S3Bucket": "amplify-60creek-devtest-44357-deployment",
-          "S3Key": "amplify-builds/validatePromoCode-50385a576e7345733831-build.zip"
+          "S3Key": "amplify-builds/validatePromoCode-74525338314c6c64574f-build.zip"
         }
       }
     },

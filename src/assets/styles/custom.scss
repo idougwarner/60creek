@@ -96,6 +96,13 @@ h5 {
     color: $primary;
   }
 }
+.btn-primary {
+  background-color: #366ee7;
+  &:not(:disabled):not(.disabled):active,
+  &:not(:disabled):not(.disabled).active {
+    background-color: #285ace;
+  }
+}
 .btn-outline-primary {
   border: 1px solid #a7d8fa;
   color: $primary;
@@ -128,6 +135,19 @@ h5 {
   &.btn-primary {
     &::after {
       background-image: url(../icons/down-arrow-white.svg);
+    }
+  }
+  &.btn-outline-primary {
+    color: #131624;
+  }
+  &.dropdown-toggle-split {
+    width: 40px;
+    display: flex;
+    justify-content: center;
+
+    border-left: solid 1px #285ace;
+    &::after {
+      margin-left: 0;
     }
   }
   &[aria-expanded="true"] {
@@ -187,36 +207,38 @@ h5 {
 }
 
 .data-table {
-  th {
-    font-weight: 500;
-    font-size: 10px;
-    line-height: 16px;
-    letter-spacing: 1.5px;
-    color: rgba(19, 22, 36, 0.6);
-    border-bottom: none;
-    border-top: none;
-    cursor: pointer;
-    &.sort-field {
-      font-weight: 800;
-      font-size: 12px;
-    }
-    .sort-icon {
-      display: inline-block;
-      margin-left: 8px;
-
-      &::after {
-        display: inline-block;
-        content: "";
-        width: 12px;
-        height: 8px;
-        background-image: url(../icons/down-arrow-blue.svg);
-        background-position: center;
-        background-repeat: no-repeat;
-        transition: 0.3s all ease;
+  thead {
+    th {
+      font-weight: 500;
+      font-size: 10px;
+      line-height: 16px;
+      letter-spacing: 1.5px;
+      color: rgba(19, 22, 36, 0.6);
+      border-bottom: none;
+      border-top: none;
+      cursor: pointer;
+      &.sort-field {
+        font-weight: 800;
+        font-size: 12px;
       }
-      &.desc {
+      .sort-icon {
+        display: inline-block;
+        margin-left: 8px;
+
         &::after {
-          transform: rotate(180deg);
+          display: inline-block;
+          content: "";
+          width: 12px;
+          height: 8px;
+          background-image: url(../icons/down-arrow-blue.svg);
+          background-position: center;
+          background-repeat: no-repeat;
+          transition: 0.3s all ease;
+        }
+        &.desc {
+          &::after {
+            transform: rotate(180deg);
+          }
         }
       }
     }

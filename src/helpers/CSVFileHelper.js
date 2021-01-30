@@ -40,7 +40,6 @@ export const getJsonFromFile = (file) => {
       const dt = readString(event.target.result).data;
       const dataField = dt[0];
       let data = [];
-      console.log(dt)
       for (let i = 1; i < dt.length; i++) {
         let row = {}, cnt = 0;
         for (let j = 0; j < dataField.length; j++) {
@@ -54,7 +53,6 @@ export const getJsonFromFile = (file) => {
           data.push(row);
         }
       }
-      console.log(data)
       return resolver(data);
     })
     reader.readAsText(file);

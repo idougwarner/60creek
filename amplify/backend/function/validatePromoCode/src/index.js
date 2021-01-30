@@ -2,7 +2,7 @@ const AWS = require('aws-sdk');
 const ssm = new AWS.SSM();
 const stripeSecretKeyPromise = ssm
   .getParameter({
-    Name: '/sixtycreek-dev/stripe-secret-key',
+    Name: `/sixtycreek-${process.env.ENV}/stripe-secret-key`,
     WithDecryption: true
   })
   .promise();

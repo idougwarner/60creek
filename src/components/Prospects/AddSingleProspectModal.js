@@ -2,11 +2,11 @@ import { API, graphqlOperation } from 'aws-amplify';
 import React, { useEffect, useState } from 'react';
 import { Button, Form, Modal } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
-import { listProspectLists } from '../../graphql/queries';
 import Select from 'react-select';
 import './AddSingleProspectModal.scss';
 import { customSelectStyles } from '../../assets/styles/select-style';
 import { createProspect } from '../../graphql/mutations';
+import { INTERESTE_STATUS } from './FilterDropdown';
 const STEP1 = 0;
 const STEP2 = 1;
 const STEP3 = 2;
@@ -28,13 +28,18 @@ const AddSingleProspectModal = ({ show, close }) => {
   const [status, setStatus] = useState(null);
   const [loading, setLoading] = useState(null);
   const user = useSelector(state => state.userStore);
+  const list = useSelector(state => state.prospectStore.prospectList)
   const prev = () => {
+    console.log(firstName);
     if (step > STEP1) {
       setStep(step - 1);
     }
   }
+  const edit = () => {
+    setStep(STEP1)
+  }
   const next = async () => {
-    if (step === STEP2) {
+    if (step === STEP3) {
       try {
         setLoading(true);
         let rt = await API.graphql(graphqlOperation(createProspect, {
@@ -55,10 +60,8 @@ const AddSingleProspectModal = ({ show, close }) => {
             status: status.value,
           }
         }));
-        console.log(rt)
-        setStep(step + 1);
+        close({ data: true })
       } catch (err) {
-        console.log(err)
       }
       setLoading(false);
     } else if (step < STEP3) {
@@ -66,28 +69,19 @@ const AddSingleProspectModal = ({ show, close }) => {
     }
   }
   const loadData = async () => {
-    if (user) {
-      const rt = await API.graphql(graphqlOperation(listProspectLists,
-        { filter: { userId: { eq: user.id } } }));
-      if (rt?.data?.listProspectLists?.items) {
-        setProspectList(rt.data.listProspectLists.items.map(item => ({ value: item.id, label: item.name })));
-      }
+    if (list) {
+      setProspectList(list.map(item => ({ value: item.id, label: item.name })));
     }
   }
   useEffect(() => {
     loadData()
-  }, []);
-  useEffect(() => {
-    if (show) {
-      setStep(STEP1)
-    }
-  }, [show])
+  }, [list]);
   return (
     <>
       <Modal show={show} onHide={close}>
         <Modal.Header >
           <Modal.Title >
-            {step === STEP3 ? "Prosect Created" : "Add Single Prospect"}</Modal.Title>
+            {step === STEP3 ? "Prospect Created" : "Add Single Prospect"}</Modal.Title>
           <img src="/assets/icons/close.svg" className="modal-close-btn" onClick={close} />
         </Modal.Header>
         <Modal.Body>
@@ -103,36 +97,42 @@ const AddSingleProspectModal = ({ show, close }) => {
               <div className="col-6 pr-2">
                 <Form.Group >
                   <Form.Label className="required">Frist Name</Form.Label>
-                  <Form.Control type="text" placeholder="Enter First" onChange={e => setFirstName(e.target.value)} />
+                  <Form.Control type="text" placeholder="Enter First"
+                    value={firstName} onChange={e => setFirstName(e.target.value)} />
                 </Form.Group>
               </div>
               <div className="col-6 pl-2">
                 <Form.Group >
                   <Form.Label className="required">Last Name</Form.Label>
-                  <Form.Control type="text" placeholder="Enter Last" onChange={e => setLastName(e.target.value)} />
+                  <Form.Control type="text" placeholder="Enter Last"
+                    value={lastName} onChange={e => setLastName(e.target.value)} />
                 </Form.Group>
               </div>
             </div>
             <Form.Group >
               <Form.Label >Street Address</Form.Label>
-              <Form.Control type="text" placeholder="Enter Street Address" onChange={e => setAddress1(e.target.value)} />
+              <Form.Control type="text" placeholder="Enter Street Address"
+                value={address1} onChange={e => setAddress1(e.target.value)} />
             </Form.Group>
             <Form.Group >
               <Form.Label >Address Line 2</Form.Label>
-              <Form.Control type="text" placeholder="Enter Apartment, Suite, Etc. (optional)" onChange={e => setAddress2(e.target.value)} />
+              <Form.Control type="text" placeholder="Enter Apartment, Suite, Etc. (optional)"
+                value={address2} onChange={e => setAddress2(e.target.value)} />
             </Form.Group>
 
             <div className="row">
               <div className="col-6 pr-2">
                 <Form.Group >
                   <Form.Label>City</Form.Label>
-                  <Form.Control type="text" placeholder="Enter City" onChange={e => setCity(e.target.value)} />
+                  <Form.Control type="text" placeholder="Enter City"
+                    value={city} onChange={e => setCity(e.target.value)} />
                 </Form.Group>
               </div>
               <div className="col-6 pl-2">
                 <Form.Group >
                   <Form.Label>State</Form.Label>
-                  <Form.Control type="text" placeholder="Enter State" onChange={e => setState(e.target.value)} />
+                  <Form.Control type="text" placeholder="Enter State"
+                    value={state} onChange={e => setState(e.target.value)} />
                 </Form.Group>
               </div>
             </div>
@@ -141,13 +141,15 @@ const AddSingleProspectModal = ({ show, close }) => {
               <div className="col-6 pr-2">
                 <Form.Group >
                   <Form.Label>Zip</Form.Label>
-                  <Form.Control type="text" placeholder="Enter Zip" onChange={e => setZip(e.target.value)} />
+                  <Form.Control type="text" placeholder="Enter Zip"
+                    value={zip} onChange={e => setZip(e.target.value)} />
                 </Form.Group>
               </div>
               <div className="col-6 pl-2">
                 <Form.Group >
                   <Form.Label>Company</Form.Label>
-                  <Form.Control type="text" placeholder="Enter Company" onChange={e => setCompany(e.target.value)} />
+                  <Form.Control type="text" placeholder="Enter Company"
+                    value={company} onChange={e => setCompany(e.target.value)} />
                 </Form.Group>
               </div>
             </div>
@@ -155,26 +157,29 @@ const AddSingleProspectModal = ({ show, close }) => {
           {step === STEP2 && <div className="step-2">
             <Form.Group >
               <Form.Label >Phone Number</Form.Label>
-              <Form.Control type="text" placeholder="(555) 555 - 5555" onChange={e => setPhone(e.target.value)} />
+              <Form.Control type="text" placeholder="(555) 555 - 5555"
+                value={phone} onChange={e => setPhone(e.target.value)} />
             </Form.Group>
             <Form.Group >
               <Form.Label >Facebook</Form.Label>
               <div className="d-flex align-items-center">
                 <div className="text-muted mr-2">facebook.com/</div>
-                <Form.Control type="text" placeholder="" onChange={e => setFacebook(e.target.value)} />
+                <Form.Control type="text" placeholder=""
+                  value={facebook} onChange={e => setFacebook(e.target.value)} />
               </div>
             </Form.Group>
 
             <Form.Group >
               <Form.Label className="required">Email Address</Form.Label>
-              <Form.Control type="email" placeholder="Enter email Adress" onChange={e => setEmail(e.target.value)} />
+              <Form.Control type="email" placeholder="Enter email Adress"
+                value={email} onChange={e => setEmail(e.target.value)} />
             </Form.Group>
             <Form.Group >
               <Form.Label className="required">Select Status</Form.Label>
               <Select options={[
-                { label: 'Interested', value: "Interested" },
-                { label: 'Not Inter.', value: "Interested" },
-                { label: 'Unknown', value: "----" },
+                { label: 'Interested', value: INTERESTE_STATUS.INTERESTE },
+                { label: 'Not Interested', value: INTERESTE_STATUS.NOT_INTERESTE },
+                { label: 'Unknown', value: INTERESTE_STATUS.OTHER },
               ]} value={status}
                 styles={customSelectStyles("40px")}
                 onChange={value => setStatus(value)}
@@ -202,13 +207,15 @@ const AddSingleProspectModal = ({ show, close }) => {
           </>}
           {step === STEP2 && <>
             <Button variant="primary" disabled={!email || !status || loading} onClick={() => next()}>
-              {loading ? "CREATING ..." : "NEXT"}
+              Next
             </Button>
             <Button variant="light" onClick={() => prev()}>PREVIOUS</Button>
           </>}
           {step === STEP3 && <>
-            <Button variant="outline-primary" disabled={false} onClick={() => close({ data: true })}>CLOSE</Button>
-            <Button variant="light" onClick={() => prev()}>EDIT</Button>
+            <Button variant="outline-primary" disabled={false} onClick={() => next()}>
+              {loading ? "CREATING ..." : "CLOSE"}
+            </Button>
+            <Button variant="light" onClick={() => edit()}>EDIT</Button>
           </>}
 
         </Modal.Footer>
