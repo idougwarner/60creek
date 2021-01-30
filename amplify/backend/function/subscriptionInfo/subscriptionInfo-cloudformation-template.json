@@ -69,7 +69,7 @@
         "Timeout": "25",
         "Code": {
           "S3Bucket": "amplify-60creek-staging-103715-deployment",
-          "S3Key": "amplify-builds/subscriptionInfo-2f6937466e4f4852376e-build.zip"
+          "S3Key": "amplify-builds/subscriptionInfo-305961536b6a33673862-build.zip"
         }
       }
     },

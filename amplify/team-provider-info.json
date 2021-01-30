@@ -1,60 +1,60 @@
 {
-    "devtest": {
-        "awscloudformation": {
-            "AuthRoleName": "amplify-60creek-devtest-44357-authRole",
-            "UnauthRoleArn": "arn:aws:iam::313220278604:role/amplify-60creek-devtest-44357-unauthRole",
-            "AuthRoleArn": "arn:aws:iam::313220278604:role/amplify-60creek-devtest-44357-authRole",
-            "Region": "us-west-2",
-            "DeploymentBucketName": "amplify-60creek-devtest-44357-deployment",
-            "UnauthRoleName": "amplify-60creek-devtest-44357-unauthRole",
-            "StackName": "amplify-60creek-devtest-44357",
-            "StackId": "arn:aws:cloudformation:us-west-2:313220278604:stack/amplify-60creek-devtest-44357/28ded610-5fd4-11eb-ba8e-0ab6c0df8b8b",
-            "AmplifyAppId": "d2uhia5y233ztu"
-        },
-        "categories": {
-            "auth": {
-                "60creek8853cd69": {}
-            },
-            "function": {
-                "createStripeSubscription": {},
-                "preSignUp": {}
-            },
-            "hosting": {
-                "amplifyhosting": {
-                    "appId": "d2uhia5y233ztu",
-                    "type": "manual"
-                }
-            }
-        }
+  "devtest": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-60creek-devtest-44357-authRole",
+      "UnauthRoleArn": "arn:aws:iam::313220278604:role/amplify-60creek-devtest-44357-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::313220278604:role/amplify-60creek-devtest-44357-authRole",
+      "Region": "us-west-2",
+      "DeploymentBucketName": "amplify-60creek-devtest-44357-deployment",
+      "UnauthRoleName": "amplify-60creek-devtest-44357-unauthRole",
+      "StackName": "amplify-60creek-devtest-44357",
+      "StackId": "arn:aws:cloudformation:us-west-2:313220278604:stack/amplify-60creek-devtest-44357/28ded610-5fd4-11eb-ba8e-0ab6c0df8b8b",
+      "AmplifyAppId": "d2uhia5y233ztu"
     },
-    "staging": {
-        "awscloudformation": {
-            "AuthRoleName": "amplify-60creek-staging-103715-authRole",
-            "UnauthRoleArn": "arn:aws:iam::313220278604:role/amplify-60creek-staging-103715-unauthRole",
-            "AuthRoleArn": "arn:aws:iam::313220278604:role/amplify-60creek-staging-103715-authRole",
-            "Region": "us-west-2",
-            "DeploymentBucketName": "amplify-60creek-staging-103715-deployment",
-            "UnauthRoleName": "amplify-60creek-staging-103715-unauthRole",
-            "StackName": "amplify-60creek-staging-103715",
-            "StackId": "arn:aws:cloudformation:us-west-2:313220278604:stack/amplify-60creek-staging-103715/0a9c2050-6311-11eb-a576-024a246d2741",
-            "AmplifyAppId": "d2uhia5y233ztu"
-        },
-        "categories": {
-            "auth": {
-                "60creek8853cd69": {}
-            },
-            "function": {
-                "createStripeSubscription": {},
-                "preSignUp": {},
-                "validatePromoCode": {},
-                "subscriptionInfo": {}
-            },
-            "hosting": {
-                "amplifyhosting": {
-                    "appId": "d2uhia5y233ztu",
-                    "type": "manual"
-                }
-            }
+    "categories": {
+      "auth": {
+        "60creek8853cd69": {}
+      },
+      "function": {
+        "createStripeSubscription": {},
+        "preSignUp": {}
+      },
+      "hosting": {
+        "amplifyhosting": {
+          "appId": "d2uhia5y233ztu",
+          "type": "manual"
         }
+      }
     }
+  },
+  "staging": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-60creek-staging-103715-authRole",
+      "UnauthRoleArn": "arn:aws:iam::313220278604:role/amplify-60creek-staging-103715-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::313220278604:role/amplify-60creek-staging-103715-authRole",
+      "Region": "us-west-2",
+      "DeploymentBucketName": "amplify-60creek-staging-103715-deployment",
+      "UnauthRoleName": "amplify-60creek-staging-103715-unauthRole",
+      "StackName": "amplify-60creek-staging-103715",
+      "StackId": "arn:aws:cloudformation:us-west-2:313220278604:stack/amplify-60creek-staging-103715/0a9c2050-6311-11eb-a576-024a246d2741",
+      "AmplifyAppId": "d2uhia5y233ztu"
+    },
+    "categories": {
+      "auth": {
+        "60creek8853cd69": {}
+      },
+      "function": {
+        "createStripeSubscription": {},
+        "preSignUp": {},
+        "validatePromoCode": {},
+        "subscriptionInfo": {}
+      },
+      "hosting": {
+        "amplifyhosting": {
+          "appId": "d2uhia5y233ztu",
+          "type": "manual"
+        }
+      }
+    }
+  }
 }
