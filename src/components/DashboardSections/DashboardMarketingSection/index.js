@@ -27,17 +27,17 @@ const DashboardMarketingSection = (props) => {
     }
     const marketRows = !marketingCampaignsToDisplay ||
       marketingCampaignsToDisplay.length === 0 ? null : marketingCampaignsToDisplay.map(marketingCampaign => {
-      let prospects = 0
-      if (marketingCampaign.prospectList && marketingCampaign.prospectList.prospects) {
-        prospects += marketingCampaign.prospectList.prospects.length
-      }
-      return <div className='section-section-data-row' id={marketingCampaign.id}>
-        <div className='data-item campaign-data'>{marketingCampaign.title}</div>
-        <div className='data-item prospects-data'>{prospects}</div>
-        <div className='data-item responses-data'>{upComing ? '' : marketingCampaign.responses ? marketingCampaign.responses.length : 0}</div>
-        <div className='data-item date-data'>{formatDateTime(marketingCampaign.startDateTime)}</div>
-      </div>
-    })
+        let prospects = 0
+        if (marketingCampaign.prospectList && marketingCampaign.prospectList.prospects) {
+          prospects += marketingCampaign.prospectList.prospects.length
+        }
+        return <div className='section-section-data-row' id={marketingCampaign.id}>
+          <div className='data-item campaign-data'>{marketingCampaign.title}</div>
+          <div className='data-item prospects-data'>{prospects}</div>
+          <div className='data-item responses-data'>{upComing ? '' : marketingCampaign.responses ? marketingCampaign.responses.length : 0}</div>
+          <div className='data-item date-data'>{formatDateTime(marketingCampaign.startDateTime)}</div>
+        </div>
+      })
     return { overflow, marketingCampaigns: <div className='section-section-data'>{marketRows}</div> }
   }
 

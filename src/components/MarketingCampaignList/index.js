@@ -62,6 +62,6 @@ const MarketingCampaignList = (props) => {
 
 const mapStateToProps = (state) => ({
 })
-  
+
 
 export default connect(mapStateToProps)(MarketingCampaignList)

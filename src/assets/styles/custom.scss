@@ -1,0 +1,382 @@
+@import url("https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import "./vars.scss";
+
+:root {
+  --blue: #2f64dc;
+  --indigo: #6610f2;
+  --purple: #6f42c1;
+  --pink: #e83e8c;
+  --red: #dc3545;
+  --orange: #fd7e14;
+  --yellow: #ffc107;
+  --green: #28a745;
+  --teal: #20c997;
+  --cyan: #17a2b8;
+  --white: #fff;
+  --gray: #6c757d;
+  --gray-dark: #343a40;
+  --primary: #007bff;
+  --secondary: #6c757d;
+  --success: #28a745;
+  --info: #17a2b8;
+  --warning: #ffc107;
+  --danger: #dc3545;
+  --light: #f8f9fa;
+  --dark: #343a40;
+  --breakpoint-xs: 0;
+  --breakpoint-sm: 576px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 992px;
+  --breakpoint-xl: 1200px;
+}
+body {
+  background: #f5f7fa;
+  color: #131624;
+  margin: 0;
+  font-size: 14px;
+  letter-spacing: 0.25px;
+  font-family: Raleway;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+}
+
+h4 {
+  font-size: 34px;
+  line-height: 36px;
+  font-weight: normal;
+  margin-top: 0;
+  margin-bottom: 16px;
+}
+
+h5 {
+  font-size: 24px;
+  line-height: 24px;
+  /* identical to box height, or 100% */
+
+  letter-spacing: 0.18px;
+}
+
+.dropdown-menu {
+  padding: 16px 0;
+  border-radius: 10px;
+  margin-top: 8px;
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);
+  border: none;
+  .dropdown-item {
+    color: $primary;
+    font-size: 14px;
+    font-weight: 600;
+    height: 36px;
+    letter-spacing: 1.25px;
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    .item-icon {
+      margin-right: 8px;
+    }
+  }
+}
+
+.btn {
+  border-radius: 10px;
+  font-weight: 600;
+  height: 40px;
+  letter-spacing: 1.25px;
+}
+
+.btn-light {
+  color: $primary;
+  &:hover,
+  &:active,
+  &:focus {
+    color: $primary;
+  }
+}
+.btn-outline-primary {
+  border: 1px solid #a7d8fa;
+  color: $primary;
+  &:not(:disabled):not(.disabled):active,
+  &:not(:disabled):not(.disabled).active,
+  &:hover {
+    background-color: white;
+    color: $primary;
+  }
+}
+
+.show > .btn-outline-primary.dropdown-toggle {
+  background-color: white;
+  color: $primary;
+}
+.dropdown-toggle {
+  display: flex;
+  align-items: center;
+  font-weight: normal;
+  &::after {
+    border: none;
+    width: 12px;
+    height: 7px;
+    margin-left: 16px;
+    background-image: url(../icons/down-arrow-blue.svg);
+    background-repeat: no-repeat;
+    background-position: center;
+    transition: all 0.3s ease;
+  }
+  &.btn-primary {
+    &::after {
+      background-image: url(../icons/down-arrow-white.svg);
+    }
+  }
+  &[aria-expanded="true"] {
+    background-color: white;
+    &::after {
+      transform: rotate(180deg);
+    }
+  }
+}
+.card {
+  border-radius: 10px;
+  padding: 20px;
+  border: none;
+}
+
+.form-control,
+.custom-select {
+  border: 1px solid #a7d8fa;
+  box-sizing: border-box;
+  border-radius: 10px;
+  height: 40px;
+  font-size: 16px;
+  &::placeholder {
+    font-size: 16px;
+    color: rgba(19, 22, 36, 0.6);
+  }
+  .completed {
+    background-color: #f5f7fa;
+    border: 1px solid #245372;
+  }
+}
+.text-muted {
+  color: rgba(19, 22, 36, 0.6) !important;
+}
+.form-text {
+  font-size: 12px;
+  line-height: 16px;
+}
+.input-group {
+  position: relative;
+  .input-group-prepend {
+    position: absolute;
+    left: 0px;
+    top: 0;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    & + .form-control {
+      border-top-left-radius: 10px;
+      border-bottom-left-radius: 10px;
+      padding-left: 40px;
+    }
+  }
+}
+
+.data-table {
+  th {
+    font-weight: 500;
+    font-size: 10px;
+    line-height: 16px;
+    letter-spacing: 1.5px;
+    color: rgba(19, 22, 36, 0.6);
+    border-bottom: none;
+    border-top: none;
+    cursor: pointer;
+    &.sort-field {
+      font-weight: 800;
+      font-size: 12px;
+    }
+    .sort-icon {
+      display: inline-block;
+      margin-left: 8px;
+
+      &::after {
+        display: inline-block;
+        content: "";
+        width: 12px;
+        height: 8px;
+        background-image: url(../icons/down-arrow-blue.svg);
+        background-position: center;
+        background-repeat: no-repeat;
+        transition: 0.3s all ease;
+      }
+      &.desc {
+        &::after {
+          transform: rotate(180deg);
+        }
+      }
+    }
+  }
+  tbody {
+    tr {
+      &:first-child {
+        td {
+          border-top: none;
+        }
+      }
+    }
+    td {
+      border-top: 1px solid #eaf2f8;
+      height: 60px;
+      vertical-align: middle;
+    }
+  }
+}
+.custom-control {
+  cursor: pointer;
+}
+
+.custom-control-input {
+  z-index: 1;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+}
+.custom-checkbox .custom-control-input:checked ~ .custom-control-label::before {
+  width: 24px;
+  height: 24px;
+  background-color: #366ee7;
+  border-radius: 10px;
+  box-sizing: border-box;
+}
+.custom-checkbox .custom-control-input:checked ~ .custom-control-label::after {
+  left: -15px;
+  top: 3px;
+  width: 7px;
+  background-image: none;
+  height: 14px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+.custom-checkbox .custom-control-label::before {
+  width: 24px;
+  height: 24px;
+  background: #ffffff;
+  border: 1px solid #bde2fb;
+  box-sizing: border-box;
+  border-radius: 10px;
+  left: -24px;
+  top: 0px;
+}
+.custom-control-input:checked ~ .custom-control-label:before {
+  width: 24px;
+  height: 24px;
+  border: 1px solid #366ee7;
+  background-color: white;
+  box-sizing: border-box;
+  border-radius: 24px;
+}
+.custom-radio .custom-control-input:checked ~ .custom-control-label:after {
+  background: #366ee7;
+  border-radius: 24px;
+  width: 18px;
+  height: 18px;
+  top: 3px;
+  left: -21px;
+}
+
+.custom-radio .custom-control-label:before {
+  background: #ffffff;
+  border: 1px solid #bde2fb;
+  box-sizing: border-box;
+  border-radius: 24px;
+  width: 24px;
+  height: 24px;
+  left: -24px;
+  top: 0;
+}
+.custom-control-label {
+  cursor: pointer;
+  padding-left: 16px;
+  min-height: 24px;
+  &:empty {
+    padding-left: 0;
+  }
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: 0.5px;
+}
+.custom-control {
+  height: 24px;
+  display: flex;
+  align-items: center;
+  // padding-left: 0px;
+  // &::before {
+  //   left: -40px;
+  // }
+}
+.modal-dialog {
+  margin-top: 48px;
+  .modal-content {
+    border-radius: 10px;
+    .modal-header {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      border-bottom: none;
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+      padding: 32px 40px 24px 40px;
+
+      .modal-title {
+        font-size: 34px;
+        line-height: 36px;
+        color: #131624;
+        text-align: center;
+      }
+
+      .modal-close-btn {
+        position: absolute;
+        right: -32px;
+        top: -32px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        opacity: 0.7;
+        &:hover {
+          opacity: 1;
+        }
+      }
+    }
+    .modal-body {
+      padding: 0 40px;
+    }
+    .modal-footer {
+      padding: 24px 40px;
+      border-top: none;
+      border-bottom-left-radius: 10px;
+      border-bottom-right-radius: 10px;
+      button {
+        width: 100%;
+        height: 48px;
+      }
+    }
+  }
+}
+
+.form-label {
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 0.25px;
+  color: #131624;
+  padding-left: 16px;
+  &.required {
+    background-image: url(../images/required.svg);
+    background-repeat: no-repeat;
+    background-position: left center;
+  }
+}

@@ -64,102 +64,13 @@ export const onDeleteUser = /* GraphQL */ `
     }
   }
 `;
-export const onCreateProspectList = /* GraphQL */ `
-  subscription OnCreateProspectList {
-    onCreateProspectList {
-      id
-      name
-      owningUserId
-      prospects {
-        id
-        status
-        prospectListId
-        firstName
-        lastName
-        company
-        address1
-        address2
-        city
-        state
-        zip
-        phone
-        email
-        facebook
-        owningUserId
-        createdAt
-        updatedAt
-      }
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const onUpdateProspectList = /* GraphQL */ `
-  subscription OnUpdateProspectList {
-    onUpdateProspectList {
-      id
-      name
-      owningUserId
-      prospects {
-        id
-        status
-        prospectListId
-        firstName
-        lastName
-        company
-        address1
-        address2
-        city
-        state
-        zip
-        phone
-        email
-        facebook
-        owningUserId
-        createdAt
-        updatedAt
-      }
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const onDeleteProspectList = /* GraphQL */ `
-  subscription OnDeleteProspectList {
-    onDeleteProspectList {
-      id
-      name
-      owningUserId
-      prospects {
-        id
-        status
-        prospectListId
-        firstName
-        lastName
-        company
-        address1
-        address2
-        city
-        state
-        zip
-        phone
-        email
-        facebook
-        owningUserId
-        createdAt
-        updatedAt
-      }
-      createdAt
-      updatedAt
-    }
-  }
-`;
 export const onCreateProspect = /* GraphQL */ `
   subscription OnCreateProspect {
     onCreateProspect {
       id
-      status
+      userId
       prospectListId
+      status
       firstName
       lastName
       company
@@ -171,7 +82,14 @@ export const onCreateProspect = /* GraphQL */ `
       phone
       email
       facebook
-      owningUserId
+      prospectList {
+        id
+        userId
+        name
+        enhance
+        createdAt
+        updatedAt
+      }
       createdAt
       updatedAt
     }
@@ -181,8 +99,9 @@ export const onUpdateProspect = /* GraphQL */ `
   subscription OnUpdateProspect {
     onUpdateProspect {
       id
-      status
+      userId
       prospectListId
+      status
       firstName
       lastName
       company
@@ -194,7 +113,14 @@ export const onUpdateProspect = /* GraphQL */ `
       phone
       email
       facebook
-      owningUserId
+      prospectList {
+        id
+        userId
+        name
+        enhance
+        createdAt
+        updatedAt
+      }
       createdAt
       updatedAt
     }
@@ -204,8 +130,9 @@ export const onDeleteProspect = /* GraphQL */ `
   subscription OnDeleteProspect {
     onDeleteProspect {
       id
-      status
+      userId
       prospectListId
+      status
       firstName
       lastName
       company
@@ -217,7 +144,50 @@ export const onDeleteProspect = /* GraphQL */ `
       phone
       email
       facebook
-      owningUserId
+      prospectList {
+        id
+        userId
+        name
+        enhance
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onCreateProspectList = /* GraphQL */ `
+  subscription OnCreateProspectList {
+    onCreateProspectList {
+      id
+      userId
+      name
+      enhance
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateProspectList = /* GraphQL */ `
+  subscription OnUpdateProspectList {
+    onUpdateProspectList {
+      id
+      userId
+      name
+      enhance
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteProspectList = /* GraphQL */ `
+  subscription OnDeleteProspectList {
+    onDeleteProspectList {
+      id
+      userId
+      name
+      enhance
       createdAt
       updatedAt
     }

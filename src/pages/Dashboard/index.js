@@ -5,10 +5,9 @@ import DashboardMarketingSection from '../../components/DashboardSections/Dashbo
 import DashboardProspectsSection from '../../components/DashboardSections/DashboardPropsectsSection'
 import DashboardMessagesSection from '../../components/DashboardSections/DashboardMessagesSection'
 import AddProspectForm from '../../components/AddProspectForm'
-import { createProspectInStore } from '../../redux/actions'
+// import { createProspectInStore } from '../../redux/actions'
 import './Dashboard.scss'
 import Menu from '../../components/Menu'
-import { setNumberLocalizer } from 'react-widgets'
 
 export class Dashboard extends React.Component {
 
@@ -46,11 +45,11 @@ export class Dashboard extends React.Component {
           <div className='g-page-header'>
             <div className='g-page-title'>Dashboard</div>
           </div>
-          
+
           {addProspectForm}
 
-          <div className="g-page-content" onClick={() => {this.setState({showAddProspect: false})}}>
-            
+          <div className="g-page-content" onClick={() => { this.setState({ showAddProspect: false }) }}>
+
             <div className='g-page-content-column column-one'>
               <DashboardMarketingSection marketingCampaigns={marketingCampaigns} />
               <DashboardProspectsSection prospectLists={prospectLists} addProspect={this.handleAddProspectButtonPushed} />
@@ -66,15 +65,15 @@ export class Dashboard extends React.Component {
   }
 }
 
-const mapDispatchToProps = dispatch => ({
-  onCreatePressed: prospect => dispatch(createProspectInStore(prospect)),
-})
+// const mapDispatchToProps = dispatch => ({
+//   onCreatePressed: prospect => dispatch(createProspectInStore(prospect)),
+// })
 
-const mapStateToProps = (state) => ({
-  marketingCampaigns: serializeMarketingCampaigns(state.marketingCampaigns),
-  prospectLists: serializeProspectLists(state.prospectLists), 
-})
-  
+// const mapStateToProps = (state) => ({
+//   marketingCampaigns: serializeMarketingCampaigns(state.marketingCampaigns),
+//   prospectLists: serializeProspectLists(state.prospectLists),
+// })
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(Dashboard)
+
+export default Dashboard

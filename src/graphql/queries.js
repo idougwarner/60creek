@@ -26,27 +26,9 @@ export const prospectList = /* GraphQL */ `
   query ProspectList {
     prospectList {
       id
+      userId
       name
-      owningUserId
-      prospects {
-        id
-        status
-        prospectListId
-        firstName
-        lastName
-        company
-        address1
-        address2
-        city
-        state
-        zip
-        phone
-        email
-        facebook
-        owningUserId
-        createdAt
-        updatedAt
-      }
+      enhance
       createdAt
       updatedAt
     }
@@ -56,8 +38,9 @@ export const prospect = /* GraphQL */ `
   query Prospect {
     prospect {
       id
-      status
+      userId
       prospectListId
+      status
       firstName
       lastName
       company
@@ -69,7 +52,14 @@ export const prospect = /* GraphQL */ `
       phone
       email
       facebook
-      owningUserId
+      prospectList {
+        id
+        userId
+        name
+        enhance
+        createdAt
+        updatedAt
+      }
       createdAt
       updatedAt
     }
@@ -199,79 +189,13 @@ export const listUsers = /* GraphQL */ `
     }
   }
 `;
-export const getProspectList = /* GraphQL */ `
-  query GetProspectList($id: ID!) {
-    getProspectList(id: $id) {
-      id
-      name
-      owningUserId
-      prospects {
-        id
-        status
-        prospectListId
-        firstName
-        lastName
-        company
-        address1
-        address2
-        city
-        state
-        zip
-        phone
-        email
-        facebook
-        owningUserId
-        createdAt
-        updatedAt
-      }
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const listProspectLists = /* GraphQL */ `
-  query ListProspectLists(
-    $filter: ModelProspectListFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
-    listProspectLists(filter: $filter, limit: $limit, nextToken: $nextToken) {
-      items {
-        id
-        name
-        owningUserId
-        prospects {
-          id
-          status
-          prospectListId
-          firstName
-          lastName
-          company
-          address1
-          address2
-          city
-          state
-          zip
-          phone
-          email
-          facebook
-          owningUserId
-          createdAt
-          updatedAt
-        }
-        createdAt
-        updatedAt
-      }
-      nextToken
-    }
-  }
-`;
 export const getProspect = /* GraphQL */ `
   query GetProspect($id: ID!) {
     getProspect(id: $id) {
       id
-      status
+      userId
       prospectListId
+      status
       firstName
       lastName
       company
@@ -283,7 +207,14 @@ export const getProspect = /* GraphQL */ `
       phone
       email
       facebook
-      owningUserId
+      prospectList {
+        id
+        userId
+        name
+        enhance
+        createdAt
+        updatedAt
+      }
       createdAt
       updatedAt
     }
@@ -298,8 +229,9 @@ export const listProspects = /* GraphQL */ `
     listProspects(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
-        status
+        userId
         prospectListId
+        status
         firstName
         lastName
         company
@@ -311,7 +243,45 @@ export const listProspects = /* GraphQL */ `
         phone
         email
         facebook
-        owningUserId
+        prospectList {
+          id
+          userId
+          name
+          enhance
+          createdAt
+          updatedAt
+        }
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const getProspectList = /* GraphQL */ `
+  query GetProspectList($id: ID!) {
+    getProspectList(id: $id) {
+      id
+      userId
+      name
+      enhance
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listProspectLists = /* GraphQL */ `
+  query ListProspectLists(
+    $filter: ModelProspectListFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listProspectLists(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        userId
+        name
+        enhance
         createdAt
         updatedAt
       }

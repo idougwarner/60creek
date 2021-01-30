@@ -1,5 +1,5 @@
 Raleway Variable Font
-=====================
+==================
 
 This download contains Raleway as both variable fonts and static fonts.
 

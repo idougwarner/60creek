@@ -36,6 +36,12 @@
       "function": {
         "createStripeSubscription": {},
         "preSignUp": {}
+      },
+      "hosting": {
+        "amplifyhosting": {
+          "appId": "d2uhia5y233ztu",
+          "type": "manual"
+        }
       }
     }
   }

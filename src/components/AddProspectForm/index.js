@@ -1,7 +1,5 @@
 import React, { useState } from 'react'
 import './AddProspectForm.scss'
-import 'react-widgets/lib/scss/react-widgets.scss'
-import { Combobox, DropdownList } from 'react-widgets';
 
 const AddProspectForm = (props) => {
   const { prospectToUpdate, prospectLists, createProspectList } = props
@@ -60,14 +58,14 @@ const AddProspectForm = (props) => {
           <div className='input-box'>
             <div className='label'>Status</div>
             <div className='input-container'>
-              <Combobox
+              {/* <Combobox
                 value={statusValue}
                 onChange={(value) => {
                   setStatusValue(value)
                   setChangedValue(true)
                 }}
                 data={['Prospect', 'Contacted', 'Responded', 'Cold', 'Warm', 'Do Not Contact']}
-              />
+              /> */}
             </div>
           </div>
           <div className='input-box'>
@@ -189,7 +187,7 @@ const AddProspectForm = (props) => {
           <div className='input-box'>
             <div className='label'>Prospect List</div>
             <div className='input-container'>
-              <DropdownList
+              {/* <DropdownList
                 allowCreate={true}
                 value={prospectListValue ? prospectListValue.name : null}
                 onCreate={(value) => {
@@ -218,7 +216,7 @@ const AddProspectForm = (props) => {
                 }
                 }
                 data={prospectLists && prospectLists.length ? prospectLists.map(pl => { return pl.name }) : []}
-              />
+              /> */}
             </div>
           </div>
         </div>
@@ -237,7 +235,7 @@ const AddProspectForm = (props) => {
           prospectListId: prospectListValue ? prospectListValue.id : null,
         })
         resetValues()
-    
+
       } : null}>{prospectToUpdate ? 'Update Prospect' : 'Add Prospect'}</div>
     </div>
   )

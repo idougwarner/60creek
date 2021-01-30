@@ -19,7 +19,7 @@ export const REALTIME_GRAPHQL_URL = `${scheme(
 
 export const authClientId = "<YOUR AUTH0 CLIENT ID>";
 export const authDomain = "<YOUR AUTH0 DOMAIN>";
-export const callbackUrl = `http://localhost:3000/callback`; 
+export const callbackUrl = `http://localhost:3000/callback`;
 
 // Hasura cloud info User randall.w.wright@comcast.net password: SixtyCreek2020!
 // postgres db user: postgres, pw: 9xW96My1!
@@ -38,5 +38,5 @@ export const callbackUrl = `http://localhost:3000/callback`;
 //       - graphql-engine
 //       - serve
 //         - --enable - console
-      
+
 //         sudo curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose

@@ -9,8 +9,8 @@ import searchIcon from '../../assets/images/search-icon.svg'
 import downArrowIcon from '../../assets/images/sort-down.svg'
 import menuDots from '../../assets/images/more-dots.svg'
 import BasicButton from '../../components/controls/BasicButton'
-import AddMarketingCampaignForm from '../../components/AddMarketingCampaignForm'
-import { createMarketingCampaignInStore } from '../../redux/actions'
+// import AddMarketingCampaignForm from '../../components/AddMarketingCampaignForm'
+// import { createMarketingCampaignInStore } from '../../redux/actions'
 
 const marketingTableDescriptor = [
   { width: '24px', fieldName: 'selectCheckbox', headerCellTitle: '', isCheckBox: true, checked: false },
@@ -71,7 +71,7 @@ export class Marketing extends React.Component {
   }
 
   handleEditMarket(market) {
-    
+
   }
 
   handleAddMarketButtonPushed() {
@@ -144,7 +144,7 @@ export class Marketing extends React.Component {
 
       return mc
     })
-    this.setState({flattenedMarkets })
+    this.setState({ flattenedMarkets })
   }
 
   handleSearchInput(e) {
@@ -171,7 +171,7 @@ export class Marketing extends React.Component {
   handleAddMarketingCampaign(newCampaign) {
     const { onCreatePressed } = this.props
     onCreatePressed(newCampaign)
-    this.setState({showAddMarket: false})
+    this.setState({ showAddMarket: false })
   }
 
   render() {
@@ -189,27 +189,27 @@ export class Marketing extends React.Component {
           </div>
 
           <BasicButton title='Add Marketing' enabled={true} buttonPushed={this.handleAddMarketButtonPushed} />
-          
-          {this.state.showAddMarket ?
+
+          {/* {this.state.showAddMarket ?
             <AddMarketingCampaignForm
               prospectLists={this.props.prospectLists}
               addMarketingCampaign={this.handleAddMarketingCampaign}
               marketingCampaignToUpdate={marketingCampaignToUpdate} />
             :
             null
-          }
+          } */}
 
-          <div className="g-page-content" onClick={() => {this.setState({showAddMarket: false})}}>
+          <div className="g-page-content" onClick={() => { this.setState({ showAddMarket: false }) }}>
             <div className='g-page-content-standard'>
               <div className='search-control'>
                 <img className='search-icon' src={searchIcon} alt='search' />
-                <input className='search-input' value={this.state.searchString} placeholder='Search List...' onChange={this.handleSearchInput} onKeyDown={this.handleSearchKeyDown}/>
+                <input className='search-input' value={this.state.searchString} placeholder='Search List...' onChange={this.handleSearchInput} onKeyDown={this.handleSearchKeyDown} />
               </div>
-              <img className='menu-dots' src={menuDots} alt='more-menu'/>
+              <img className='menu-dots' src={menuDots} alt='more-menu' />
               <div className='number-selected'>{numberSelected > 0 ? numberSelected + ' selected' : 'None selected'}</div>
               <div className='filter'>
                 <span className='filter-text'>Filter</span>
-                <img className='arrow-icon' src={downArrowIcon} alt='select-filter'/>
+                <img className='arrow-icon' src={downArrowIcon} alt='select-filter' />
               </div>
               <div className='showing-markets'>
                 <span className='showing-text not-bold'>{'Showing '}</span><span className='showing-text bold'>{totalMarketsShowing}</span>
@@ -236,13 +236,13 @@ export class Marketing extends React.Component {
 }
 
 
-const mapStateToProps = state => ({
-  marketingCampaigns: serializeMarketingCampaigns(state.marketingCampaigns),
-  prospectLists: serializeProspectLists(state.prospectLists), 
-})
+// const mapStateToProps = state => ({
+//   marketingCampaigns: serializeMarketingCampaigns(state.marketingCampaigns),
+//   prospectLists: serializeProspectLists(state.prospectLists),
+// })
 
-const mapDispatchToProps = dispatch => ({
-  onCreatePressed: marketingCampaign => dispatch(createMarketingCampaignInStore(marketingCampaign))
-})
+// const mapDispatchToProps = dispatch => ({
+//   onCreatePressed: marketingCampaign => dispatch(createMarketingCampaignInStore(marketingCampaign))
+// })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Marketing)
+export default Marketing

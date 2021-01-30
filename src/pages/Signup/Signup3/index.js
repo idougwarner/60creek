@@ -9,6 +9,7 @@ import BasicButton from '../../../components/controls/BasicButton'
 import Modal from 'react-modal';
 import PrivacyPolicy from './PrivacyPolicy'
 import SubscriptionAgreement from './Subscription'
+import { FormCheck } from 'react-bootstrap'
 
 const customStyles = {
   content: {
@@ -24,6 +25,7 @@ const customStyles = {
 
   },
   overlay: {
+    zIndex: 1000,
     background: 'rgba(19, 22, 36, 0.6)',
     backdropFilter: 'blur(4px)'
   }
@@ -68,20 +70,18 @@ const Signup3 = (props) => {
 
   return (<>
     <div className='g-linear-input-box checkbox-container'>
-      <CheckBox marginTop={10} checked={subscriptionAgreementValue} onSelectCheckBox={(checked) => {
-        setSubscriptionAgreementValue(checked)
-      }} />
-      <div className="agree-item">I agree to the
-          <a href="#" onClick={showSubscriptionAgreementModal}>Subscription Agreement</a>
-      </div>
+      <FormCheck custom id="subscription-agreement" type="checkbox" checked={subscriptionAgreementValue}
+        onChange={(event) => setSubscriptionAgreementValue(event.target.checked)}
+        label={<span className="agree-item">
+          I agree to the <span onClick={showSubscriptionAgreementModal}>Subscription Agreement</span>
+        </span>} />
     </div>
     <div className='g-linear-input-box checkbox-container'>
-      <CheckBox marginTop={10} checked={privacyPolicyValue} onSelectCheckBox={(checked) => {
-        setPrivacyPolicyValue(checked)
-      }} />
-      <div className="agree-item">I agree to the
-          <a href="#" onClick={showPrivacyModal}>Privacy Policy and Terms of Service</a>
-      </div>
+      <FormCheck custom id="privacy-policy" type="checkbox" checked={privacyPolicyValue}
+        onChange={(event) => setPrivacyPolicyValue(event.target.checked)}
+        label={<span className="agree-item">I agree to the
+        <span onClick={showPrivacyModal}>Privacy Policy and Terms of Service</span>
+        </span>} />
     </div>
     <div className='signature-label'><span className='signature'>Signature</span><span className='clear' onClick={e => {
       sigCanvas.clear()

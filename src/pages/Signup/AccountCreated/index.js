@@ -1,27 +1,31 @@
 import { API, Auth, graphqlOperation } from 'aws-amplify';
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import BasicButton from '../../../components/controls/BasicButton';
 import { AUTH_USER_TOKEN_KEY } from '../../../helpers/constants';
 import './AccountCreated.scss';
-import { connect } from 'react-redux'
-import { createUserInStore } from '../../../redux/actions'
+import { connect, useDispatch } from 'react-redux'
 import { listUsers } from '../../../graphql/queries';
 import { useHistory } from 'react-router';
+import { Button } from 'react-bootstrap';
+import { ACTIONS } from '../../../redux/actionTypes';
+import { APP_URLS } from '../../../helpers/routers';
 
-const AccountCreated = ({ email, password, onAddUserToStore }) => {
+const AccountCreated = ({ email, password }) => {
   const history = useHistory();
   const [loading, setLoading] = useState(false);
-
-  const handleGetUser = (cognitoUserName) => {
-    API.graphql(graphqlOperation(listUsers, { filter: { cognitoUserName: { eq: cognitoUserName } } })).then(userResults => {
-      console.log(userResults);
-      if (userResults && userResults.data && userResults.data.listUsers && userResults.data.listUsers.items && userResults.data.listUsers.items.length > 0) {
-        onAddUserToStore(userResults.data.listUsers.items[0])
+  const dispatch = useDispatch();
+  const login = async () => {
+    setLoading(true);
+    try {
+      const user = await Auth.signIn(email, password);
+      const userInfo = await API.graphql(graphqlOperation(listUsers, { filter: { cognitoUserName: { eq: user.username } } }));
+      if (userInfo?.data?.listUsers?.items[0]) {
+        dispatch({ type: ACTIONS.SET_USER, user: userInfo?.data?.listUsers?.items[0] });
+        history.replace(APP_URLS.PROSPECTS);
       }
-    }).catch(err => {
-      alert(err.message ? err.message : 'Could not get user')
-    })
+    } catch (err) {
+      setLoading(false);
+    }
+
   }
 
   return <div className="account-created">
@@ -31,29 +35,10 @@ const AccountCreated = ({ email, password, onAddUserToStore }) => {
     <div className="description">
       Your account has been created, a confirmation email has been sent to your linked address.
     </div>
-
-    <BasicButton title='Go To Dashboard' additionalClass='goto-button' enabled={!loading}
-      buttonPushed={(e) => {
-        console.log(email, password)
-        setLoading(true);
-        Auth.signIn(email, password).then(user => {
-          console.log(user)
-          handleGetUser(user.username)
-          localStorage.setItem(AUTH_USER_TOKEN_KEY, user.signInUserSession.accessToken.jwtToken);
-          history.replace('/dashboard')
-          setLoading(false);
-        }).catch(err => {
-          console.log(err.message)
-          setLoading(false);
-        })
-      }}
-    />
+    <Button variant="primary" disabled={loading} className="w-100"
+      onClick={(e) => login()}
+    >Go To Dashboard</Button>
   </div>
 }
 
-
-const mapDispatchToProps = dispatch => ({
-  onAddUserToStore: user => dispatch(createUserInStore(user))
-})
-
-export default connect(null, mapDispatchToProps)(AccountCreated)
+export default AccountCreated

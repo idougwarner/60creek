@@ -1,68 +1,16 @@
 import React, { useState, useEffect } from 'react'
 import MorePips from '../MorePips'
 import './Signup2.scss'
-
+import Select from 'react-select';
 import BasicButton from '../../../components/controls/BasicButton'
-import { Combobox } from 'react-widgets';
+import { usStates } from '../../../helpers/us-states';
+import { customSelectStyles } from '../../../assets/styles/select-style';
 
 //******************************************************************
 //*
 //* Signup2: function component
 //*
 //******************************************************************
-
-const usStates = [
-  "AL",
-  "AK",
-  "AZ",
-  "AR",
-  "CA",
-  "CO",
-  "CT",
-  "DE",
-  "FL",
-  "GA",
-  "HI",
-  "ID",
-  "IL",
-  "IN",
-  "IA",
-  "KS",
-  "KY",
-  "LA",
-  "ME",
-  "MD",
-  "MA",
-  "MI",
-  "MN",
-  "MS",
-  "MO",
-  "MT",
-  "NE",
-  "NV",
-  "NH",
-  "NJ",
-  "NM",
-  "NY",
-  "NC",
-  "ND",
-  "OH",
-  "OK",
-  "OR",
-  "PA",
-  "RI",
-  "SC",
-  "SD",
-  "TN",
-  "TX",
-  "UT",
-  "VT",
-  "VA",
-  "WA",
-  "WV",
-  "WI",
-  "WY"
-]
 
 const Signup2 = (props) => {
 
@@ -154,18 +102,9 @@ const Signup2 = (props) => {
     <div className='g-form-line'>
       <div className={'g-input-box g-half-input-box'}>
         <div className='g-input-label required'>State</div>
-        <div className='g-input-container combobox'>
-          <Combobox
-            value={stateValue}
-            onSelect={(value) => {
-              setStateValue(value)
-            }
-            }
-            data={
-              usStates
-            }
-          />
-        </div>
+        <Select value={stateValue} onChange={(value) => { setStateValue(value) }}
+          styles={customSelectStyles(48)}
+          options={usStates.map(item => ({ value: item, label: item }))} />
       </div>
       <div className={'g-input-box g-half-input-box'}>
         <div className='g-input-label required'>Zip</div>
@@ -179,11 +118,11 @@ const Signup2 = (props) => {
       </div>
     </div>
     <BasicButton title='next' additionalClass='next-button' enabled={nextButtonEnabledValue} buttonPushed={(e) => {
-      props.next(true, companyNameValue, phoneValue, address1Value, address2Value, cityValue, stateValue, zipValue)
+      props.next(true, companyNameValue, phoneValue, address1Value, address2Value, cityValue, stateValue.value, zipValue)
     }}
     />
     <BasicButton title='Previous' additionalClass='previous-button' enabled={true} buttonPushed={(e) => {
-      props.previous(false, companyNameValue, phoneValue, address1Value, address2Value, cityValue, stateValue, zipValue)
+      props.previous(false, companyNameValue, phoneValue, address1Value, address2Value, cityValue, stateValue.value, zipValue)
     }}
     />
     <MorePips pipsConfig={props.pipsConfig} />

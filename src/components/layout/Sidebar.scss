@@ -1,0 +1,44 @@
+@import "../../assets/styles/vars.scss";
+
+.menu {
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: $sidebar-width;
+  background-color: white;
+  .logo {
+    margin-left: 32px;
+    margin-top: 22px;
+    margin-bottom: 52px;
+    display: block;
+    img {
+      width: 66px;
+      height: 36px;
+    }
+  }
+  .menu-wrapper {
+    padding: 8px;
+    background-color: white;
+    .link-item {
+      display: flex;
+      align-items: center;
+      font-weight: 600;
+      font-size: 14px;
+      color: rgba(19, 22, 36, 0.6);
+      letter-spacing: 0.1px;
+      height: 40px;
+      margin-bottom: 20px;
+      padding: 0 16px;
+      text-align: left;
+      text-decoration: none;
+      border: none;
+
+      &.active-link {
+        color: #2f64dc;
+        background: #f5f7fa;
+        border-radius: 10px;
+      }
+    }
+  }
+}

@@ -52,27 +52,9 @@ export const prospectList = /* GraphQL */ `
   mutation ProspectList($id: ID, $name: String, $owningUserId: Int) {
     prospectList(id: $id, name: $name, owningUserId: $owningUserId) {
       id
+      userId
       name
-      owningUserId
-      prospects {
-        id
-        status
-        prospectListId
-        firstName
-        lastName
-        company
-        address1
-        address2
-        city
-        state
-        zip
-        phone
-        email
-        facebook
-        owningUserId
-        createdAt
-        updatedAt
-      }
+      enhance
       createdAt
       updatedAt
     }
@@ -112,8 +94,9 @@ export const prospect = /* GraphQL */ `
       owningUserId: $owningUserId
     ) {
       id
-      status
+      userId
       prospectListId
+      status
       firstName
       lastName
       company
@@ -125,7 +108,14 @@ export const prospect = /* GraphQL */ `
       phone
       email
       facebook
-      owningUserId
+      prospectList {
+        id
+        userId
+        name
+        enhance
+        createdAt
+        updatedAt
+      }
       createdAt
       updatedAt
     }
@@ -238,27 +228,9 @@ export const deletedProspectLists = /* GraphQL */ `
   mutation DeletedProspectLists($id: ID!) {
     deletedProspectLists(id: $id) {
       id
+      userId
       name
-      owningUserId
-      prospects {
-        id
-        status
-        prospectListId
-        firstName
-        lastName
-        company
-        address1
-        address2
-        city
-        state
-        zip
-        phone
-        email
-        facebook
-        owningUserId
-        createdAt
-        updatedAt
-      }
+      enhance
       createdAt
       updatedAt
     }
@@ -268,8 +240,9 @@ export const deletedProspect = /* GraphQL */ `
   mutation DeletedProspect($id: ID!) {
     deletedProspect(id: $id) {
       id
-      status
+      userId
       prospectListId
+      status
       firstName
       lastName
       company
@@ -281,7 +254,14 @@ export const deletedProspect = /* GraphQL */ `
       phone
       email
       facebook
-      owningUserId
+      prospectList {
+        id
+        userId
+        name
+        enhance
+        createdAt
+        updatedAt
+      }
       createdAt
       updatedAt
     }
@@ -447,105 +427,6 @@ export const deleteUser = /* GraphQL */ `
     }
   }
 `;
-export const createProspectList = /* GraphQL */ `
-  mutation CreateProspectList(
-    $input: CreateProspectListInput!
-    $condition: ModelProspectListConditionInput
-  ) {
-    createProspectList(input: $input, condition: $condition) {
-      id
-      name
-      owningUserId
-      prospects {
-        id
-        status
-        prospectListId
-        firstName
-        lastName
-        company
-        address1
-        address2
-        city
-        state
-        zip
-        phone
-        email
-        facebook
-        owningUserId
-        createdAt
-        updatedAt
-      }
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const updateProspectList = /* GraphQL */ `
-  mutation UpdateProspectList(
-    $input: UpdateProspectListInput!
-    $condition: ModelProspectListConditionInput
-  ) {
-    updateProspectList(input: $input, condition: $condition) {
-      id
-      name
-      owningUserId
-      prospects {
-        id
-        status
-        prospectListId
-        firstName
-        lastName
-        company
-        address1
-        address2
-        city
-        state
-        zip
-        phone
-        email
-        facebook
-        owningUserId
-        createdAt
-        updatedAt
-      }
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const deleteProspectList = /* GraphQL */ `
-  mutation DeleteProspectList(
-    $input: DeleteProspectListInput!
-    $condition: ModelProspectListConditionInput
-  ) {
-    deleteProspectList(input: $input, condition: $condition) {
-      id
-      name
-      owningUserId
-      prospects {
-        id
-        status
-        prospectListId
-        firstName
-        lastName
-        company
-        address1
-        address2
-        city
-        state
-        zip
-        phone
-        email
-        facebook
-        owningUserId
-        createdAt
-        updatedAt
-      }
-      createdAt
-      updatedAt
-    }
-  }
-`;
 export const createProspect = /* GraphQL */ `
   mutation CreateProspect(
     $input: CreateProspectInput!
@@ -553,8 +434,9 @@ export const createProspect = /* GraphQL */ `
   ) {
     createProspect(input: $input, condition: $condition) {
       id
-      status
+      userId
       prospectListId
+      status
       firstName
       lastName
       company
@@ -566,7 +448,14 @@ export const createProspect = /* GraphQL */ `
       phone
       email
       facebook
-      owningUserId
+      prospectList {
+        id
+        userId
+        name
+        enhance
+        createdAt
+        updatedAt
+      }
       createdAt
       updatedAt
     }
@@ -579,8 +468,9 @@ export const updateProspect = /* GraphQL */ `
   ) {
     updateProspect(input: $input, condition: $condition) {
       id
-      status
+      userId
       prospectListId
+      status
       firstName
       lastName
       company
@@ -592,7 +482,14 @@ export const updateProspect = /* GraphQL */ `
       phone
       email
       facebook
-      owningUserId
+      prospectList {
+        id
+        userId
+        name
+        enhance
+        createdAt
+        updatedAt
+      }
       createdAt
       updatedAt
     }
@@ -605,8 +502,9 @@ export const deleteProspect = /* GraphQL */ `
   ) {
     deleteProspect(input: $input, condition: $condition) {
       id
-      status
+      userId
       prospectListId
+      status
       firstName
       lastName
       company
@@ -618,7 +516,59 @@ export const deleteProspect = /* GraphQL */ `
       phone
       email
       facebook
-      owningUserId
+      prospectList {
+        id
+        userId
+        name
+        enhance
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const createProspectList = /* GraphQL */ `
+  mutation CreateProspectList(
+    $input: CreateProspectListInput!
+    $condition: ModelProspectListConditionInput
+  ) {
+    createProspectList(input: $input, condition: $condition) {
+      id
+      userId
+      name
+      enhance
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateProspectList = /* GraphQL */ `
+  mutation UpdateProspectList(
+    $input: UpdateProspectListInput!
+    $condition: ModelProspectListConditionInput
+  ) {
+    updateProspectList(input: $input, condition: $condition) {
+      id
+      userId
+      name
+      enhance
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteProspectList = /* GraphQL */ `
+  mutation DeleteProspectList(
+    $input: DeleteProspectListInput!
+    $condition: ModelProspectListConditionInput
+  ) {
+    deleteProspectList(input: $input, condition: $condition) {
+      id
+      userId
+      name
+      enhance
       createdAt
       updatedAt
     }

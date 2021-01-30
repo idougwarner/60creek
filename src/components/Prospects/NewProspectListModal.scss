@@ -1,0 +1,52 @@
+.summary {
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: 0.5px;
+  color: rgba(19, 22, 36, 0.6);
+  span {
+    color: #d95746;
+  }
+}
+.are-you-sure {
+  font-size: 16px;
+  line-height: 24px;
+  text-align: center;
+}
+.progress {
+  width: 144px;
+  height: 144px;
+  margin-bottom: 20px;
+  background-color: white;
+  .CircularProgressbar {
+    .CircularProgressbar-trail {
+      stroke: white;
+    }
+    .CircularProgressbar-path {
+      stroke: #366ee7;
+    }
+    .CircularProgressbar-text {
+      // font-size: 34px;
+      // line-height: 36px;
+      // text-align: center;
+      fill: #131624;
+    }
+  }
+}
+.missing-info {
+  width: 120px;
+  .missing-field {
+    width: 100%;
+    height: 28px;
+    border: 1px solid #d95746;
+    box-sizing: border-box;
+    border-radius: 10px;
+  }
+  span {
+    font-style: italic;
+    font-weight: normal;
+    font-size: 12px;
+    line-height: 16px;
+    letter-spacing: 0.4px;
+    color: #d95746;
+  }
+}

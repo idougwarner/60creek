@@ -51,7 +51,7 @@ const ProspectList = (props) => {
             </div>
             <div className='detail-item' style={{ width: columnWidths[1] }}>
               <span className='detail-item-text framed'>{prospect.status}</span>
-              </div>
+            </div>
             <div className='detail-item' style={{ width: columnWidths[2] }}>
               <span className='detail-item-text'>{prospect.firstName}</span>
             </div>
@@ -82,7 +82,7 @@ const ProspectList = (props) => {
   return (
     <div className='prospect-list'>
       <div className="prospect-list-header">
-        <SortableHeaderCell width={columnWidths[0]} headerCellTitle=''/>
+        <SortableHeaderCell width={columnWidths[0]} headerCellTitle='' />
         <SortableHeaderCell width={columnWidths[1]} headerCellTitle='Status' sortDirection='none' />
         <SortableHeaderCell width={columnWidths[2]} headerCellTitle='First' sortDirection='none' />
         <SortableHeaderCell width={columnWidths[3]} headerCellTitle='Last' sortDirection='none' />
@@ -101,8 +101,8 @@ const ProspectList = (props) => {
 }
 
 const mapStateToProps = (state) => ({
-  prospectLists: serializeProspectLists(state.prospectLists), 
+  prospectLists: serializeProspectLists(state.prospectLists),
 })
-  
+
 
 export default connect(mapStateToProps)(ProspectList)

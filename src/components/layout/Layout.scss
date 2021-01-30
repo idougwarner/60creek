@@ -1,0 +1,7 @@
+@import "../../assets/styles/vars.scss";
+.admin-layout {
+  .admin-body {
+    margin-left: $sidebar-width;
+    padding: 40px 70px;
+  }
+}

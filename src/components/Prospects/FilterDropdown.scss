@@ -1,0 +1,56 @@
+@import "../../assets/styles/vars.scss";
+
+.filter-dropdown {
+  .dropdown-menu {
+    padding: 24px;
+    min-width: 272px;
+    .label {
+      font-size: 14px;
+      line-height: 20px;
+      letter-spacing: 0.25px;
+      color: rgba(19, 22, 36, 0.6);
+      margin-bottom: 8px;
+    }
+  }
+  .prospect-list {
+    width: 100%;
+    .dropdown-toggle {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+    }
+    .dropdown-menu {
+      padding: 0 16px;
+      margin-top: 8px !important;
+      width: 100%;
+      border: 1px solid #bde2fb;
+      min-width: unset;
+      .prospect-list-item {
+        padding: 8px 0;
+        border-top: 1px solid #eaf2f8;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 16px;
+        line-height: 24px;
+        letter-spacing: 0.5px;
+        color: rgba(19, 22, 36, 0.6);
+        cursor: pointer;
+
+        &.active {
+          font-weight: 600;
+          color: $primary;
+          &::after {
+            content: "";
+            width: 16px;
+            height: 12px;
+            background-repeat: no-repeat;
+            background-image: url(../../assets/icons/check-blue.svg);
+            background-position: center;
+          }
+        }
+      }
+    }
+  }
+}

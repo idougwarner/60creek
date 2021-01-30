@@ -11,17 +11,14 @@
       height: 10px;
       border-radius: 50%;
       margin-left: 4px;
-      border: 1px solid rgba(19, 22, 36, 0.6);
       background-color: rgba(19, 22, 36, 0.6);
       :first-of-type {
         margin-left: 0px;
       }
       &.completed {
-        border: 1px solid #366ee7;
         background-color: #b0c0e0;
       }
       &.current {
-        border: 1px solid #366ee7;
         background-color: #366ee7;
       }
     }

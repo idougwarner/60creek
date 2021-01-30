@@ -10,12 +10,12 @@ import {
   ElementsConsumer
 } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
-import { STRIPE_PUBLIC_KEY } from './config';
 import infoIcon from '../../../assets/images/information-circle.svg';
 import { API, Auth, graphqlOperation } from 'aws-amplify';
-import { createPaymentMethod, createStripeSubscription, validatePromoCode } from '../../../graphql/mutations';
+import { createPaymentMethod, createStripeSubscription, createUser, validatePromoCode } from '../../../graphql/mutations';
 import { subscriptionInfo } from '../../../graphql/queries';
-const stripePromise = loadStripe(STRIPE_PUBLIC_KEY);
+import { Spinner } from 'react-bootstrap';
+const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY);
 
 const createOptions = () => {
   return {
@@ -47,9 +47,9 @@ const CheckOutForm = ({
   // const [showZipCode, setShowZipCode] = useState(false);
 
   const [updating, setUpdating] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const [monthly, setMonthly] = useState(50);
-  const [discount, setDiscount] = useState(0);
   const [cardholderName, setCardholderName] = useState('');
   const [total, setTotal] = useState(50);
   const [discountCode, setDiscountCode] = useState('');
@@ -60,7 +60,6 @@ const CheckOutForm = ({
   const [cardExpiry, setCardExpiry] = useState(false);
   const [cardCvc, setCardCvc] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
-  const [createdSubscription, setCreatedSubscription] = useState(false);
   const [applyingCoupon, setApplyingCoupon] = useState('APPLY');
   const [couponInfo, setCouponInfo] = useState(null);
 
@@ -74,7 +73,6 @@ const CheckOutForm = ({
 
 
   const handleChange = (event) => {
-    console.log(event);
     if (event.elementType === 'cardNumber') {
       setCardNumber(event.complete);
     } else if (event.elementType === 'cardExpiry') {
@@ -107,8 +105,13 @@ const CheckOutForm = ({
           setTotal(monthly);
           setErrorMsg('This promo code has been expired');
           return;
-        } else {
-          setErrorMsg('');
+        }
+      }
+      if (couponInfo.max_redemptions) {
+        if (couponInfo.max_redemptions <= couponInfo.times_redeemed) {
+          setTotal(monthly);
+          setErrorMsg('This promo code has been expired');
+          return;
         }
       }
       if (couponInfo.amount_off) {
@@ -120,14 +123,30 @@ const CheckOutForm = ({
       setTotal(monthly)
     }
   }, [monthly, couponInfo])
-  useEffect(async () => {
-    const rt = await API.graphql(graphqlOperation(subscriptionInfo));
-    console.log(rt);
-    if (rt.data.subscriptionInfo.data) {
-      setMonthly(rt.data.subscriptionInfo.data.unit_amount / 100);
-    } else {
-      setMonthly(50);
+  const loadMonthlyInfo = async () => {
+    try {
+      setLoading(true)
+      const rt = await API.graphql(graphqlOperation(subscriptionInfo));
+      if (rt.data.subscriptionInfo.data) {
+        setMonthly(rt.data.subscriptionInfo.data.unit_amount / 100);
+      } else {
+        setMonthly(50);
+      }
+      setLoading(false);
+    } catch (err) {
+      loadMonthlyInfo();
     }
+  }
+  const messageConvert = (message) => {
+    if (message === 'Error: An error occurred with our connection to Stripe.') {
+      return "Failed your request. Please try again."
+    } else if (message.indexOf('Coupon expired') >= 0) {
+      return "Your Coupon code has been expired."
+    }
+    return message;
+  }
+  useEffect(async () => {
+    loadMonthlyInfo();
   }, []);
   const handleSubmit = async () => {
     if (!stripe) {
@@ -144,7 +163,9 @@ const CheckOutForm = ({
         type: 'card',
         card: cardElement,
         billing_details: {
-          ...userInfo,
+          address: userInfo.address,
+          email: userInfo.email,
+          phone: userInfo.phone,
           name: cardholderName
         }
       })
@@ -168,9 +189,8 @@ const CheckOutForm = ({
             last4: pm.paymentMethod.card.last4,
           }
         }))
-        setCreatedSubscription(true);
 
-        let signupResults = await Auth.signUp({
+        const signupResult = await Auth.signUp({
           username: userInfo.email,
           password: password,
           attributes: {
@@ -178,14 +198,31 @@ const CheckOutForm = ({
             name: userInfo.name,
           }
         });
-        console.log(signupResults);
-
+        const newUser = {
+          firstName: userInfo.firstName,
+          lastName: userInfo.lastName,
+          company: userInfo.companyName,
+          address1: userInfo.address.line1,
+          address2: userInfo.address.line2,
+          city: userInfo.address.city,
+          state: userInfo.address.state,
+          zip: userInfo.address.postal_code,
+          phone: userInfo.phone,
+          email: userInfo.email,
+          signature: userInfo.signature,
+          cognitoUserName: signupResult.userSub
+        }
+        await API.graphql(graphqlOperation(createUser, { input: newUser }));
         next();
       } else if (rt.data.createStripeSubscription.error) {
-        setErrorMsg(rt.data.createStripeSubscription.error.message);
+        setErrorMsg(messageConvert(rt.data.createStripeSubscription.error.message));
       }
     } catch (err) {
-      setErrorMsg(new Error(err).message)
+      if (typeof err.message === 'string') {
+        setErrorMsg(messageConvert(err.message))
+      } else {
+        setErrorMsg(messageConvert(new Error(err).message));
+      }
     }
     setUpdating(false);
   };
@@ -203,19 +240,17 @@ const CheckOutForm = ({
       if (rt.data.validatePromoCode.data) {
         setApplyingCoupon('APPLIED');
         setCouponInfo(rt.data.validatePromoCode.data);
-        setDiscount(rt.data.validatePromoCode.data.amount_off / 100);
         setTimeout(() => {
           setApplyingCoupon('APPLY');
         }, 7000)
-        setCreatedSubscription(true);
       } else if (rt.data.validatePromoCode.error) {
         setCouponInfo(null);
-        setErrorMsg(rt.data.validatePromoCode.error.message);
+        setErrorMsg(messageConvert(rt.data.validatePromoCode.error.message));
         setApplyingCoupon('APPLY');
       }
 
     } catch (err) {
-      setErrorMsg(new Error(err).message);
+      setErrorMsg(messageConvert(new Error(err).message));
       setApplyingCoupon('APPLY');
     }
   }
@@ -225,20 +260,20 @@ const CheckOutForm = ({
       <div className="item">
         <div>
           <div className="item-title">Pay As you go Subscription</div>
-          <div className="item-description">${monthly} per Month. Cancel any time</div>
+          {!loading && <div className="item-description">${monthly} per Month. Cancel any time</div>}
         </div>
-        <div className="item-value">${monthly}</div>
+        {loading ? <Spinner animation="border" variant="primary" size="sm" /> : <div className="item-value">${monthly}</div>}
       </div>
       <div className="item">
         <div className="item-title">Discount</div>
         {couponInfo ? <div className="item-value" >
-          ${couponInfo.amount_off ? couponInfo.amount_off / 100 + ' (Fixed)' : monthly * couponInfo.percent_off / 100 + ` (Percentage: ${couponInfo.percent_off}%)`}
+          ${couponInfo.amount_off ? couponInfo.amount_off / 100 : monthly * couponInfo.percent_off / 100}
         </div> : '-'
         }
       </div>
       <div className="item mb-4">
         <div className="item-title">Total</div>
-        <div className="item-value">${total}</div>
+        {!loading && <div className="item-value">${total}</div>}
       </div>
       <div className="d-flex align-items-center w-100">
         <div className='g-input-box flex-grow'>
@@ -252,7 +287,7 @@ const CheckOutForm = ({
             }} />
         </div>
         <button className="g-link-item mx-2 apply-btn" onClick={() => applyCoupon()}
-          disabled={!discountCode || applyingCoupon == 'APPLYING...'}>
+          disabled={!discountCode || applyingCoupon === 'APPLYING...'}>
           {applyingCoupon}</button>
       </div>
       <div className="g-error-label" style={{ fontSize: 14, marginBottom: 24 }}>{errorMsg}</div>

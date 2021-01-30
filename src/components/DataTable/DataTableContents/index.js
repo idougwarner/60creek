@@ -21,8 +21,8 @@ const DataTableContents = (props) => {
     tableContents = <div className='none-found'>{`No ${tableTitle} Created Yet`}</div>
   }
   else {
-    tableContents = !data ? null: data.map((dataRow) => {
-      const dataItems = !tableColumnsDescriptor? null: tableColumnsDescriptor.map(desc => {
+    tableContents = !data ? null : data.map((dataRow) => {
+      const dataItems = !tableColumnsDescriptor ? null : tableColumnsDescriptor.map(desc => {
         if (desc.isCheckBox) {
           return <div className='detail-item item-checkbox' key={`table-item-${desc.fieldName}`} style={{ width: desc.width }}>
             <CheckBox width={desc.width} checked={dataRow.checked} onSelectCheckBox={(checked) => {
@@ -32,9 +32,9 @@ const DataTableContents = (props) => {
         }
         else if (desc.isContactInfo) {
           return <div key={`table-item-${desc.fieldName}`} className='detail-item contact-info'>
-            <img className='facebook' src={facebookIcon} alt='facebook'/>
-            <img className='email' src={emailIcon} alt='email'/>
-            <img className='phone' src={phoneIcon} alt='phone'/>
+            <img className='facebook' src={facebookIcon} alt='facebook' />
+            <img className='email' src={emailIcon} alt='email' />
+            <img className='phone' src={phoneIcon} alt='phone' />
           </div>
         }
         else {

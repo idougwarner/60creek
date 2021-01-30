@@ -1,122 +1,59 @@
-import { createStore, combineReducers } from 'redux'
-import { prospectLists, prospects, marketingCampaigns, users } from './reducers'
-import { persistReducer } from 'redux-persist'
-import storage from 'redux-persist/lib/storage'
-import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2'
+import { createStore, applyMiddleware, compose, combineReducers } from 'redux';
+import thunk from 'redux-thunk';
+import { createHashHistory } from 'history';
+import { routerMiddleware } from 'connected-react-router';
+import { createLogger } from 'redux-logger';
+import userStore from './userReducers';
+import prospectStore from './prospectReducers';
+export const history = createHashHistory();
 
-//******************************************************************
-//*
-//* Reducers-- Redux reducers AND persist store
-//*
-//******************************************************************
-
-const reducers = {
-  users,
-  prospectLists,
-  prospects,
-  marketingCampaigns,
-}
-
-const persistConfig = {
-  key: 'root',
-  storage,
-  stateReconciler: autoMergeLevel2
-}
-
-let rootReducer
-let persistedReducer
-
-export let store = null
+const rootReducer = combineReducers({
+  userStore,
+  prospectStore
+});
 
 export const configureStore = () => {
-  rootReducer = combineReducers(reducers)
-  persistedReducer = persistReducer(persistConfig, rootReducer)
-  store = createStore(persistedReducer)
-  return store
-}
+  // Redux Configuration
+  const middleware = [];
+  const enhancers = [];
 
-//******************************************************************
-//*
-//* Serializers-- expand record to include sub-records where possible
-//*
-//******************************************************************
+  // Thunk Middleware
+  middleware.push(thunk);
 
-export const serializeMarketingCampaign = (marketingCampaign) => {
-  if (marketingCampaign) {
-    let mutableMarketingCampaign = { ...marketingCampaign }
-    if (!mutableMarketingCampaign.prospectList) {
-      const prospectList = store.getState().prospectLists.find(pl => {
-        return pl.id === marketingCampaign.prospectListId
-      })
-      if (prospectList) {
-        mutableMarketingCampaign.prospectList = { ...prospectList }
-      }
-    }
-    return mutableMarketingCampaign
+  // Logging Middleware
+  const logger = createLogger({
+    level: 'info',
+    collapsed: true
+  });
+
+  // Skip redux logs in console during the tests
+  if (process.env.NODE_ENV !== 'test') {
+    // middleware.push(logger);  // uncomment/comment to show/hide redux logger
   }
-  return null
-}
 
-export const serializeMarketingCampaigns = (marketingCampaigns) => {
-  if (marketingCampaigns && marketingCampaigns.length) {
-    let mutableMarketingCampaigns = marketingCampaigns.map(mc => {
-      let mutableMarketingCampaign = serializeMarketingCampaign(mc)
-      return mutableMarketingCampaign
+  // Router Middleware
+  const router = routerMiddleware(history);
+  middleware.push(router);
+
+  // Redux DevTools Configuration
+  const actionCreators = {
+  };
+  // If Redux DevTools Extension is installed use it, otherwise use Redux compose
+  /* eslint-disable no-underscore-dangle */
+  const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
+    ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
+      // Options: http://extension.remotedev.io/docs/API/Arguments.html
+      actionCreators
     })
-    return mutableMarketingCampaigns
-  }
-  return []
-}
+    : compose;
+  /* eslint-enable no-underscore-dangle */
 
-export const serializeProspectList = (prospectList) => {
-  if (prospectList) {
-    let mutableProspectList = { ...prospectList }
-    mutableProspectList.prospects = []
-    store.getState().prospects.forEach(prospect => {
-      if (prospect.prospectListId === mutableProspectList.id) {
-        mutableProspectList.prospects.push(serializeProspect (prospect))
-      }
-      else if (prospect.prospectList && prospect.prospectList.id === mutableProspectList.id) {
-        mutableProspectList.prospects.push({ ...prospect })
-      }
-    })
-    return mutableProspectList
-  }
-  return null
-}
+  // Apply Middleware & Compose Enhancers
+  enhancers.push(applyMiddleware(...middleware));
+  const enhancer = composeEnhancers(...enhancers);
 
-export const serializeProspect = (prospect) => {
-  if (prospect) {
-    let mutableProspect = { ...prospect }
-    if (mutableProspect.prospectListId && !mutableProspect.prospectList) {
-      const prospectList = store.getState().prospectLists.find(pl => { return pl.id === mutableProspect.prospectListId })
-      if (prospectList) {
-        mutableProspect.prospectList = { ...prospectList }
-      }
-    }
-    return mutableProspect
-  }
-  return null
-}
+  // Create Store
+  const store = createStore(rootReducer, {}, enhancer);
 
-export const serializeProspects = (prospects) => {
-  if (prospects && prospects.length) {
-    let mutableProspects = prospects.map(p => {
-      let mutableProspect = serializeProspect(p)
-      return mutableProspect
-    })
-    return mutableProspects
-  }
-  return []
-}
-
-export const serializeProspectLists = (prospectLists) => {
-  if (prospectLists && prospectLists.length) {
-    let mutableProspectLists = prospectLists.map(pl => {
-      let mutableProspectList = serializeProspectList(pl)
-      return mutableProspectList
-    })
-    return mutableProspectLists
-  }
-  return []
-}
+  return store;
+};

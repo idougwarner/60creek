@@ -20,8 +20,8 @@ const Signup1 = (props) => {
   }
 
   const [nextButtonEnabledValue, setNextButtonEnabledValue] = useState(false)
-  const [emailAddressValue, setEmailAddressValue] = useState(props.emailAddress)
-  const [passwordValue, setPasswordValue] = useState(props.password)
+  const [emailAddressValue, setEmailAddressValue] = useState(props.emailAddress || '')
+  const [passwordValue, setPasswordValue] = useState(props.password || '')
   const [userNameErrorValue, setUserNameErrorValue] = useState(false)
   const [displayPasswordValue, setDisplayPasswordValue] = useState(false)
   const [confirmPasswordValue, setConfirmPasswordValue] = useState(props.defaultPasswordConfirm)
@@ -33,7 +33,7 @@ const Signup1 = (props) => {
     if (confirmPasswordValue && passwordValue !== confirmPasswordValue) {
       setPasswordMismatchValue(true)
     }
-    else if (firstNameValue && lastNameValue && emailAddressValue && validateEmail(emailAddressValue) &&
+    else if (firstNameValue && lastNameValue && passwordValue.length > 0 && emailAddressValue && validateEmail(emailAddressValue) &&
       passwordValue && passwordValue === confirmPasswordValue) {
       setNextButtonEnabledValue(true)
       setPasswordMismatchValue(false)
@@ -83,6 +83,7 @@ const Signup1 = (props) => {
               setNextButtonEnabledValue(false)
             }
           }} />
+        {userNameErrorValue ? <div className='g-error-label smallest'>Invalid Email Address</div> : null}
       </div>
       <div className={'g-input-box' + (userNameErrorValue ? ' error' : '')}>
         <div className='g-input-label required'>Password</div>
@@ -96,7 +97,7 @@ const Signup1 = (props) => {
           onChange={(e) => {
             setPasswordValue(e.target.value)
           }} />
-        {userNameErrorValue ? <div className='g-error-label smallest'>Invalid Email Address</div> : null}
+        {passwordValue && passwordValue.length < 6 && <div className='g-error-label smallest'>Password have length greater thean or equeal to 6</div>}
       </div>
       <div className={'g-input-box' + (userNameErrorValue ? ' error' : '')}>
         <div className='g-input-label required'>Confirm Password</div>

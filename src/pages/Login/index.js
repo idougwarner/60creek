@@ -1,16 +1,14 @@
-import React, { useState } from 'react'
-import { connect } from 'react-redux'
-import { API, graphqlOperation } from 'aws-amplify';
-import { withRouter, Link } from 'react-router-dom'
-import { Auth } from 'aws-amplify'
-import { AUTH_USER_TOKEN_KEY } from '../../helpers/constants';
-import { listUsers, getUser } from '../../graphql/queries';
-import { createUserInStore } from '../../redux/actions'
-
+import React, { useEffect, useState } from 'react'
+import { Link, useHistory } from 'react-router-dom'
+import { API, Auth, graphqlOperation } from 'aws-amplify'
 import './Login.scss'
 
 import Header from '../../components/Header'
-import BasicButton from '../../components/controls/BasicButton'
+import { Button } from 'react-bootstrap'
+import { listUsers } from '../../graphql/queries'
+import { useDispatch } from 'react-redux'
+import { ACTIONS } from '../../redux/actionTypes'
+import { APP_URLS } from '../../helpers/routers'
 
 //******************************************************************
 //*
@@ -22,116 +20,104 @@ const validateEmail = (email) => {
   if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(email)) {
     return (true)
   }
-  return (true)
+  return (false)
 }
 
-export class Login extends React.Component{
+export const Login = () => {
 
-  constructor(props) {
-    super(props)
-    this.state = {
-      buttonEnabledValue: false,
-      userNameValue: null,
-      passwordValue: null,
-      userNameErrorValue: false,
-      loginErrorValue: '',
-      displayPasswordValue: false
+  const [enbled, setEnabled] = useState(false);
+  const [email, setUserName] = useState(null);
+  const [password, setPassword] = useState(null);
+  const [userNameError, setUserNameError] = useState(false);
+  const [loginError, setLoginError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const history = useHistory();
+  const dispatch = useDispatch();
+  useEffect(() => {
+    if (email) {
+      setUserNameError(!validateEmail(email));
+    } else {
+      setUserNameError(false);
     }
-    this.handleGetUser = this.handleGetUser.bind(this)
+    if (email && password) {
+      setEnabled(true);
+    } else {
+      setEnabled(false);
+    }
+  }, [email, password]);
+  const patchUserInfo = async (username) => {
+    try {
+      const user = await API.graphql(graphqlOperation(listUsers, { filter: { cognitoUserName: { eq: username } } }));
+      if (user?.data?.listUsers?.items[0]) {
+        dispatch({ type: ACTIONS.SET_USER, user: user?.data?.listUsers?.items[0] });
+        history.replace(APP_URLS.PROSPECTS);
+      }
+    } catch (err) {
+
+    }
+    setLoading(false);
   }
-
-  componentDidMount() {
-    
+  const login = async () => {
+    setLoading(true);
+    try {
+      const user = await Auth.signIn(email, password)
+      patchUserInfo(user.username);
+    } catch (err) {
+      setLoading(false);
+    }
   }
-
-  componentDidUpdate(prevProps) {
-    
-  }
-
-  handleGetUser(cognitoUserName) {
-    API.graphql(graphqlOperation(listUsers, { filter: { cognitoUserName: { eq: cognitoUserName } } })).then(userResults => {
-
-      if (userResults && userResults.data && userResults.data.listUsers && userResults.data.listUsers.items && userResults.data.listUsers.items.length > 0) {
-          this.props.onAddUserToStore(userResults.data.listUsers.items[0])
-      }  
-    }).catch(err => {
-      alert(err.message ? err.message : 'Could not get user')
-    })
-  }
-
-  render() {
-    const { buttonEnabledValue, userNameValue, passwordValue, userNameErrorValue, loginErrorValue, displayPasswordValue } = this.state
-
-    return <div className='sixty-creek-login g-page-background'>
-      <Header />
-      <div className='sixty-creek-login'>
-        <div className='g-centered-form-with-header'>
-          <div className='g-form-container'>
-            <div className='g-caption'>Log On</div>
-            <div className='g-input-box'>
-              <div className='g-input-label'>Username</div>
-              <input className='g-input-container'
-                type='text'
-                placeholder='Enter your email address'
-                value={userNameValue}
-                onChange={(e) => {
-                  this.setState({ userNameErrorValue: false })
-                  this.setState({ userNameValue: e.target.value })
-                  if (passwordValue && e.target.value) {
-                    this.setState({ buttonEnabledValue: true })
-                  }
-                  else {
-                    this.setState({ buttonEnabledValue: false })
-                  }
-                }} />
-            </div>
-            <div className={'g-input-box' + (userNameErrorValue || loginErrorValue ? ' error' : '')}>
-              <div className='g-input-label'>Password</div>
-              <div className={'eye-icon' + (displayPasswordValue ? ' showing-password' : '')} onClick={(e) => {
-                this.setState({ displayPasswordValue: !displayPasswordValue })
+  useEffect(() => {
+    const f = async () => {
+      try {
+        let rt = await Auth.currentUserInfo();
+        console.log(rt)
+        if (rt) {
+          patchUserInfo(rt.username)
+        }
+      } catch (err) {
+        console.log(err)
+      }
+    }
+    f();
+  }, [])
+  return <div className='sixty-creek-login g-page-background'>
+    <Header />
+    <div className='sixty-creek-login'>
+      <div className='g-centered-form-with-header'>
+        <div className='g-form-container'>
+          <div className='g-caption'>Log On</div>
+          <div className='g-input-box'>
+            <div className='g-input-label'>Username</div>
+            <input className='g-input-container'
+              type='text'
+              placeholder='Enter your email address'
+              value={email}
+              onChange={(e) => {
+                setUserName(e.target.value);
               }} />
-              <input className='g-input-container'
-                type={!displayPasswordValue ? 'password' : 'text'}
-                placeholder='Enter yout password'
-                value={passwordValue}
-                onChange={(e) => {
-                  this.setState({ passwordValue: e.target.value })
-                  if (userNameValue && e.target.value) {
-                    this.setState({ buttonEnabledValue: true })
-                  }
-                  else {
-                    this.setState({ buttonEnabledValue: false })
-                  }
-                }} />
-              {userNameErrorValue ? <div className='g-error-label smallest'>Invalid Email Address</div> : null}
-              {loginErrorValue ? <div className='g-error-label smallest'>{loginErrorValue}</div> : null}
-            </div>
-            <Link className='g-link-item small' to="/password-reset">Forgot your Password?</Link>
-            <BasicButton title='Log In' enabled={buttonEnabledValue} buttonPushed={(e) => {
-              if (!validateEmail(userNameValue)) {
-                this.setState({ userNameErrorValue: true })
-              }
-              else {
-                Auth.signIn(userNameValue, passwordValue).then(user => {
-                  this.handleGetUser(user.username)
-                  localStorage.setItem(AUTH_USER_TOKEN_KEY, user.signInUserSession.accessToken.jwtToken);
-                  this.props.history.replace('/dashboard')
-                }).catch(err => {
-                  this.setState({ setLoginErrorValue: err.message })
-                }
-                )
-              }
-            }}
-            />
+            {userNameError ? <div className='g-error-label smallest'>Invalid Email Address</div> : null}
           </div>
+          <div className={'g-input-box' + (userNameError || loginError ? ' error' : '')}>
+            <div className='g-input-label'>Password</div>
+            <div className={'eye-icon' + (showPassword ? ' showing-password' : '')}
+              onClick={(e) => setShowPassword(!showPassword)} />
+            <input className='g-input-container'
+              type={!showPassword ? 'password' : 'text'}
+              placeholder='Enter yout password'
+              value={password}
+              onChange={(e) => setPassword(e.target.value)} />
+            {loginError ? <div className='g-error-label smallest'>{loginError}</div> : null}
+          </div>
+          <Link className='g-link-item small' to="/password-reset">Forgot your Password?</Link>
+          <Button disabled={!enbled || loading} className="w-100"
+            onClick={(e) => { login() }}
+          >LOG IN</Button>
         </div>
       </div>
     </div>
-  }
+  </div>
+
 }
 
-const mapDispatchToProps = dispatch => ({
-  onAddUserToStore: user => dispatch(createUserInStore(user))
-})
-
-export default connect(null, mapDispatchToProps)(Login)
+export default Login

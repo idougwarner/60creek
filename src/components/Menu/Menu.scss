@@ -1,23 +1,22 @@
-@import '../../assets/styles/global-styles.scss';
+@import "../../assets/styles/global-styles.scss";
 
-.menu{
+.menu {
   position: fixed;
   left: 0;
   top: 0;
   height: 100%;
   width: 178px;
-  .logo{
+  .logo {
     position: absolute;
     left: 32px;
     top: 22px;
-    background-image: url(../../assets/images/60-Creek-Logo_isolated-BG_full-color.png);
     background-repeat: no-repeat;
     margin-top: 10px;
     width: 66px;
     height: 36px;
     background-size: 66px 36px;
   }
-  .menu-wrapper{
+  .menu-wrapper {
     display: flex;
     flex-direction: column;
     position: absolute;
@@ -28,8 +27,7 @@
     width: 100%;
     height: calc(100% - 118px);
     background-color: white;
-    .link-item
-    {
+    .link-item {
       font-family: Raleway;
       font-style: normal;
       font-weight: 600;
@@ -45,13 +43,12 @@
       text-decoration: none;
 
       border: none;
-      
-      &.selected{
-        color: #2F64DC;
-        background: #EAF2F8;
+
+      &.selected {
+        color: #2f64dc;
+        background: #eaf2f8;
         border-radius: 10px;
       }
     }
-
-  } 
+  }
 }

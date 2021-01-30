@@ -1,9 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import { connect } from 'react-redux'
-import { API, graphqlOperation } from 'aws-amplify';
-import { Auth } from 'aws-amplify'
-import { createUserInStore } from '../../redux/actions'
-
 import './Signup.scss'
 
 import Header from '../../components/Header'
@@ -11,7 +6,6 @@ import Signup1 from './Signup1'
 import Signup2 from './Signup2'
 import Signup3 from './Signup3'
 
-import { createUser } from '../../graphql/mutations';
 import Singup4 from './Signup4';
 import AccountCreated from './AccountCreated';
 
@@ -52,37 +46,6 @@ export const Signup = (props) => {
   const [subscriptionAgreementValue, setSubscriptionAgreementValue] = useState(null)
   const [privacyPolicyValue, setPrivacyPolicyValue] = useState(null)
   const [signatureValue, setSignatureValue] = useState(null)
-
-  function confirm(email, confirmationCode) {
-    Auth.confirmSignUp(email, confirmationCode)
-      .then(() => {
-        const newUser = {
-          firstName: firstNameValue,
-          lastName: lastNameValue,
-          company: companyNameValue,
-          address1: address1Value,
-          address2: address2Value,
-          city: cityValue,
-          state: stateValue,
-          zip: zipValue,
-          phone: phoneValue,
-          email: emailAddressValue,
-          signature: signatureValue,
-          cognitoUserName: cognitoUserNameValue
-        }
-        API.graphql(graphqlOperation(createUser, { input: newUser })).then(createdUser => {
-          props.onAddUserToStore(createdUser.data.createUser)
-          props.history.replace('/login')
-        }).catch(err => {
-          alert(err.message)
-        })
-      })
-      .catch(err => {
-        alert(err.message)
-      });
-  }
-
-  const [signupErrorValue, setSignupErrorValue] = useState('')
 
   const handleFirstPage = (isNext, firstName, lastName, emailAddress, password) => {
     setFirstNameValue(firstName)
@@ -129,7 +92,7 @@ export const Signup = (props) => {
     }
   }
 
-  const handleFourthPage = (isNext) => {
+  const handleFourthPage = async (isNext) => {
     if (isNext) {
       setWhichPageValue(whichPageValue + 1);
       pipsConfigValue[3].completed = true
@@ -141,9 +104,6 @@ export const Signup = (props) => {
   }
   const handleGotoDashboard = () => {
     console.log('goto dashboard');
-  }
-  const handleEmailConfirmation = (confirmationCode) => {
-    confirm(emailAddressValue, confirmationCode)
   }
 
   const defaultPage = <Signup1 firstName={firstNameValue} lastName={lastNameValue} emailAddress={emailAddressValue} password={passwordValue}
@@ -195,7 +155,11 @@ export const Signup = (props) => {
               },
               email: emailAddressValue,
               name: firstNameValue + ' ' + lastNameValue,
-              phone: phoneValue
+              phone: phoneValue,
+              firstName: firstNameValue,
+              lastName: lastNameValue,
+              companyName: companyNameValue,
+              signature: signatureValue
             }
           } password={passwordValue} />
         break
@@ -222,8 +186,4 @@ export const Signup = (props) => {
   </div>
 }
 
-const mapDispatchToProps = dispatch => ({
-  onAddUserToStore: user => dispatch(createUserInStore(user))
-})
-
-export default connect(null, mapDispatchToProps)(Signup)
+export default Signup

@@ -154,17 +154,14 @@ type User @model @auth(rules: [{ allow: public, provider: apiKey }]) {
   signature: String
 }
 
-type ProspectList @model @auth(rules: [{ allow: public, provider: apiKey }]) {
+type Prospect
+  @model
+  @key(name: "byProspectList", fields: ["prospectListId"])
+  @auth(rules: [{ allow: public, provider: apiKey }]) {
   id: ID!
-  name: String
-  owningUserId: Int
-  prospects: [Prospect]
-}
-
-type Prospect @model @auth(rules: [{ allow: public, provider: apiKey }]) {
-  id: ID!
+  userId: ID!
+  prospectListId: ID!
   status: String
-  prospectListId: Int
   firstName: String
   lastName: String
   company: String
@@ -176,8 +173,19 @@ type Prospect @model @auth(rules: [{ allow: public, provider: apiKey }]) {
   phone: String
   email: String
   facebook: String
-  owningUserId: Int
+  prospectList: ProspectList @connection(fields: ["prospectListId"])
 }
+
+type ProspectList
+  @model
+  @key(name: "byUser", fields: ["userId"])
+  @auth(rules: [{ allow: public, provider: apiKey }]) {
+  id: ID!
+  userId: ID!
+  name: String
+  enhance: Boolean
+}
+
 type ErrorResponse {
   message: String
 }
