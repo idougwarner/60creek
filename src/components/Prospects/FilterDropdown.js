@@ -7,7 +7,7 @@ export const INTERESTE_STATUS = {
   ALL: "all",
   INTERESTE: 'interested',
   NOT_INTERESTE: "not interested",
-  OTHER: '',
+  OTHER: '----',
 }
 
 const FilterDropdown = ({ changeFilterEvent }) => {
@@ -37,7 +37,6 @@ const FilterDropdown = ({ changeFilterEvent }) => {
     }
   }
   const changeList = (value) => {
-    console.log(value)
     if (value === 'all') {
       setFilterList(['all']);
     } else {

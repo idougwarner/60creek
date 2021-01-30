@@ -13,7 +13,6 @@ const Layout = ({ children }) => {
   const user = useSelector(state => state.userStore);
   const dispatch = useDispatch();
   useEffect(async () => {
-    console.log(user);
     if (!user) {
       let rt = await Auth.currentUserInfo();
       if (rt) {

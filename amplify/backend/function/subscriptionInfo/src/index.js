@@ -20,7 +20,6 @@ exports.handler = async (event) => {
     const price = await stripe.prices.retrieve(priceItem.Parameter.Value);
     return { data: price, error: null };
   } catch (err) {
-    console.log(err);
     return { data: null, error: { message: new Error(err).message } }
   }
 };

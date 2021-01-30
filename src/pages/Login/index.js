@@ -71,12 +71,10 @@ export const Login = () => {
     const f = async () => {
       try {
         let rt = await Auth.currentUserInfo();
-        console.log(rt)
         if (rt) {
           patchUserInfo(rt.username)
         }
       } catch (err) {
-        console.log(err)
       }
     }
     f();

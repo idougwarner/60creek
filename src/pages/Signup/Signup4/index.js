@@ -124,17 +124,17 @@ const CheckOutForm = ({
     }
   }, [monthly, couponInfo])
   const loadMonthlyInfo = async () => {
-    try {
-      setLoading(true)
-      const rt = await API.graphql(graphqlOperation(subscriptionInfo));
-      if (rt.data.subscriptionInfo.data) {
-        setMonthly(rt.data.subscriptionInfo.data.unit_amount / 100);
-      } else {
-        setMonthly(50);
+    for (; ;) {
+      try {
+        setLoading(true)
+        const rt = await API.graphql(graphqlOperation(subscriptionInfo));
+        if (rt.data.subscriptionInfo.data) {
+          setMonthly(rt.data.subscriptionInfo.data.unit_amount / 100);
+          setLoading(false);
+          return
+        }
+      } catch (err) {
       }
-      setLoading(false);
-    } catch (err) {
-      loadMonthlyInfo();
     }
   }
   const messageConvert = (message) => {

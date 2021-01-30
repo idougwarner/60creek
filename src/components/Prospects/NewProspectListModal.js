@@ -24,6 +24,8 @@ const NewProspectListModal = ({ show, close }) => {
   const [errors, setErrors] = useState(0);
   const [estimate, setEstimate] = useState('');
   const [completed, setCompleted] = useState(false);
+  const [totalNumber, setTotalNumber] = useState('');
+  const [fileData, setFileData] = useState([]);
 
   const fileInputRef = useRef();
   const user = useSelector(state => state.userStore);
@@ -71,14 +73,12 @@ const NewProspectListModal = ({ show, close }) => {
         const delta = end - start;
         setEstimate(timeConversion(delta * (prospectList.length - i)));
         setPercentage(Math.round((i + 1) / prospectList.length * 100));
-        console.log(rt);
         if (!show) {
           return
         }
       }
       setCompleted(true);
     } catch (err) {
-      console.log(err);
     }
   }
 
@@ -122,13 +122,25 @@ const NewProspectListModal = ({ show, close }) => {
   const uploadCsvFile = () => {
     fileInputRef.current.click();
   }
+  useEffect(() => {
+    if (totalNumber) {
+      const n = parseInt(totalNumber);
+      if (n > 0) {
+        setProspectList(fileData.slice(0, n));
+      } else {
+        setProspectList(fileData);
+      }
+    } else {
+      setProspectList(fileData);
+    }
+  }, [fileData, totalNumber])
   const onChangeFile = async (event) => {
     event.stopPropagation();
     event.preventDefault();
     setLoading(true);
     try {
-      const fileData = await getJsonFromFile(event.target.files[0]);
-      setProspectList(fileData);
+      const fData = await getJsonFromFile(event.target.files[0]);
+      setFileData(fData)
       setFileName(event.target.files[0].name);
     } catch (err) {
 
@@ -152,7 +164,7 @@ const NewProspectListModal = ({ show, close }) => {
         <Modal.Header >
           <img src="/assets/icons/close.svg" className="modal-close-btn" onClick={() => close({ data: completed })} />
           <Modal.Title>
-            {step === STEP1 ? "New Prospect List" : step === STEP2 ? "Prosect Created" : step === STEP3 ? "Confirmation" :
+            {step === STEP1 ? "New Prospect List" : step === STEP2 ? "Prospect Created" : step === STEP3 ? "Confirmation" :
               <>
                 {completed ? 'Completed' : <>  Uploading<br /> {prospectList.length} Prospects</>}
               </>
@@ -168,10 +180,11 @@ const NewProspectListModal = ({ show, close }) => {
             </Form.Group>
             <Form.Group >
               <Form.Label >Total Number of Prospects</Form.Label>
-              <Form.Control type="text" placeholder="Enter Number of Prospects. (optional)" />
+              <Form.Control type="text" placeholder="Enter Number of Prospects. (optional)"
+                value={totalNumber} onChange={e => setTotalNumber(e.target.value)} />
             </Form.Group>
             <Form.Group >
-              <Form.Label className="required d-flex align-items-center">
+              <Form.Label className="d-flex align-items-center">
                 Template Download
               <img src="/assets/icons/information-circle.svg" className="ml-1" />
               </Form.Label>

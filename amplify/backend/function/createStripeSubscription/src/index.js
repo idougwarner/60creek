@@ -17,7 +17,6 @@ exports.handler = async (event) => {
     const stripeSecretKey = await stripeSecretKeyPromise;
     const priceItem = await priceItemPromise;
     const stripe = require("stripe")(stripeSecretKey.Parameter.Value);
-    console.log(event.arguments.input);
     const { email, paymentMethodId, coupon } = event.arguments.input;
     const customer = await stripe.customers.create({
       payment_method: paymentMethodId,
@@ -26,14 +25,12 @@ exports.handler = async (event) => {
         default_payment_method: paymentMethodId
       }
     });
-    console.log(customer);
     const subscription = await stripe.subscriptions.create({
       customer: customer.id,
       items: [{ price: priceItem.Parameter.Value }],
       coupon: coupon ? coupon : null,
       expand: ['latest_invoice.payment_intent']
     });
-    console.log(subscription);
     const data = {
       address: customer.address,
       name: customer.name,
@@ -49,7 +46,6 @@ exports.handler = async (event) => {
     }
     return { data: data, error: null };
   } catch (err) {
-    console.log(err);
     return { data: null, error: { message: new Error(err).message } }
   }
 };

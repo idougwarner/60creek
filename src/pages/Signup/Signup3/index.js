@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import SignatureCanvas from 'react-signature-canvas'
 import MorePips from '../MorePips'
-import CheckBox from '../../../components/controls/CheckBox'
 import './Signup3.scss'
 
 import BasicButton from '../../../components/controls/BasicButton'
@@ -45,11 +44,15 @@ const Signup3 = (props) => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [isPrivacy, setIsPrivacy] = useState(true);
 
-  const showSubscriptionAgreementModal = () => {
+  const showSubscriptionAgreementModal = (event) => {
+    event.stopPropagation();
+    event.preventDefault();
     setModalIsOpen(true);
     setIsPrivacy(false);
   }
-  const showPrivacyModal = () => {
+  const showPrivacyModal = (event) => {
+    event.stopPropagation();
+    event.preventDefault();
     setModalIsOpen(true);
     setIsPrivacy(true);
   }

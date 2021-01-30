@@ -103,7 +103,6 @@ export const Signup = (props) => {
     setPipsConfigValue(pipsConfigValue)
   }
   const handleGotoDashboard = () => {
-    console.log('goto dashboard');
   }
 
   const defaultPage = <Signup1 firstName={firstNameValue} lastName={lastNameValue} emailAddress={emailAddressValue} password={passwordValue}

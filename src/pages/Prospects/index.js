@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import './Prospects.scss'
-import { DropdownButton, Dropdown, Table, InputGroup, FormControl, FormCheck, Pagination, Spinner } from 'react-bootstrap';
+import { DropdownButton, Dropdown, Table, InputGroup, FormControl, FormCheck, Pagination, Spinner, ButtonGroup, Button, SplitButton } from 'react-bootstrap';
 import AddSingleProspectModal from '../../components/Prospects/AddSingleProspectModal';
 import NewProspectListModal from '../../components/Prospects/NewProspectListModal';
 import { API, graphqlOperation } from 'aws-amplify';
@@ -116,7 +116,6 @@ const ProspectsPage = () => {
     }
   }
   const changeFilterEvent = (filter) => {
-    console.log(filter)
     setListFilter(filter.list);
     setStatusFilter(filter.status);
   }
@@ -159,10 +158,7 @@ const ProspectsPage = () => {
     <>
       <h4>Prospect List</h4>
       <div className="mb-4">
-        <DropdownButton
-          variant="primary"
-          title="ADD PROSPECT(S)"
-        >
+        <SplitButton variant="primary" title="ADD PROSPECT(S)" >
           <Dropdown.Item eventKey="1" onClick={() => { setShowNewListModal(true) }}>
             <img src="/assets/icons/new-list.svg" className="item-icon" />
             CREAT NEW LIST
@@ -175,7 +171,7 @@ const ProspectsPage = () => {
             <img src="/assets/icons/new-list.svg" className="item-icon" />
             ADD SINGLE PROSPECT
           </Dropdown.Item>
-        </DropdownButton>
+        </SplitButton>
       </div>
       <div className="card">
         <div className="d-flex justify-content-between mb-4">
@@ -272,24 +268,24 @@ const ProspectsPage = () => {
             <Pagination.Last />
           </Pagination> */}
         </div>
-        <AddToExistingListModal show={showAddExistingModal} close={(event) => {
+        {showAddExistingModal && <AddToExistingListModal show={showAddExistingModal} close={(event) => {
           setShowAddExistingModal(false);
           if (event && event.data) {
             loadData();
           }
-        }} />
-        <AddSingleProspectModal show={showSingleModal} close={(event) => {
+        }} />}
+        {showSingleModal && <AddSingleProspectModal show={showSingleModal} close={(event) => {
           setShowSingleModal(false);
           if (event && event.data) {
             loadData();
           }
-        }} />
-        <NewProspectListModal show={showNewListModal} close={(event) => {
+        }} />}
+        {showNewListModal && <NewProspectListModal show={showNewListModal} close={(event) => {
           setShowNewListModal(false);
           if (event && event.data) {
             loadData();
           }
-        }} />
+        }} />}
       </div>
 
     </>
