@@ -1,22 +1,4 @@
 {
-  "dev": {
-    "awscloudformation": {
-      "AuthRoleName": "amplify-60creek-dev-203758-authRole",
-      "UnauthRoleArn": "arn:aws:iam::313220278604:role/amplify-60creek-dev-203758-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::313220278604:role/amplify-60creek-dev-203758-authRole",
-      "Region": "us-west-2",
-      "DeploymentBucketName": "amplify-60creek-dev-203758-deployment",
-      "UnauthRoleName": "amplify-60creek-dev-203758-unauthRole",
-      "StackName": "amplify-60creek-dev-203758",
-      "StackId": "arn:aws:cloudformation:us-west-2:313220278604:stack/amplify-60creek-dev-203758/22c11c00-5f77-11eb-b74d-0aea264da24f",
-      "AmplifyAppId": "d2uhia5y233ztu"
-    },
-    "categories": {
-      "auth": {
-        "60creek8853cd69": {}
-      }
-    }
-  },
   "devtest": {
     "awscloudformation": {
       "AuthRoleName": "amplify-60creek-devtest-44357-authRole",
