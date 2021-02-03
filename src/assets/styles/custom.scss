@@ -41,7 +41,8 @@ body {
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
 }
 
 h4 {
@@ -174,10 +175,49 @@ h5 {
     font-size: 16px;
     color: rgba(19, 22, 36, 0.6);
   }
-  .completed {
+  &.completed {
     background-color: #f5f7fa;
     border: 1px solid #245372;
   }
+}
+.form-control.is-invalid,
+.was-validated .form-control:invalid {
+  border-color: #d95746;
+  background-image: none;
+}
+.form-group {
+  position: relative;
+  margin-bottom: 24px;
+}
+.password-eye-icon {
+  background-image: url(../images/eye-open-icon.svg);
+  background-repeat: no-repeat;
+  background-size: 16px 16px;
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  top: 40px;
+  right: 15px;
+  cursor: pointer;
+  z-index: 10;
+
+  &.showing-password {
+    background-size: 18px 18px;
+    width: 18px;
+    height: 18px;
+    top: 39px;
+    right: 14px;
+    background-image: url(../images/eye-icon.svg);
+  }
+}
+.invalid-feedback {
+  color: #d95746;
+  font-style: italic;
+  margin-top: 8px;
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: 0.4px;
 }
 .text-muted {
   color: rgba(19, 22, 36, 0.6) !important;
@@ -185,6 +225,7 @@ h5 {
 .form-text {
   font-size: 12px;
   line-height: 16px;
+  margin-top: 8px;
 }
 .input-group {
   position: relative;

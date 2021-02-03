@@ -1,6 +1,6 @@
-import React from 'react'
+import React from "react";
 
-import './MorePips.scss'
+import "./MorePips.scss";
 
 //******************************************************************
 //*
@@ -9,15 +9,24 @@ import './MorePips.scss'
 //******************************************************************
 
 const MorePips = (props) => {
+  const { pipsConfig } = props;
+  console.log(pipsConfig);
 
-  const { pipsConfig } = props
-  
   const pipArray = pipsConfig.map((pip, index) => {
-    return <div className={`pip ${pip.current ? 'current': ''} ${pip.completed ? 'completed': ' '}`} key={`pip-${index}`}/>
-  })
-  return <div className='more-pips'>
-    <div className='pip-array'>{pipArray}</div>
-  </div>
-}
+    return (
+      <div
+        className={`pip ${pip.current ? "current" : ""} ${
+          pip.completed ? "pip-completed" : " "
+        }`}
+        key={`pip-${index}`}
+      />
+    );
+  });
+  return (
+    <div className="more-pips">
+      <div className="pip-array">{pipArray}</div>
+    </div>
+  );
+};
 
-export default MorePips
+export default MorePips;

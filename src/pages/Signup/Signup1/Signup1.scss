@@ -1,1 +1,70 @@
-@import "../Signup.scss";
+.password-strength {
+  .strength-bar {
+    display: flex;
+    width: 100%;
+    margin-bottom: 4px;
+    margin-top: 8px;
+    div {
+      flex-grow: 1;
+      height: 4px;
+      margin-right: 4px;
+      border-radius: 4px;
+      background-color: #bde2fb;
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+    &.week > div {
+      &:nth-child(1) {
+        background-color: #248cd1;
+      }
+    }
+    &.good > div {
+      &:nth-child(1) {
+        background-color: #248cd1;
+      }
+      &:nth-child(2) {
+        background-color: #248cd1;
+      }
+    }
+    &.strong > div {
+      &:nth-child(1) {
+        background-color: #248cd1;
+      }
+      &:nth-child(2) {
+        background-color: #248cd1;
+      }
+      &:nth-child(3) {
+        background-color: #248cd1;
+      }
+    }
+    &.perfect > div {
+      &:nth-child(4) {
+        background-color: #248cd1;
+      }
+      &:nth-child(1) {
+        background-color: #248cd1;
+      }
+      &:nth-child(2) {
+        background-color: #248cd1;
+      }
+      &:nth-child(3) {
+        background-color: #248cd1;
+      }
+    }
+  }
+  .strength-label {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    font-size: 12px;
+    line-height: 16px;
+    letter-spacing: 0.4px;
+    color: #131624;
+    text-transform: capitalize;
+    img {
+      margin-left: 4px;
+    }
+  }
+}
