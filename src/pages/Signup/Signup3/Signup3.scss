@@ -2,41 +2,23 @@
 
 .signature-label {
   position: relative;
-  height: 14px;
-  margin-bottom: 0px;
-  margin-top: 10px;
-  margin-left: 10px;
-  span {
-    font-family: Raleway;
-    font-style: normal;
-    font-weight: normal;
-    font-size: 14px;
-    line-height: 14px;
-    letter-spacing: 0.25px;
-    text-align: left;
-    color: rgba(19, 22, 36, 0.6);
-    height: 20px;
-  }
-  .signature {
-    position: absolute;
-    left: 0;
-    top: 0;
-  }
+
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   .clear {
-    position: absolute;
-    right: 20px;
-    top: 0;
     text-decoration: underline;
     cursor: pointer;
   }
 }
 .signature-box {
   margin-top: 5px;
-  width: calc(100% - 10px);
+  max-width: 400px;
   height: 100px;
-  border: 1px solid #366ee7;
+  border: 2px dashed rgba(19, 22, 36, 0.6);
   border-radius: 10px;
-  margin-bottom: 20px;
+  margin-bottom: 32px;
 }
 
 .sixty-creek-signup {
@@ -55,21 +37,22 @@
 .checkbox-container {
   display: flex;
   align-items: center;
-  .checkbox {
-    margin-top: 0 !important;
-    margin-right: 16px !important;
-  }
-  .agree-item {
+  label {
+    display: flex;
+    align-items: center;
     font-size: 14px;
     line-height: 20px;
     letter-spacing: 0.25px;
     color: #131624;
-    display: flex;
-    span {
-      margin-left: 5px;
-      font-weight: 600;
-      color: #366ee7;
-      text-decoration: none;
-    }
+  }
+  .agree-item {
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: 0.25px;
+    margin-left: 5px;
+    font-weight: 600;
+    color: #366ee7;
+    text-decoration: none;
   }
 }

@@ -1,10 +1,15 @@
-import React, { useState, useEffect } from 'react'
-import MorePips from '../MorePips'
-import './Signup2.scss'
-import Select from 'react-select';
-import BasicButton from '../../../components/controls/BasicButton'
-import { usStates } from '../../../helpers/us-states';
-import { customSelectStyles } from '../../../assets/styles/select-style';
+import React, { useState, useEffect, useCallback } from "react";
+import MorePips from "../MorePips";
+import "./Signup2.scss";
+import Select from "react-select";
+import BasicButton from "../../../components/controls/BasicButton";
+import { usStates } from "../../../helpers/us-states";
+import { customSelectStyles } from "../../../assets/styles/select-style";
+import { FormControl, FormGroup, FormLabel } from "react-bootstrap";
+
+import InputMask from "react-input-mask";
+import { useDispatch } from "react-redux";
+import { ACTIONS } from "../../../redux/actionTypes";
 
 //******************************************************************
 //*
@@ -13,120 +18,188 @@ import { customSelectStyles } from '../../../assets/styles/select-style';
 //******************************************************************
 
 const Signup2 = (props) => {
+  const [companyNameValue, setCompanyNameValue] = useState(props.companyName);
+  const [phoneValue, setPhoneValue] = useState(props.phone);
+  const [address1Value, setAddress1Value] = useState(props.address1);
+  const [address2Value, setAddress2Value] = useState(props.address2);
+  const [cityValue, setCityValue] = useState(props.city);
+  const [stateValue, setStateValue] = useState({
+    value: props.state,
+    label: props.state,
+  });
+  const [zipValue, setZipValue] = useState(props.zip);
+  const [nextButtonEnabledValue, setNextButtonEnabledValue] = useState(false);
 
-  const validateEmail = (email) => {
-    if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(email)) {
-      return (true)
-    }
-    return (false)
-  }
-
-  const [companyNameValue, setCompanyNameValue] = useState(props.companyName)
-  const [phoneValue, setPhoneValue] = useState(props.phone)
-  const [address1Value, setAddress1Value] = useState(props.address1)
-  const [address2Value, setAddress2Value] = useState(props.address2)
-  const [cityValue, setCityValue] = useState(props.city)
-  const [stateValue, setStateValue] = useState(props.state)
-  const [zipValue, setZipValue] = useState(props.zip)
-  const [nextButtonEnabledValue, setNextButtonEnabledValue] = useState(false)
-
+  const dispatch = useDispatch();
   useEffect(() => {
-    if (companyNameValue && phoneValue && address1Value && cityValue && stateValue && zipValue) {
-      setNextButtonEnabledValue(true)
+    dispatch({ type: ACTIONS.SET_SINGUP_STEP, step: "step-2" });
+  }, []);
+  const isValidZip = useCallback(() => {
+    if (/^[0-9]{5}(?:-[0-9]{4})?$/.test(zipValue)) {
+      return true;
     }
-    else {
-      setNextButtonEnabledValue(false)
+    return false;
+  }, [zipValue]);
+  const isValidPhone = useCallback(() => {
+    if (phoneValue.indexOf("_") < 0) {
+      return true;
     }
-  }, [companyNameValue, phoneValue, address1Value, address2Value, cityValue, stateValue, zipValue]);
+    return false;
+  });
+  useEffect(() => {
+    if (
+      companyNameValue &&
+      phoneValue &&
+      isValidPhone() &&
+      address1Value &&
+      cityValue &&
+      stateValue &&
+      zipValue &&
+      isValidZip()
+    ) {
+      setNextButtonEnabledValue(true);
+    } else {
+      setNextButtonEnabledValue(false);
+    }
+  }, [
+    companyNameValue,
+    phoneValue,
+    address1Value,
+    address2Value,
+    cityValue,
+    stateValue,
+    zipValue,
+  ]);
 
+  return (
+    <>
+      <FormGroup controlId="companyName">
+        <FormLabel className="required">Company Name</FormLabel>
+        <FormControl
+          type="text"
+          placeholder="Enter Company Name"
+          value={companyNameValue}
+          className={companyNameValue ? "completed" : ""}
+          onChange={(e) => setCompanyNameValue(e.target.value)}
+        />
+      </FormGroup>
+      <FormGroup controlId="phoneNumber">
+        <FormLabel className="required">Phone Number</FormLabel>
 
-  return (<>
-    <div className='g-input-box'>
-      <div className='g-input-label required'>Company Name</div>
-      <input className='g-input-container'
-        type='text'
-        placeholder='Enter Company Name'
-        value={companyNameValue}
-        onChange={(e) => {
-          setCompanyNameValue(e.target.value)
-        }} />
-    </div>
-    <div className='g-input-box'>
-      <div className='g-input-label required'>Phone Number</div>
-      <input className='g-input-container'
-        type='text'
-        placeholder='Enter Phone Number'
-        value={phoneValue}
-        onChange={(e) => {
-          setPhoneValue(e.target.value)
-        }} />
-    </div>
-    <div className='g-form-line'>
-      <div className={'g-input-box g-half-input-box'}>
-        <div className='g-input-label required'>Street Address</div>
-        <input className='g-input-container'
-          type='text'
-          placeholder='Enter Street Address'
+        <InputMask
+          mask="(999) 999 - 9999"
+          value={phoneValue}
+          type="tel"
+          placeholder="Enter Phone Number"
+          onChange={(e) => setPhoneValue(e.target.value)}
+        >
+          {(inputProps) => (
+            <FormControl
+              {...inputProps}
+              className={phoneValue ? "completed" : ""}
+              isInvalid={phoneValue && !isValidPhone()}
+            />
+          )}
+        </InputMask>
+      </FormGroup>
+      <FormGroup controlId="streetAddress">
+        <FormLabel className="required">Street Address</FormLabel>
+        <FormControl
+          type="text"
+          placeholder="Enter Street Address"
           value={address1Value}
-          onChange={(e) => {
-            setAddress1Value(e.target.value)
-            if (address2Value && cityValue && e.target.value) {
-              setNextButtonEnabledValue(true)
-            }
-            else {
-              setNextButtonEnabledValue(false)
-            }
-          }} />
-      </div>
-      <div className={'g-half-input-box'}>
-        <div className='g-input-label'>{'Address Line 2'}</div>
-        <input className='g-input-container'
-          type='text'
-          placeholder='Enter Street Address'
+          className={address1Value ? "completed" : ""}
+          onChange={(e) => setAddress1Value(e.target.value)}
+        />
+      </FormGroup>
+      <FormGroup controlId="address2">
+        <FormLabel>Address Line 2</FormLabel>
+        <FormControl
+          type="text"
+          placeholder="Enter Apt, Suite, Etc"
           value={address2Value}
-          onChange={(e) => {
-            setAddress2Value(e.target.value)
-          }} />
+          className={address2Value ? "completed" : ""}
+          onChange={(e) => setAddress2Value(e.target.value)}
+        />
+      </FormGroup>
+      <div className="row">
+        <div className="col-6 pr-2">
+          <FormGroup controlId="city">
+            <FormLabel className="required">City</FormLabel>
+            <FormControl
+              type="text"
+              placeholder="Enter City"
+              value={cityValue}
+              className={cityValue ? "completed" : ""}
+              onChange={(e) => setCityValue(e.target.value)}
+            />
+          </FormGroup>
+        </div>
+        <div className="col-3 pr-2 pl-2">
+          <FormGroup controlId="state">
+            <FormLabel className="required">State</FormLabel>
+            <Select
+              value={stateValue}
+              onChange={(value) => {
+                setStateValue(value);
+              }}
+              placeholder="State"
+              styles={customSelectStyles(40)}
+              options={usStates.map((item) => ({ value: item, label: item }))}
+            />
+          </FormGroup>
+        </div>
+        <div className="col-3 pl-2">
+          <FormGroup controlId="zip">
+            <FormLabel className="required">Zip</FormLabel>
+            <FormControl
+              type="text"
+              placeholder="Zip"
+              value={zipValue}
+              className={zipValue ? "completed" : ""}
+              onChange={(e) => setZipValue(e.target.value)}
+              isInvalid={zipValue && !isValidZip()}
+            />
+          </FormGroup>
+        </div>
       </div>
-    </div>
-    <div className={'g-input-box'}>
-      <div className='g-input-label required'>City</div>
-      <input className='g-input-container'
-        type={'text'}
-        placeholder='Enter City'
-        value={cityValue}
-        onChange={(e) => {
-          setCityValue(e.target.value)
-        }} />
-    </div>
-    <div className='g-form-line'>
-      <div className={'g-input-box g-half-input-box'}>
-        <div className='g-input-label required'>State</div>
-        <Select value={stateValue} onChange={(value) => { setStateValue(value) }}
-          styles={customSelectStyles(48)}
-          options={usStates.map(item => ({ value: item, label: item }))} />
-      </div>
-      <div className={'g-input-box g-half-input-box'}>
-        <div className='g-input-label required'>Zip</div>
-        <input className='g-input-container'
-          type={'text'}
-          placeholder='Zip'
-          value={zipValue}
-          onChange={(e) => {
-            setZipValue(e.target.value)
-          }} />
-      </div>
-    </div>
-    <BasicButton title='next' additionalClass='next-button' enabled={nextButtonEnabledValue} buttonPushed={(e) => {
-      props.next(true, companyNameValue, phoneValue, address1Value, address2Value, cityValue, stateValue.value, zipValue)
-    }}
-    />
-    <BasicButton title='Previous' additionalClass='previous-button' enabled={true} buttonPushed={(e) => {
-      props.previous(false, companyNameValue, phoneValue, address1Value, address2Value, cityValue, stateValue.value, zipValue)
-    }}
-    />
-    <MorePips pipsConfig={props.pipsConfig} />
-  </>);
-}
+      <BasicButton
+        title="next"
+        additionalClass="next-button"
+        enabled={nextButtonEnabledValue}
+        buttonPushed={(e) => {
+          props.next(
+            true,
+            companyNameValue,
+            phoneValue,
+            address1Value,
+            address2Value,
+            cityValue,
+            stateValue?.value,
+            zipValue
+          );
+        }}
+      />
+      <BasicButton
+        title="Previous"
+        additionalClass="previous-button"
+        enabled={true}
+        buttonPushed={(e) => {
+          props.previous(
+            false,
+            companyNameValue,
+            phoneValue,
+            address1Value,
+            address2Value,
+            cityValue,
+            stateValue?.value,
+            zipValue
+          );
+        }}
+      />
+      <MorePips pipsConfig={props.pipsConfig} />
+    </>
+  );
+};
 
-export default Signup2
+export default Signup2;

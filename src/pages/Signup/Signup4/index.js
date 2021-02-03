@@ -1,47 +1,54 @@
-import React, { useEffect, useState } from 'react';
-import BasicButton from '../../../components/controls/BasicButton';
-import MorePips from '../MorePips';
-import './Signup4.scss';
+import React, { useEffect, useState } from "react";
+import BasicButton from "../../../components/controls/BasicButton";
+import MorePips from "../MorePips";
+import "./Signup4.scss";
 import {
   Elements,
   CardNumberElement,
   CardExpiryElement,
   CardCvcElement,
-  ElementsConsumer
-} from '@stripe/react-stripe-js';
-import { loadStripe } from '@stripe/stripe-js';
-import infoIcon from '../../../assets/images/information-circle.svg';
-import { API, Auth, graphqlOperation } from 'aws-amplify';
-import { createPaymentMethod, createStripeSubscription, createUser, validatePromoCode } from '../../../graphql/mutations';
-import { subscriptionInfo } from '../../../graphql/queries';
-import { Spinner } from 'react-bootstrap';
+  ElementsConsumer,
+} from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+import infoIcon from "../../../assets/images/information-circle.svg";
+import { API, Auth, graphqlOperation } from "aws-amplify";
+import {
+  createPaymentMethod,
+  createStripeSubscription,
+  createUser,
+  validatePromoCode,
+} from "../../../graphql/mutations";
+import { subscriptionInfo } from "../../../graphql/queries";
+import { Spinner } from "react-bootstrap";
+import { useDispatch } from "react-redux";
+import { ACTIONS } from "../../../redux/actionTypes";
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY);
 
 const createOptions = () => {
   return {
     style: {
       base: {
-        fontSize: '14px',
-        color: '#131624',
-        '::placeholder': {
-          color: 'rgba(#131624, 0.6)'
-        }
-
+        fontSize: "14px",
+        color: "#131624",
+        "::placeholder": {
+          color: "rgba(#131624, 0.6)",
+        },
       },
       invalid: {
-        color: '#c23d4b'
-      }
-    }
+        color: "#c23d4b",
+      },
+    },
   };
 };
 
-
 const CheckOutForm = ({
-  next, previous, pipsConfig,
+  next,
+  previous,
+  pipsConfig,
   stripe,
   elements,
   userInfo,
-  password
+  password,
 }) => {
   // const [zipCode, setZipCode] = useState('');
   // const [showZipCode, setShowZipCode] = useState(false);
@@ -50,18 +57,20 @@ const CheckOutForm = ({
   const [loading, setLoading] = useState(false);
 
   const [monthly, setMonthly] = useState(50);
-  const [cardholderName, setCardholderName] = useState('');
+  const [cardholderName, setCardholderName] = useState("");
   const [total, setTotal] = useState(50);
-  const [discountCode, setDiscountCode] = useState('');
+  const [discountCode, setDiscountCode] = useState("");
   const [isEnableSubmit, setIsEnableSubmit] = useState(false);
   const [cardStatus, setCardStatus] = useState(false);
 
   const [cardNumber, setCardNumber] = useState(false);
   const [cardExpiry, setCardExpiry] = useState(false);
   const [cardCvc, setCardCvc] = useState(false);
-  const [errorMsg, setErrorMsg] = useState('');
-  const [applyingCoupon, setApplyingCoupon] = useState('APPLY');
+  const [errorMsg, setErrorMsg] = useState("");
+  const [applyingCoupon, setApplyingCoupon] = useState("APPLY");
   const [couponInfo, setCouponInfo] = useState(null);
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (cardStatus && cardholderName) {
@@ -69,21 +78,20 @@ const CheckOutForm = ({
     } else {
       setIsEnableSubmit(false);
     }
-  }, [cardStatus, cardholderName])
-
+  }, [cardStatus, cardholderName]);
 
   const handleChange = (event) => {
-    if (event.elementType === 'cardNumber') {
+    if (event.elementType === "cardNumber") {
       setCardNumber(event.complete);
-    } else if (event.elementType === 'cardExpiry') {
+    } else if (event.elementType === "cardExpiry") {
       setCardExpiry(event.complete);
-    } else if (event.elementType === 'cardCvc') {
+    } else if (event.elementType === "cardCvc") {
       setCardCvc(event.complete);
     }
     if (event.error) {
-      setErrorMsg(event.error.message)
+      setErrorMsg(event.error.message);
     } else {
-      setErrorMsg('')
+      setErrorMsg("");
     }
   };
 
@@ -93,102 +101,110 @@ const CheckOutForm = ({
     } else {
       setCardStatus(false);
     }
-  }, [cardNumber, cardExpiry, cardCvc])
+  }, [cardNumber, cardExpiry, cardCvc]);
 
   useEffect(() => {
     if (couponInfo) {
       if (couponInfo.redeem_by) {
-
         let dt = new Date(couponInfo.redeem_by * 1000);
         let today = new Date();
         if (dt < today) {
           setTotal(monthly);
-          setErrorMsg('This promo code has been expired');
+          setErrorMsg("This promo code has been expired");
           return;
         }
       }
       if (couponInfo.max_redemptions) {
         if (couponInfo.max_redemptions <= couponInfo.times_redeemed) {
           setTotal(monthly);
-          setErrorMsg('This promo code has been expired');
+          setErrorMsg("This promo code has been expired");
           return;
         }
       }
       if (couponInfo.amount_off) {
-        setTotal(monthly - couponInfo.amount_off / 100)
+        setTotal(monthly - couponInfo.amount_off / 100);
       } else {
-        setTotal(monthly - monthly * couponInfo.percent_off / 100)
+        setTotal(monthly - (monthly * couponInfo.percent_off) / 100);
       }
     } else {
-      setTotal(monthly)
+      setTotal(monthly);
     }
-  }, [monthly, couponInfo])
+  }, [monthly, couponInfo]);
   const loadMonthlyInfo = async () => {
-    for (; ;) {
+    for (;;) {
       try {
-        setLoading(true)
+        setLoading(true);
         const rt = await API.graphql(graphqlOperation(subscriptionInfo));
         if (rt.data.subscriptionInfo.data) {
           setMonthly(rt.data.subscriptionInfo.data.unit_amount / 100);
           setLoading(false);
-          return
+          return;
         }
-      } catch (err) {
-      }
+      } catch (err) {}
     }
-  }
+  };
   const messageConvert = (message) => {
-    if (message === 'Error: An error occurred with our connection to Stripe.') {
-      return "Failed your request. Please try again."
-    } else if (message.indexOf('Coupon expired') >= 0) {
-      return "Your Coupon code has been expired."
+    if (message === "Error: An error occurred with our connection to Stripe.") {
+      return "Failed your request. Please try again.";
+    } else if (message.indexOf("Coupon expired") >= 0) {
+      return "Your Coupon code has been expired.";
     }
     return message;
-  }
+  };
   useEffect(async () => {
     loadMonthlyInfo();
   }, []);
   const handleSubmit = async () => {
     if (!stripe) {
-      console.error('Stripejs has not loaded yet.');
+      console.error("Stripejs has not loaded yet.");
       return;
     }
     setUpdating(true);
-    setErrorMsg('');
+    setErrorMsg("");
 
     const cardElement = elements.getElement(CardNumberElement);
     try {
-
       const pm = await stripe.createPaymentMethod({
-        type: 'card',
+        type: "card",
         card: cardElement,
         billing_details: {
           address: userInfo.address,
           email: userInfo.email,
           phone: userInfo.phone,
-          name: cardholderName
-        }
-      })
-      let rt = await API.graphql(graphqlOperation(createStripeSubscription, {
-        input: {
-          paymentMethodId: pm.paymentMethod.id,
-          email: userInfo.email,
-          coupon: couponInfo ? couponInfo.id : null,
-        }
-      }))
-      if (rt.data.createStripeSubscription.data) {
-        let paymentMethod = await API.graphql(graphqlOperation(createPaymentMethod, {
+          name: cardholderName,
+        },
+      });
+      let rt = await API.graphql(
+        graphqlOperation(createStripeSubscription, {
           input: {
-            ...rt.data.createStripeSubscription.data,
-            name: userInfo.name,
-            address: userInfo.address.address1 + ', ' + userInfo.address.city + ' ' + userInfo.address.state + ' ' + userInfo.address.postal_code,
-            phone: userInfo.phone,
-            cardType: pm.paymentMethod.card.brand,
-            expMonth: pm.paymentMethod.card.exp_month,
-            expYear: pm.paymentMethod.card.exp_year,
-            last4: pm.paymentMethod.card.last4,
-          }
-        }))
+            paymentMethodId: pm.paymentMethod.id,
+            email: userInfo.email,
+            coupon: couponInfo ? couponInfo.id : null,
+          },
+        })
+      );
+      if (rt.data.createStripeSubscription.data) {
+        let paymentMethod = await API.graphql(
+          graphqlOperation(createPaymentMethod, {
+            input: {
+              ...rt.data.createStripeSubscription.data,
+              name: userInfo.name,
+              address:
+                userInfo.address.address1 +
+                ", " +
+                userInfo.address.city +
+                " " +
+                userInfo.address.state +
+                " " +
+                userInfo.address.postal_code,
+              phone: userInfo.phone,
+              cardType: pm.paymentMethod.card.brand,
+              expMonth: pm.paymentMethod.card.exp_month,
+              expYear: pm.paymentMethod.card.exp_year,
+              last4: pm.paymentMethod.card.last4,
+            },
+          })
+        );
 
         const signupResult = await Auth.signUp({
           username: userInfo.email,
@@ -196,7 +212,7 @@ const CheckOutForm = ({
           attributes: {
             email: userInfo.email,
             name: userInfo.name,
-          }
+          },
         });
         const newUser = {
           firstName: userInfo.firstName,
@@ -210,16 +226,30 @@ const CheckOutForm = ({
           phone: userInfo.phone,
           email: userInfo.email,
           signature: userInfo.signature,
-          cognitoUserName: signupResult.userSub
+          cognitoUserName: signupResult.userSub,
+        };
+        await Auth.signIn(userInfo.email, password);
+        const createdUserInfo = await API.graphql(
+          graphqlOperation(createUser, { input: newUser })
+        );
+
+        if (createdUserInfo?.data?.createUser) {
+          dispatch({
+            type: ACTIONS.SET_USER,
+            user: createdUserInfo.data.createUser,
+          });
         }
-        await API.graphql(graphqlOperation(createUser, { input: newUser }));
+
+        dispatch({ type: ACTIONS.SET_SINGUP_STEP, step: "completed" });
         next();
       } else if (rt.data.createStripeSubscription.error) {
-        setErrorMsg(messageConvert(rt.data.createStripeSubscription.error.message));
+        setErrorMsg(
+          messageConvert(rt.data.createStripeSubscription.error.message)
+        );
       }
     } catch (err) {
-      if (typeof err.message === 'string') {
-        setErrorMsg(messageConvert(err.message))
+      if (typeof err.message === "string") {
+        setErrorMsg(messageConvert(err.message));
       } else {
         setErrorMsg(messageConvert(new Error(err).message));
       }
@@ -228,115 +258,154 @@ const CheckOutForm = ({
   };
 
   const applyCoupon = async () => {
-    setApplyingCoupon('APPLYING');
-    setErrorMsg('');
+    setApplyingCoupon("APPLYING");
+    setErrorMsg("");
 
     try {
-      let rt = await API.graphql(graphqlOperation(validatePromoCode, {
-        input: {
-          coupon: discountCode,
-        }
-      }))
+      let rt = await API.graphql(
+        graphqlOperation(validatePromoCode, {
+          input: {
+            coupon: discountCode,
+          },
+        })
+      );
       if (rt.data.validatePromoCode.data) {
-        setApplyingCoupon('APPLIED');
+        setApplyingCoupon("APPLIED");
         setCouponInfo(rt.data.validatePromoCode.data);
         setTimeout(() => {
-          setApplyingCoupon('APPLY');
-        }, 7000)
+          setApplyingCoupon("APPLY");
+        }, 7000);
       } else if (rt.data.validatePromoCode.error) {
         setCouponInfo(null);
         setErrorMsg(messageConvert(rt.data.validatePromoCode.error.message));
-        setApplyingCoupon('APPLY');
+        setApplyingCoupon("APPLY");
       }
-
     } catch (err) {
       setErrorMsg(messageConvert(new Error(err).message));
-      setApplyingCoupon('APPLY');
+      setApplyingCoupon("APPLY");
     }
-  }
+  };
 
   return (
     <>
       <div className="item">
         <div>
           <div className="item-title">Pay As you go Subscription</div>
-          {!loading && <div className="item-description">${monthly} per Month. Cancel any time</div>}
+          {!loading && (
+            <div className="item-description">
+              ${monthly} per Month. Cancel any time
+            </div>
+          )}
         </div>
-        {loading ? <Spinner animation="border" variant="primary" size="sm" /> : <div className="item-value">${monthly}</div>}
+        {loading ? (
+          <Spinner animation="border" variant="primary" size="sm" />
+        ) : (
+          <div className="item-value">${monthly}</div>
+        )}
       </div>
       <div className="item">
         <div className="item-title">Discount</div>
-        {couponInfo ? <div className="item-value" >
-          ${couponInfo.amount_off ? couponInfo.amount_off / 100 : monthly * couponInfo.percent_off / 100}
-        </div> : '-'
-        }
+        {couponInfo ? (
+          <div className="item-value">
+            $
+            {couponInfo.amount_off
+              ? couponInfo.amount_off / 100
+              : (monthly * couponInfo.percent_off) / 100}
+          </div>
+        ) : (
+          "-"
+        )}
       </div>
       <div className="item mb-4">
         <div className="item-title">Total</div>
         {!loading && <div className="item-value">${total}</div>}
       </div>
       <div className="d-flex align-items-center w-100">
-        <div className='g-input-box flex-grow'>
-          <div className='g-input-label'>Discount</div>
-          <input className='g-input-container'
-            type='text'
-            placeholder='Enter Discount Code'
+        <div className="g-input-box flex-grow">
+          <div className="g-input-label">Discount</div>
+          <input
+            className="g-input-container"
+            type="text"
+            placeholder="Enter Discount Code"
             value={discountCode}
             onChange={(e) => {
-              setDiscountCode(e.target.value)
-            }} />
+              setDiscountCode(e.target.value);
+            }}
+          />
         </div>
-        <button className="g-link-item mx-2 apply-btn" onClick={() => applyCoupon()}
-          disabled={!discountCode || applyingCoupon === 'APPLYING...'}>
-          {applyingCoupon}</button>
+        <button
+          className="g-link-item mx-2 apply-btn"
+          onClick={() => applyCoupon()}
+          disabled={!discountCode || applyingCoupon === "APPLYING..."}
+        >
+          {applyingCoupon}
+        </button>
       </div>
-      <div className="g-error-label" style={{ fontSize: 14, marginBottom: 24 }}>{errorMsg}</div>
-      <div className='g-input-box'>
-        <div className='g-input-label required'>Credit Card Number</div>
+      <div className="g-error-label" style={{ fontSize: 14, marginBottom: 24 }}>
+        {errorMsg}
+      </div>
+      <div className="g-input-box">
+        <div className="g-input-label required">Credit Card Number</div>
         <CardNumberElement
-          className={"g-input-container card-number " + (cardNumber ? 'completed' : '')}
+          className={
+            "g-input-container card-number " + (cardNumber ? "completed" : "")
+          }
           options={{ ...createOptions(), placeholder: "Card Number" }}
           onChange={handleChange}
         />
       </div>
-      <div className='g-form-line'>
-        <div className='g-input-box g-half-input-box'>
-          <div className='g-input-label required '>Expires</div>
+      <div className="g-form-line">
+        <div className="g-input-box g-half-input-box">
+          <div className="g-input-label required ">Expires</div>
           <CardExpiryElement
-            className={"g-input-container " + (cardExpiry ? 'completed' : '')}
+            className={"g-input-container " + (cardExpiry ? "completed" : "")}
             options={createOptions()}
             onChange={handleChange}
           />
         </div>
-        <div className='g-input-box g-half-input-box'>
-          <div className='g-input-label required d-flex align-items-center'>
+        <div className="g-input-box g-half-input-box">
+          <div className="g-input-label required d-flex align-items-center">
             Security Code
             <img src={infoIcon} className="ml-2" />
           </div>
           <CardCvcElement
-            className={"g-input-container " + (cardCvc ? 'completed' : '')}
-            options={{ ...createOptions(), placeholder: "Enter Code" }} onChange={handleChange} />
+            className={"g-input-container " + (cardCvc ? "completed" : "")}
+            options={{ ...createOptions(), placeholder: "Enter Code" }}
+            onChange={handleChange}
+          />
         </div>
       </div>
 
-      <div className='g-input-box'>
-        <div className='g-input-label required'>Cardholder Name</div>
+      <div className="g-input-box">
+        <div className="g-input-label required">Cardholder Name</div>
         <input
-          className={"g-input-container " + (cardholderName ? 'completed' : '')}
-          type='text'
-          placeholder='Enter Full Name'
+          className={"g-input-container " + (cardholderName ? "completed" : "")}
+          type="text"
+          placeholder="Enter Full Name"
           value={cardholderName}
           onChange={(e) => {
-            setCardholderName(e.target.value)
-          }} />
+            setCardholderName(e.target.value);
+          }}
+        />
       </div>
       <div>
-        <BasicButton title={updating ? 'SUBMITTING ...' : 'SUBMIT'} additionalClass='next-button' enabled={isEnableSubmit && !updating && applyingCoupon !== 'APPLYING...'}
-          buttonPushed={(e) => { handleSubmit() }}
+        <BasicButton
+          title={updating ? "SUBMITTING ..." : "SUBMIT"}
+          additionalClass="next-button"
+          enabled={
+            isEnableSubmit && !updating && applyingCoupon !== "APPLYING..."
+          }
+          buttonPushed={(e) => {
+            handleSubmit();
+          }}
         />
-        <BasicButton title='Previous' additionalClass='previous-button' enabled={true} buttonPushed={(e) => {
-          previous(false)
-        }}
+        <BasicButton
+          title="Previous"
+          additionalClass="previous-button"
+          enabled={true}
+          buttonPushed={(e) => {
+            previous(false);
+          }}
         />
         <MorePips pipsConfig={pipsConfig} />
       </div>
@@ -344,13 +413,26 @@ const CheckOutForm = ({
   );
 };
 
-const InjectedCheckoutForm = ({ next, previous, pipsConfig, userInfo, password }) => {
+const InjectedCheckoutForm = ({
+  next,
+  previous,
+  pipsConfig,
+  userInfo,
+  password,
+}) => {
   return (
     <ElementsConsumer>
       {({ elements, stripe }) => {
         return (
-          <CheckOutForm elements={elements} stripe={stripe} password={password}
-            next={next} previous={previous} pipsConfig={pipsConfig} userInfo={userInfo} />
+          <CheckOutForm
+            elements={elements}
+            stripe={stripe}
+            password={password}
+            next={next}
+            previous={previous}
+            pipsConfig={pipsConfig}
+            userInfo={userInfo}
+          />
         );
       }}
     </ElementsConsumer>
@@ -358,12 +440,19 @@ const InjectedCheckoutForm = ({ next, previous, pipsConfig, userInfo, password }
 };
 
 const Singup4 = ({ next, previous, pipsConfig, userInfo, password }) => {
-  return <div className="signup4-container">
-
-    <Elements stripe={stripePromise}>
-      <InjectedCheckoutForm next={next} previous={previous} pipsConfig={pipsConfig} userInfo={userInfo} password={password} />
-    </Elements>
-  </div>
-}
+  return (
+    <div className="signup4-container">
+      <Elements stripe={stripePromise}>
+        <InjectedCheckoutForm
+          next={next}
+          previous={previous}
+          pipsConfig={pipsConfig}
+          userInfo={userInfo}
+          password={password}
+        />
+      </Elements>
+    </div>
+  );
+};
 
 export default Singup4;

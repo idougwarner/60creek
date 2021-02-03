@@ -7,15 +7,15 @@
     display: flex;
     justify-content: center;
     .pip {
-      width: 10px;
-      height: 10px;
+      width: 8px;
+      height: 8px;
       border-radius: 50%;
-      margin-left: 4px;
+      margin-left: 8px;
       background-color: rgba(19, 22, 36, 0.6);
       :first-of-type {
         margin-left: 0px;
       }
-      &.completed {
+      &.pip-completed {
         background-color: #b0c0e0;
       }
       &.current {
