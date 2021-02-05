@@ -8,7 +8,7 @@ import BasicButton from "../../../components/controls/BasicButton";
 import Modal from "react-modal";
 import PrivacyPolicy from "./PrivacyPolicy";
 import SubscriptionAgreement from "./Subscription";
-import { FormCheck, FormLabel } from "react-bootstrap";
+import { Button, FormCheck, FormLabel } from "react-bootstrap";
 import { useDispatch } from "react-redux";
 import { ACTIONS } from "../../../redux/actionTypes";
 
@@ -19,6 +19,7 @@ const customStyles = {
     right: "auto",
     bottom: "auto",
     marginRight: "-50%",
+    overflow: "unset",
     transform: "translate(-50%, -50%)",
     padding: 0,
     width: "calc(100% - 40px)",
@@ -55,14 +56,12 @@ const Signup3 = (props) => {
     event.preventDefault();
     setModalIsOpen(true);
     setIsPrivacy(false);
-    setVisitedSubscription(true);
   };
   const showPrivacyModal = (event) => {
     event.stopPropagation();
     event.preventDefault();
     setModalIsOpen(true);
     setIsPrivacy(true);
-    setVisitedPrivacy(true);
   };
   const [nextButtonEnabledValue, setNextButtonEnabledValue] = useState(false);
   const [subscriptionAgreementValue, setSubscriptionAgreementValue] = useState(
@@ -89,10 +88,7 @@ const Signup3 = (props) => {
           id="subscription-agreement"
           type="checkbox"
           checked={subscriptionAgreementValue}
-          onChange={(event) =>
-            setSubscriptionAgreementValue(event.target.checked)
-          }
-          disabled={!visitedSubscription}
+          onClick={(event) => showSubscriptionAgreementModal(event)}
           label="I agree to the "
         />
         <span className="agree-item" onClick={showSubscriptionAgreementModal}>
@@ -105,8 +101,7 @@ const Signup3 = (props) => {
           id="privacy-policy"
           type="checkbox"
           checked={privacyPolicyValue}
-          disabled={!visitedPrivacy}
-          onChange={(event) => setPrivacyPolicyValue(event.target.checked)}
+          onClick={(event) => showPrivacyModal(event)}
           label="I agree to the "
         />
         <span className="agree-item" onClick={showPrivacyModal}>
@@ -182,7 +177,25 @@ const Signup3 = (props) => {
         style={customStyles}
         contentLabel="Example Modal"
       >
+        <img
+          src="assets/icons/close.svg"
+          className="close-btn"
+          onClick={() => setModalIsOpen(false)}
+        />
         {isPrivacy ? <PrivacyPolicy /> : <SubscriptionAgreement />}
+        <Button
+          className="agree-btn"
+          onClick={() => {
+            if (isPrivacy) {
+              setPrivacyPolicyValue(true);
+            } else {
+              setSubscriptionAgreementValue(true);
+            }
+            setModalIsOpen(false);
+          }}
+        >
+          I AGREE
+        </Button>
       </Modal>
     </>
   );

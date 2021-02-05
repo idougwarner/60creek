@@ -10,7 +10,6 @@ import "./MorePips.scss";
 
 const MorePips = (props) => {
   const { pipsConfig } = props;
-  console.log(pipsConfig);
 
   const pipArray = pipsConfig.map((pip, index) => {
     return (

@@ -7,7 +7,6 @@ import "./Header.scss";
 const Header = (props) => {
   const { pathname } = useLocation();
   const signupStep = useSelector((state) => state.signupStore.step);
-  console.log(signupStep);
   return (
     <div className="sixty-creek-login-header">
       <img src="/logo.png" className="sixty-creek-icon" />
