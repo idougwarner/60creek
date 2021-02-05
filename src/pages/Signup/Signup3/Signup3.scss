@@ -21,19 +21,6 @@
   margin-bottom: 32px;
 }
 
-.sixty-creek-signup {
-  .g-centered-form-with-header {
-    .g-form-container {
-      .g-link-item {
-        &.small {
-          margin-top: 0px !important;
-          margin-bottom: 0px;
-          margin-left: 0px;
-        }
-      }
-    }
-  }
-}
 .checkbox-container {
   display: flex;
   align-items: center;
@@ -55,4 +42,24 @@
     color: #366ee7;
     text-decoration: none;
   }
+}
+.close-btn {
+  position: absolute;
+  right: -32px;
+  top: -32px;
+  z-index: 100;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: all 0.3s ease;
+  &:hover {
+    opacity: 1;
+  }
+}
+.agree-btn {
+  position: absolute;
+  left: 50%;
+  bottom: -80px;
+  transform: translate(-50%, 0);
+  z-index: 100;
+  width: 320px;
 }

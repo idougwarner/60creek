@@ -82,7 +82,6 @@ const Signup1 = (props) => {
         break;
       }
     }
-    console.log(i);
   }, [password]);
   useEffect(() => {
     if (password && confirmPassword) {
