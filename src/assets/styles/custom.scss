@@ -257,8 +257,10 @@ h5 {
       color: rgba(19, 22, 36, 0.6);
       border-bottom: none;
       border-top: none;
-      cursor: pointer;
       &.sort-field {
+        cursor: pointer;
+      }
+      &.sorted-field {
         font-weight: 800;
         font-size: 12px;
       }
@@ -385,6 +387,9 @@ h5 {
 }
 .modal-dialog {
   margin-top: 48px;
+  &.modal-xl {
+    max-width: 1400px;
+  }
   .modal-content {
     border-radius: 10px;
     .modal-header {

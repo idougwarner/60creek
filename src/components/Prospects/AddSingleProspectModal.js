@@ -202,7 +202,7 @@ const AddSingleProspectModal = ({ show, close }) => {
           {step === STEP2 && (
             <div className="step-2">
               <Form.Group>
-                <Form.Label>Phone Number</Form.Label>
+                <Form.Label className="required">Phone Number</Form.Label>
                 <Form.Control
                   type="text"
                   placeholder="(555) 555 - 5555"
@@ -238,10 +238,14 @@ const AddSingleProspectModal = ({ show, close }) => {
                   options={[
                     { label: "Interested", value: INTERESTE_STATUS.INTERESTE },
                     {
-                      label: "Not Interested",
-                      value: INTERESTE_STATUS.NOT_INTERESTE,
+                      label: "Negotiating",
+                      value: INTERESTE_STATUS.NEGOTIATING,
                     },
-                    { label: "Unknown", value: INTERESTE_STATUS.OTHER },
+                    {
+                      label: "Do not Call",
+                      value: INTERESTE_STATUS.DO_NOT_CALL,
+                    },
+                    { label: "Closed", value: INTERESTE_STATUS.CLOSED },
                   ]}
                   value={status}
                   styles={customSelectStyles("40px")}
@@ -292,7 +296,7 @@ const AddSingleProspectModal = ({ show, close }) => {
             <>
               <Button
                 variant="primary"
-                disabled={!email || !status || loading}
+                disabled={!phone || !email || !status || loading}
                 onClick={() => next()}
               >
                 Next

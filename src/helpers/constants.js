@@ -1,11 +1,12 @@
-export const AUTH_USER_TOKEN_KEY = 'AUTH_USER_TOKEN_KEY'
+export const AUTH_USER_TOKEN_KEY = "AUTH_USER_TOKEN_KEY";
 
-export const API_END_POINT = 'https://jlm6lzpzgbh5xgdvgtpgdz2ppq.appsync-api.us-east-2.amazonaws.com/graphql'
-export const GRAPHQL_API_KEY = 'da2-2oom5klzhrb4nd6zy2rb6qpvt4'
+export const API_END_POINT =
+  "https://jlm6lzpzgbh5xgdvgtpgdz2ppq.appsync-api.us-east-2.amazonaws.com/graphql";
+export const GRAPHQL_API_KEY = "da2-2oom5klzhrb4nd6zy2rb6qpvt4";
 
 const HASURA_GRAPHQL_ENGINE_HOSTNAME = "https://sixty-creek-80.hasura.app";
 
-const scheme = proto => {
+const scheme = (proto) => {
   return window.location.protocol === "https:" ? `${proto}s` : proto;
 };
 
@@ -20,6 +21,11 @@ export const REALTIME_GRAPHQL_URL = `${scheme(
 export const authClientId = "<YOUR AUTH0 CLIENT ID>";
 export const authDomain = "<YOUR AUTH0 DOMAIN>";
 export const callbackUrl = `http://localhost:3000/callback`;
+
+export const dataFinder = {
+  apiKey: process.env.REACT_APP_DATAFINDER_API_KEY,
+  baseUrl: process.env.REACT_APP_DATAFINDER_BASE_URL,
+};
 
 // Hasura cloud info User randall.w.wright@comcast.net password: SixtyCreek2020!
 // postgres db user: postgres, pw: 9xW96My1!

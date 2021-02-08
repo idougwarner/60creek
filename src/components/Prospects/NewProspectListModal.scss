@@ -32,6 +32,10 @@
     }
   }
 }
+.edit-field {
+  height: 28px;
+  width: 120px;
+}
 .missing-info {
   width: 120px;
   .missing-field {
@@ -49,4 +53,10 @@
     letter-spacing: 0.4px;
     color: #d95746;
   }
+}
+
+.table-container {
+  overflow: auto;
+  max-width: 1400px;
+  max-height: 500px;
 }

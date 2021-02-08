@@ -11,7 +11,7 @@ const Header = (props) => {
     <div className="sixty-creek-login-header">
       <img src="/logo.png" className="sixty-creek-icon" />
       <div className="not-a-member-box">
-        {pathname === APP_URLS.LOGIN ? (
+        {pathname === APP_URLS.LOGIN || pathname === APP_URLS.HOME ? (
           <>
             <Link className="g-link-item" to={APP_URLS.SIGNUP}>
               Sign Up
