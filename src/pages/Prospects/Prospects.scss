@@ -55,3 +55,9 @@
     cursor: pointer;
   }
 }
+
+.add-prospects-btn {
+  .dropdown-menu.show {
+    transform: translate(0, 48px) !important;
+  }
+}

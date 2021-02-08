@@ -44,8 +44,6 @@ const Signup3 = (props) => {
   let sigCanvas = null;
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [isPrivacy, setIsPrivacy] = useState(true);
-  const [visitedSubscription, setVisitedSubscription] = useState(false);
-  const [visitedPrivacy, setVisitedPrivacy] = useState(false);
 
   const dispatch = useDispatch();
   useEffect(() => {
