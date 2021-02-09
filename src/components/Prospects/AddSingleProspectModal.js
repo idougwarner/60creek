@@ -1,5 +1,5 @@
 import { API, graphqlOperation } from "aws-amplify";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import Select from "react-select";
@@ -7,6 +7,10 @@ import "./AddSingleProspectModal.scss";
 import { customSelectStyles } from "../../assets/styles/select-style";
 import { createProspect } from "../../graphql/mutations";
 import { INTERESTE_STATUS } from "./FilterDropdown";
+import { usStates } from "../../helpers/us-states";
+import InputMask from "react-input-mask";
+import { validateEmail, validateZip } from "../../helpers/validations";
+
 const STEP1 = 0;
 const STEP2 = 1;
 const STEP3 = 2;
@@ -19,7 +23,7 @@ const AddSingleProspectModal = ({ show, close }) => {
   const [address1, setAddress1] = useState("");
   const [address2, setAddress2] = useState("");
   const [city, setCity] = useState("");
-  const [state, setState] = useState("");
+  const [state, setState] = useState(null);
   const [zip, setZip] = useState("");
   const [company, setCompany] = useState("");
   const [phone, setPhone] = useState("");
@@ -41,24 +45,25 @@ const AddSingleProspectModal = ({ show, close }) => {
     if (step === STEP3) {
       try {
         setLoading(true);
+        const dt = {
+          userId: user.id,
+          prospectListId: selectedList.value,
+          firstName: firstName,
+          lastName: lastName,
+          address1: address1,
+          address2: address2,
+          city: city,
+          state: state?.value || "",
+          zip: zip,
+          company: company,
+          phone: phone,
+          email: email,
+          facebook: facebook,
+          status: status.value,
+        };
         let rt = await API.graphql(
           graphqlOperation(createProspect, {
-            input: {
-              userId: user.id,
-              prospectListId: selectedList.value,
-              firstName: firstName,
-              lastName: lastName,
-              address1: address1,
-              address2: address2,
-              city: city,
-              state: state,
-              zip: zip,
-              company: company,
-              phone: phone,
-              email: email,
-              facebook: facebook,
-              status: status.value,
-            },
+            input: dt,
           })
         );
         close({ data: true });
@@ -78,6 +83,16 @@ const AddSingleProspectModal = ({ show, close }) => {
   useEffect(() => {
     loadData();
   }, [list]);
+
+  const isValidZip = useCallback(() => {
+    return validateZip(zip);
+  }, [zip]);
+  const isValidPhone = useCallback(() => {
+    if (phone.indexOf("_") < 0) {
+      return true;
+    }
+    return false;
+  }, [phone]);
   return (
     <>
       <Modal show={show} onHide={close}>
@@ -163,11 +178,18 @@ const AddSingleProspectModal = ({ show, close }) => {
                 <div className="col-6 pl-2">
                   <Form.Group>
                     <Form.Label>State</Form.Label>
-                    <Form.Control
-                      type="text"
-                      placeholder="Enter State"
+                    <Select
                       value={state}
-                      onChange={(e) => setState(e.target.value)}
+                      onChange={(value) => {
+                        console.log(value);
+                        setState(value);
+                      }}
+                      placeholder="State"
+                      styles={customSelectStyles(40)}
+                      options={usStates.map((item) => ({
+                        value: item,
+                        label: item,
+                      }))}
                     />
                   </Form.Group>
                 </div>
@@ -181,7 +203,9 @@ const AddSingleProspectModal = ({ show, close }) => {
                       type="text"
                       placeholder="Enter Zip"
                       value={zip}
+                      className={zip ? "completed" : ""}
                       onChange={(e) => setZip(e.target.value)}
+                      isInvalid={zip && !isValidZip()}
                     />
                   </Form.Group>
                 </div>
@@ -203,12 +227,22 @@ const AddSingleProspectModal = ({ show, close }) => {
             <div className="step-2">
               <Form.Group>
                 <Form.Label className="required">Phone Number</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="(555) 555 - 5555"
+
+                <InputMask
+                  mask="(999) 999 - 9999"
                   value={phone}
+                  type="tel"
+                  placeholder="Enter Phone Number"
                   onChange={(e) => setPhone(e.target.value)}
-                />
+                >
+                  {(inputProps) => (
+                    <Form.Control
+                      {...inputProps}
+                      className={phone ? "completed" : ""}
+                      isInvalid={phone && !isValidPhone()}
+                    />
+                  )}
+                </InputMask>
               </Form.Group>
               <Form.Group>
                 <Form.Label>Facebook</Form.Label>
@@ -227,9 +261,11 @@ const AddSingleProspectModal = ({ show, close }) => {
                 <Form.Label className="required">Email Address</Form.Label>
                 <Form.Control
                   type="email"
-                  placeholder="Enter email Adress"
+                  placeholder="Enter Email Address"
+                  className={email && validateEmail(email) ? "completed" : ""}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  isInvalid={!validateEmail(email) && email}
                 />
               </Form.Group>
               <Form.Group>
@@ -271,7 +307,7 @@ const AddSingleProspectModal = ({ show, close }) => {
                 <div className="item-info">Street Address: {address1}</div>
                 <div className="item-info">Address 2: {address2}</div>
                 <div className="item-info">
-                  City, State, Zip: {city}, {state}, {zip}
+                  City, State, Zip: {city}, {state?.value || ""}, {zip}
                 </div>
                 <div className="item-info">Phone: {phone}</div>
                 <div className="item-info">Email: {email}</div>

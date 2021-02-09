@@ -1,5 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Button, Form, Modal, Table } from "react-bootstrap";
+import {
+  Button,
+  Form,
+  Modal,
+  OverlayTrigger,
+  Table,
+  Tooltip,
+} from "react-bootstrap";
 import "./NewProspectListModal.scss";
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
@@ -126,7 +133,7 @@ const NewProspectListModal = ({
       }
 
       await prospectListDb.clear();
-      prospectListDb.add({
+      await prospectListDb.add({
         prospectName: storedProspectList[0].prospectName,
         prospectId: prospectListId,
       });
@@ -224,7 +231,7 @@ const NewProspectListModal = ({
     });
     await prospectsDb.clear();
     for (let i = 0; i < prospectList.length; i++) {
-      const item = prospectList[0];
+      const item = prospectList[i];
       const rt = await prospectsDb.add(item);
     }
     setErrors(errCounts);
@@ -252,7 +259,7 @@ const NewProspectListModal = ({
       const fData = await getJsonFromFile(event.target.files[0]);
       await prospectsDb.clear();
       for (let i = 0; i < fData.length; i++) {
-        const item = fData[0];
+        const item = fData[i];
         const rt = await prospectsDb.add(item);
       }
       setFileData(fData);
@@ -304,7 +311,9 @@ const NewProspectListModal = ({
       editing
     ) {
       let newList = [...prospectList];
-      newList[selectedField.idx][selectedField.fieldName] = editField;
+      if (selectedField.idx !== -1 && selectedField.fieldName !== "") {
+        newList[selectedField.idx][selectedField.fieldName] = editField;
+      }
       setProspectList(newList);
       setSelectedField({
         idx: -1,
@@ -337,6 +346,9 @@ const NewProspectListModal = ({
               onKeyDown={(event) => {
                 if (event.key === "Enter") {
                   toggleEditing(idx, fieldName);
+                } else if (event.key === "Tab") {
+                  event.preventDefault();
+                  gotoNextField();
                 }
               }}
               onChange={(event) => {
@@ -344,6 +356,9 @@ const NewProspectListModal = ({
                 setEditField(event.target.value);
               }}
             />
+            <Form.Text className="text-primary font-italic mt-1">
+              Enter info
+            </Form.Text>
           </>
         ) : prospectList[idx][fieldName] || !required ? (
           prospectList[idx][fieldName]
@@ -356,10 +371,60 @@ const NewProspectListModal = ({
       </>
     );
   };
+  const gotoNextField = () => {
+    let row = -1;
+    let fieldName = "";
+    if (selectedField.idx === -1 || selectedField.fieldName === "") return;
+    let idx = tableFields.findIndex(
+      (item) => item.fieldName === selectedField.fieldName
+    );
+    let start = selectedField.idx * tableFields.length + idx;
+    for (
+      let i = start;
+      i < start + prospectList.length * tableFields.length;
+      i++
+    ) {
+      const j = i % (prospectList.length * tableFields.length);
+      const x = j % tableFields.length,
+        y = Math.floor(j / tableFields.length);
+      if (
+        y !== selectedField.idx ||
+        tableFields[x].fieldName !== selectedField.fieldName
+      ) {
+        if (
+          prospectList[y][tableFields[x].fieldName] === "" &&
+          tableFields[x].required
+        ) {
+          row = y;
+          fieldName = tableFields[x].fieldName;
+          break;
+        }
+      }
+    }
+
+    let newList = [...prospectList];
+    if (selectedField.idx !== -1 && selectedField.fieldName !== "") {
+      newList[selectedField.idx][selectedField.fieldName] = editField;
+    }
+    setProspectList(newList);
+    setSelectedField({
+      idx: row,
+      fieldName: fieldName,
+    });
+    setEditField("");
+  };
+  const renderTooltip = (props) => (
+    <Tooltip id="button-tooltip" {...props}>
+      Data Enhancement is a systematic process that will search and locate
+      corresponding phone, email, demographic, and relational data variables
+      specific to the uploaded prospects.
+    </Tooltip>
+  );
   return (
     <>
       <Modal
         show={show}
+        className={showCloseConfirm ? "d-none" : ""}
         onHide={() => {
           if (step === STEP2) {
             setShowCloseConfirm(true);
@@ -482,7 +547,7 @@ const NewProspectListModal = ({
                       <img
                         src="/assets/icons/close-small.svg"
                         className="mr-1"
-                      />{" "}
+                      />
                       CLEAR
                     </Button>
                   )}
@@ -507,10 +572,16 @@ const NewProspectListModal = ({
               <Form.Group>
                 <Form.Label className="required d-flex align-items-center">
                   Enhance Data
-                  <img
-                    src="/assets/icons/information-circle.svg"
-                    className="ml-1"
-                  />
+                  <OverlayTrigger
+                    placement="right"
+                    delay={{ show: 250, hide: 400 }}
+                    overlay={renderTooltip}
+                  >
+                    <img
+                      src="/assets/icons/information-circle.svg"
+                      className="ml-1"
+                    />
+                  </OverlayTrigger>
                 </Form.Label>
                 <Form.Check
                   checked={enhance}
@@ -536,7 +607,7 @@ const NewProspectListModal = ({
           )}
           {step === STEP2 && (
             <div className="step-2 mb-3">
-              <div className="d-flex justify-content-between">
+              <div className="d-flex justify-content-between mb-3">
                 <div className="summary">
                   We detected {prospectList.length} contacts
                   {errors ? (

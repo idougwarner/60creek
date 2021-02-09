@@ -85,8 +85,13 @@ h5 {
 .btn {
   border-radius: 10px;
   font-weight: 600;
+  font-size: 14px;
+  padding: 0 16px;
   height: 40px;
   letter-spacing: 1.25px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .btn-light {
@@ -144,6 +149,7 @@ h5 {
   &.dropdown-toggle-split {
     width: 40px;
     display: flex;
+    padding: unset;
     justify-content: center;
 
     border-left: solid 1px #285ace;
