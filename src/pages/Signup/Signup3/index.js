@@ -29,6 +29,7 @@ const customStyles = {
     zIndex: 1000,
     background: "rgba(19, 22, 36, 0.6)",
     backdropFilter: "blur(4px)",
+    overflow: "auto",
   },
 };
 

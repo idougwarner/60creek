@@ -10,6 +10,7 @@ import { FormControl, FormGroup, FormLabel } from "react-bootstrap";
 import InputMask from "react-input-mask";
 import { useDispatch } from "react-redux";
 import { ACTIONS } from "../../../redux/actionTypes";
+import { validateZip } from "../../../helpers/validations";
 
 //******************************************************************
 //*
@@ -35,10 +36,7 @@ const Signup2 = (props) => {
     dispatch({ type: ACTIONS.SET_SINGUP_STEP, step: "step-2" });
   }, []);
   const isValidZip = useCallback(() => {
-    if (/^[0-9]{5}(?:-[0-9]{4})?$/.test(zipValue)) {
-      return true;
-    }
-    return false;
+    return validateZip(zipValue);
   }, [zipValue]);
   const isValidPhone = useCallback(() => {
     if (phoneValue.indexOf("_") < 0) {

@@ -246,7 +246,7 @@ export const Signup = (props) => {
       <Header />
       <div className="auth-background">
         <div className="g-centered-form-with-header">
-          {whichPageValue < 4 && <div className="sign-up-title">Sing Up</div>}
+          {whichPageValue < 4 && <div className="sign-up-title">Sign Up</div>}
           <div className="g-form-container">{currentPageValue}</div>
         </div>
       </div>

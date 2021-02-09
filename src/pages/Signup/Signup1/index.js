@@ -6,6 +6,7 @@ import BasicButton from "../../../components/controls/BasicButton";
 import { FormControl, FormGroup, FormLabel, FormText } from "react-bootstrap";
 import { ACTIONS } from "../../../redux/actionTypes";
 import { useDispatch } from "react-redux";
+import { passwordStrengths, validateEmail } from "../../../helpers/validations";
 
 //******************************************************************
 //*
@@ -13,39 +14,6 @@ import { useDispatch } from "react-redux";
 //*
 //******************************************************************
 
-const STRENGTH_0 = "strength";
-const STRENGTH_1 = "week";
-const STRENGTH_2 = "good";
-const STRENGTH_3 = "strong";
-const STRENGTH_4 = "perfect";
-
-const strengths = [
-  { legend: STRENGTH_0, regEx: "" },
-  { legend: STRENGTH_1, regEx: "" },
-  {
-    legend: STRENGTH_2,
-    regEx: /^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{6,})/,
-  },
-  {
-    legend: STRENGTH_3,
-    regEx: /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/,
-  },
-  {
-    legend: STRENGTH_4,
-    regEx: /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[+-_()])(?=.{8,})/,
-  },
-];
-
-const validateEmail = (email) => {
-  if (
-    /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(
-      email
-    )
-  ) {
-    return true;
-  }
-  return false;
-};
 const Signup1 = (props) => {
   const [nextButtonEnabledValue, setNextButtonEnabledValue] = useState(false);
   const [emailAddress, setEmailAddress] = useState(props.emailAddress || "");
@@ -69,7 +37,7 @@ const Signup1 = (props) => {
   }, [emailAddress]);
   useEffect(() => {
     let i;
-    for (i = strengths.length - 1; i >= 0; i--) {
+    for (i = passwordStrengths.length - 1; i >= 0; i--) {
       if (i === 0) {
         setPasswordStrength(i);
       } else if (i === 1) {
@@ -77,7 +45,7 @@ const Signup1 = (props) => {
           setPasswordStrength(i);
           break;
         }
-      } else if (strengths[i].regEx.test(password)) {
+      } else if (passwordStrengths[i].regEx.test(password)) {
         setPasswordStrength(i);
         break;
       }
@@ -166,14 +134,18 @@ const Signup1 = (props) => {
           onClick={() => setDisplayPassword(!displayPassword)}
         />
         <div className="password-strength">
-          <div className={"strength-bar " + strengths[passwordStrength].legend}>
+          <div
+            className={
+              "strength-bar " + passwordStrengths[passwordStrength].legend
+            }
+          >
             <div></div>
             <div></div>
             <div></div>
             <div></div>
           </div>
           <div className="strength-label">
-            {strengths[passwordStrength].legend}
+            {passwordStrengths[passwordStrength].legend}
             <img src="assets/icons/information-circle.svg" />
           </div>
         </div>

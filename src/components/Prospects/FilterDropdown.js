@@ -48,7 +48,11 @@ const FilterDropdown = ({ changeFilterEvent }) => {
       } else {
         oldList.push(value);
       }
-      setFilterList(oldList);
+      if (oldList.length == 0) {
+        setFilterList(["all"]);
+      } else {
+        setFilterList(oldList);
+      }
     }
   };
 

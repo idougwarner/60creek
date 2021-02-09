@@ -250,7 +250,7 @@ const ProspectsPage = () => {
               </InputGroup.Prepend>
               <FormControl
                 id=""
-                placeholder="search list ..."
+                placeholder="Search List ..."
                 value={strFilter}
                 onChange={(e) => setStrFilter(e.target.value)}
               />
