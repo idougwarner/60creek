@@ -22,11 +22,6 @@ export const authClientId = "<YOUR AUTH0 CLIENT ID>";
 export const authDomain = "<YOUR AUTH0 DOMAIN>";
 export const callbackUrl = `http://localhost:3000/callback`;
 
-export const dataFinder = {
-  apiKey: process.env.REACT_APP_DATAFINDER_API_KEY,
-  baseUrl: process.env.REACT_APP_DATAFINDER_BASE_URL,
-};
-
 // Hasura cloud info User randall.w.wright@comcast.net password: SixtyCreek2020!
 // postgres db user: postgres, pw: 9xW96My1!
 
