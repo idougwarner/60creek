@@ -47,7 +47,9 @@
         "createStripeSubscription": {},
         "preSignUp": {},
         "validatePromoCode": {},
-        "subscriptionInfo": {}
+        "subscriptionInfo": {},
+        "checkout": {},
+        "getConsumerContactInfo": {}
       },
       "hosting": {
         "amplifyhosting": {
