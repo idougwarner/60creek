@@ -355,6 +355,47 @@ export const validatePromoCode = /* GraphQL */ `
     }
   }
 `;
+export const checkout = /* GraphQL */ `
+  mutation Checkout($input: CheckoutInput) {
+    checkout(input: $input) {
+      data {
+        id
+        amount
+        amountCaptured
+        amountRefunded
+        description
+        paid
+        receiptEmail
+        receiptNumber
+        receiptUrl
+        source
+        status
+      }
+      error {
+        message
+      }
+    }
+  }
+`;
+export const getConsumerContactInfo = /* GraphQL */ `
+  mutation GetConsumerContactInfo($input: GetConsumerContactInfoInput) {
+    getConsumerContactInfo(input: $input) {
+      data {
+        firstName
+        lastName
+        address
+        city
+        state
+        zip
+        phone
+        email
+      }
+      error {
+        message
+      }
+    }
+  }
+`;
 export const createUser = /* GraphQL */ `
   mutation CreateUser(
     $input: CreateUserInput!

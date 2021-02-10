@@ -22,6 +22,7 @@ import { subscriptionInfo } from "../../../graphql/queries";
 import { Spinner } from "react-bootstrap";
 import { useDispatch } from "react-redux";
 import { ACTIONS } from "../../../redux/actionTypes";
+import { messageConvert } from "../../../helpers/messageConvert";
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY);
 
 const createOptions = () => {
@@ -142,14 +143,6 @@ const CheckOutForm = ({
         }
       } catch (err) {}
     }
-  };
-  const messageConvert = (message) => {
-    if (message === "Error: An error occurred with our connection to Stripe.") {
-      return "Failed your request. Please try again.";
-    } else if (message.indexOf("Coupon expired") >= 0) {
-      return "Your Coupon code has been expired.";
-    }
-    return message;
   };
   useEffect(async () => {
     loadMonthlyInfo();

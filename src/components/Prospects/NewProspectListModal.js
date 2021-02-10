@@ -4,6 +4,7 @@ import {
   Form,
   Modal,
   OverlayTrigger,
+  Spinner,
   Table,
   Tooltip,
 } from "react-bootstrap";
@@ -12,15 +13,20 @@ import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import { getJsonFromFile } from "../../helpers/CSVFileHelper";
 import { API, graphqlOperation } from "aws-amplify";
-import { createProspect, createProspectList } from "../../graphql/mutations";
+import {
+  checkout,
+  createProspect,
+  createProspectList,
+  getConsumerContactInfo,
+} from "../../graphql/mutations";
 import { useSelector } from "react-redux";
-import axios from "axios";
-import { dataFinder } from "../../helpers/constants";
 import ConfirmModal from "./ConfirmModal";
 import Select from "react-select";
 import { customSelectStyles } from "../../assets/styles/select-style";
 import { useIndexedDB } from "react-indexed-db";
 import { IndexDBStores } from "../../helpers/DBConfig";
+import CheckoutForm from "./CheckoutForm";
+import { messageConvert } from "../../helpers/messageConvert";
 const STEP1 = 0;
 const STEP2 = 1;
 const STEP3 = 2;
@@ -45,6 +51,7 @@ const NewProspectListModal = ({
   const [step, setStep] = useState(STEP1);
   const [percentage, setPercentage] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [loadingEnhanceData, setLoadingEnhanceData] = useState(false);
   const [listName, setListName] = useState("");
   const [fileName, setFileName] = useState("");
   const [enhance, setEnhance] = useState(false);
@@ -58,6 +65,11 @@ const NewProspectListModal = ({
 
   const [editField, setEditField] = useState("");
   const [editing, setEditing] = useState(false);
+  const [token, setToken] = useState(null);
+  const [generateToken, setGenerateToken] = useState(false);
+  const [cardStatus, setCardStatus] = useState(false);
+
+  const [errMsg, setErrMsg] = useState("");
   const [selectedField, setSelectedField] = useState({
     idx: -1,
     fieldName: "",
@@ -111,7 +123,6 @@ const NewProspectListModal = ({
       let prospectListId;
       let storedProspects = await prospectsDb.getAll();
       let storedProspectList = await prospectListDb.getAll();
-      console.log(storedProspectList, storedProspects);
       if (storedProspectList[0].prospectId) {
         prospectListId = storedProspectList[0].prospectId;
       } else {
@@ -215,13 +226,22 @@ const NewProspectListModal = ({
     if (
       !loading &&
       (existingList ? selectedList : listName) &&
-      prospectList.length > 0
+      prospectList.length > 0 &&
+      (enhance ? cardStatus : true)
     ) {
       setIsNext(true);
     } else {
       setIsNext(false);
     }
-  }, [loading, listName, selectedList, prospectList, existingList]);
+  }, [
+    loading,
+    listName,
+    selectedList,
+    prospectList,
+    existingList,
+    enhance,
+    cardStatus,
+  ]);
   useEffect(async () => {
     let errCounts = 0;
     prospectList.forEach((item) => {
@@ -273,7 +293,9 @@ const NewProspectListModal = ({
     setProspectList([]);
     setFileName("");
   };
-  const gotoSecondStep = async () => {
+
+  useEffect(async () => {
+    if (!token) return;
     try {
       await prospectListDb.clear();
       await prospectListDb.add({
@@ -284,19 +306,51 @@ const NewProspectListModal = ({
       await prospectUploadStepDb.add({
         step: STEP2,
       });
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (err) {}
 
     if (enhance) {
-      // let rt = await axios.post(dataFinder.baseUrl, {},{
-      //   params: {
-      //     service: 'email',
-      //     k2: dataFinder.apiKey
-      //   }
-      // })
+      let newProspects = [...prospectList];
+      setLoadingEnhanceData(true);
+      setErrMsg("");
+      try {
+        const rt = await API.graphql(
+          graphqlOperation(checkout, {
+            input: {
+              email: user.email,
+              token: token.id,
+              amount: prospectList.length,
+            },
+          })
+        );
+        if (rt.data.checkout.error) {
+          setErrMsg(messageConvert(rt.data.checkout.error.message));
+          setLoadingEnhanceData(false);
+          return;
+        }
+        for (let i = 0; i < newProspects.length; i++) {
+          if (newProspects[i].email) {
+            let rt = await API.graphql(
+              graphqlOperation(getConsumerContactInfo, {
+                input: {
+                  email: newProspects[i].email,
+                },
+              })
+            );
+            if (rt.data.getConsumerContactInfo.data) {
+              const d = rt.data.getConsumerContactInfo.data;
+              newProspects[i] = { ...newProspects[i], ...d };
+            }
+          }
+        }
+        setProspectList(newProspects);
+        next();
+      } catch (err) {}
+      setLoadingEnhanceData(false);
     }
-    next();
+  }, [token]);
+
+  const gotoSecondStep = async () => {
+    setGenerateToken(!generateToken);
   };
   const gotoThirdStep = async () => {
     await prospectUploadStepDb.add({
@@ -603,6 +657,14 @@ const NewProspectListModal = ({
                   onChange={() => setEnhance(false)}
                 />
               </Form.Group>
+              {enhance && (
+                <CheckoutForm
+                  itemCounts={prospectList.length}
+                  generateToken={generateToken}
+                  changeToken={(event) => setToken(event)}
+                  changeCardStatus={(event) => setCardStatus(event)}
+                />
+              )}
             </div>
           )}
           {step === STEP2 && (
@@ -691,15 +753,22 @@ const NewProspectListModal = ({
               </div>
             </div>
           )}
+          {errMsg && <Form.Text className="text-danger">{errMsg}</Form.Text>}
         </Modal.Body>
         {step === STEP1 && (
           <Modal.Footer>
             <Button
               variant="primary"
-              disabled={!isNext}
+              disabled={!isNext || loadingEnhanceData}
               onClick={() => gotoSecondStep()}
             >
-              NEXT
+              {loadingEnhanceData ? (
+                <>
+                  <Spinner /> LOADING ...
+                </>
+              ) : (
+                "NEXT"
+              )}
             </Button>
           </Modal.Footer>
         )}

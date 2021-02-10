@@ -78,7 +78,57 @@ type Mutation {
   ): PaymentMethodResult @function(name: "createStripeSubscription-${env}")
   validatePromoCode(input: ValidatePromoCodeInput): ValidatePromoCodeResult
     @function(name: "validatePromoCode-${env}")
+
+  checkout(input: CheckoutInput): CheckoutResult
+    @function(name: "checkout-${env}")
+
+  getConsumerContactInfo(
+    input: GetConsumerContactInfoInput
+  ): GetConsumerContactInfoResult
+    @function(name: "getConsumerContactInfo-${env}")
 }
+input CheckoutInput {
+  email: String
+  amount: Int
+  token: String
+}
+
+input GetConsumerContactInfoInput {
+  email: String
+}
+type CheckoutResult {
+  data: CheckoutInfo
+  error: ErrorResponse
+}
+type CheckoutInfo {
+  id: String
+  amount: Int
+  amountCaptured: Int
+  amountRefunded: Int
+  description: String
+  paid: Boolean
+  receiptEmail: String
+  receiptNumber: String
+  receiptUrl: String
+  source: String
+  status: String
+}
+type GetConsumerContactInfoResult {
+  data: ConsumerContactInfo
+  error: ErrorResponse
+}
+
+type ConsumerContactInfo {
+  firstName: String
+  lastName: String
+  address: String
+  city: String
+  state: String
+  zip: String
+  phone: String
+  email: String
+}
+
 type Recurring {
   aggregate_usage: String
   interval: String
