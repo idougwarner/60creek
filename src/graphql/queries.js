@@ -42,6 +42,7 @@ export const prospectById = /* GraphQL */ `
       facebook
       notes
       interested
+      enhance
       prospectList {
         id
         userId
@@ -87,6 +88,7 @@ export const prospect = /* GraphQL */ `
       facebook
       notes
       interested
+      enhance
       prospectList {
         id
         userId
@@ -244,6 +246,7 @@ export const getProspect = /* GraphQL */ `
       facebook
       notes
       interested
+      enhance
       prospectList {
         id
         userId
@@ -282,6 +285,7 @@ export const listProspects = /* GraphQL */ `
         facebook
         notes
         interested
+        enhance
         prospectList {
           id
           userId
@@ -500,6 +504,7 @@ export const searchProspects = /* GraphQL */ `
         facebook
         notes
         interested
+        enhance
         prospectList {
           id
           userId

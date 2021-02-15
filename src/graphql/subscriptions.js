@@ -84,6 +84,7 @@ export const onCreateProspect = /* GraphQL */ `
       facebook
       notes
       interested
+      enhance
       prospectList {
         id
         userId
@@ -117,6 +118,7 @@ export const onUpdateProspect = /* GraphQL */ `
       facebook
       notes
       interested
+      enhance
       prospectList {
         id
         userId
@@ -150,6 +152,7 @@ export const onDeleteProspect = /* GraphQL */ `
       facebook
       notes
       interested
+      enhance
       prospectList {
         id
         userId
