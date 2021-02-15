@@ -10,6 +10,7 @@ import { INTERESTE_STATUS } from "./FilterDropdown";
 import { usStates } from "../../helpers/us-states";
 import InputMask from "react-input-mask";
 import { validateEmail, validateZip } from "../../helpers/validations";
+import { toast, ToastContainer } from "react-toastify";
 
 const STEP1 = 0;
 const STEP2 = 1;
@@ -66,8 +67,11 @@ const AddSingleProspectModal = ({ show, close }) => {
             input: dt,
           })
         );
+        toast.success("Uploaded successfully");
         close({ data: true });
-      } catch (err) {}
+      } catch (err) {
+        toast.error("Failed to upload!");
+      }
       setLoading(false);
     } else if (step < STEP3) {
       setStep(step + 1);
@@ -95,6 +99,7 @@ const AddSingleProspectModal = ({ show, close }) => {
   }, [phone]);
   return (
     <>
+      <ToastContainer />
       <Modal show={show} onHide={close}>
         <Modal.Header>
           <Modal.Title>
@@ -116,7 +121,10 @@ const AddSingleProspectModal = ({ show, close }) => {
                 <Select
                   options={prospectList}
                   value={selectedList}
-                  styles={customSelectStyles("40px")}
+                  styles={customSelectStyles(
+                    "40px",
+                    selectedList ? true : false
+                  )}
                   onChange={(value) => setSelectedList(value)}
                 />
               </Form.Group>
@@ -128,6 +136,7 @@ const AddSingleProspectModal = ({ show, close }) => {
                       type="text"
                       placeholder="Enter First"
                       value={firstName}
+                      className={firstName ? "completed" : ""}
                       onChange={(e) => setFirstName(e.target.value)}
                     />
                   </Form.Group>
@@ -139,6 +148,7 @@ const AddSingleProspectModal = ({ show, close }) => {
                       type="text"
                       placeholder="Enter Last"
                       value={lastName}
+                      className={lastName ? "completed" : ""}
                       onChange={(e) => setLastName(e.target.value)}
                     />
                   </Form.Group>
@@ -150,6 +160,7 @@ const AddSingleProspectModal = ({ show, close }) => {
                   type="text"
                   placeholder="Enter Street Address"
                   value={address1}
+                  className={address1 ? "completed" : ""}
                   onChange={(e) => setAddress1(e.target.value)}
                 />
               </Form.Group>
@@ -159,6 +170,7 @@ const AddSingleProspectModal = ({ show, close }) => {
                   type="text"
                   placeholder="Enter Apartment, Suite, Etc. (optional)"
                   value={address2}
+                  className={address2 ? "completed" : ""}
                   onChange={(e) => setAddress2(e.target.value)}
                 />
               </Form.Group>
@@ -171,6 +183,7 @@ const AddSingleProspectModal = ({ show, close }) => {
                       type="text"
                       placeholder="Enter City"
                       value={city}
+                      className={city ? "completed" : ""}
                       onChange={(e) => setCity(e.target.value)}
                     />
                   </Form.Group>
@@ -185,7 +198,8 @@ const AddSingleProspectModal = ({ show, close }) => {
                         setState(value);
                       }}
                       placeholder="State"
-                      styles={customSelectStyles(40)}
+                      className={state ? "completed" : ""}
+                      styles={customSelectStyles(40, state ? true : false)}
                       options={usStates.map((item) => ({
                         value: item,
                         label: item,
@@ -216,6 +230,7 @@ const AddSingleProspectModal = ({ show, close }) => {
                       type="text"
                       placeholder="Enter Company"
                       value={company}
+                      className={company ? "completed" : ""}
                       onChange={(e) => setCompany(e.target.value)}
                     />
                   </Form.Group>
@@ -232,7 +247,7 @@ const AddSingleProspectModal = ({ show, close }) => {
                   mask="(999) 999 - 9999"
                   value={phone}
                   type="tel"
-                  placeholder="Enter Phone Number"
+                  placeholder="(555) 555 - 5555"
                   onChange={(e) => setPhone(e.target.value)}
                 >
                   {(inputProps) => (
@@ -252,6 +267,7 @@ const AddSingleProspectModal = ({ show, close }) => {
                     type="text"
                     placeholder=""
                     value={facebook}
+                    className={facebook ? "completed" : ""}
                     onChange={(e) => setFacebook(e.target.value)}
                   />
                 </div>
@@ -272,7 +288,7 @@ const AddSingleProspectModal = ({ show, close }) => {
                 <Form.Label className="required">Select Status</Form.Label>
                 <Select
                   options={[
-                    { label: "Interested", value: INTERESTE_STATUS.INTERESTE },
+                    { label: "Interested", value: INTERESTE_STATUS.INTERESTED },
                     {
                       label: "Negotiating",
                       value: INTERESTE_STATUS.NEGOTIATING,
@@ -283,8 +299,10 @@ const AddSingleProspectModal = ({ show, close }) => {
                     },
                     { label: "Closed", value: INTERESTE_STATUS.CLOSED },
                   ]}
+                  placeholder="Select Status"
                   value={status}
-                  styles={customSelectStyles("40px")}
+                  className={status ? "completed" : ""}
+                  styles={customSelectStyles("40px", status ? true : false)}
                   onChange={(value) => setStatus(value)}
                 />
               </Form.Group>
@@ -300,18 +318,20 @@ const AddSingleProspectModal = ({ show, close }) => {
               </div>
               <div className="prospect-info">
                 <div className="item-info">
-                  Name: <span>{firstName + " " + lastName}</span>{" "}
+                  <span>{firstName + " " + lastName}</span>{" "}
                   <i>{status.label}</i>
                 </div>
-                <div className="item-info">Company: {company}</div>
-                <div className="item-info">Street Address: {address1}</div>
-                <div className="item-info">Address 2: {address2}</div>
+                <div className="item-info">{company}</div>
+                <div className="item-info">{address1}</div>
+                {address2 && <div className="item-info">{address2}</div>}
                 <div className="item-info">
-                  City, State, Zip: {city}, {state?.value || ""}, {zip}
+                  {city}, {state?.value || ""}, {zip}
                 </div>
-                <div className="item-info">Phone: {phone}</div>
-                <div className="item-info">Email: {email}</div>
-                <div className="item-info">facebook.com/{facebook}</div>
+                <div className="item-info">{phone}</div>
+                <div className="item-info">{email}</div>
+                {facebook && (
+                  <div className="item-info">facebook.com/{facebook}</div>
+                )}
               </div>
             </div>
           )}

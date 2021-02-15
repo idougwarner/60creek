@@ -5,10 +5,12 @@ import "./FilterDropdown.scss";
 
 export const INTERESTE_STATUS = {
   ALL: "all",
-  INTERESTE: "interested",
-  NEGOTIATING: "negotiating",
-  DO_NOT_CALL: "do not call",
-  CLOSED: "closed",
+  INTERESTED: "Interested",
+  NEGOTIATING: "Negotiating",
+  DO_NOT_CALL: "Do Not Call",
+  CLOSED: "Closed",
+  NOT_INTERESTED: "Not Interested",
+  UNKNOWN: "Unknown",
 };
 
 const FilterDropdown = ({ changeFilterEvent }) => {
@@ -16,6 +18,11 @@ const FilterDropdown = ({ changeFilterEvent }) => {
   const [all, setAll] = useState(true);
   const [interested, setInterested] = useState(false);
   const [notInterested, setNotInterested] = useState(false);
+
+  const [filter, setFilter] = useState({
+    list: [],
+    status: [],
+  });
 
   const [filterFieldOptions, setFilterFieldOptions] = useState([
     { label: "All Prospects", value: "all" },
@@ -30,7 +37,7 @@ const FilterDropdown = ({ changeFilterEvent }) => {
       }
     } else {
       setAll(false);
-      if (type === INTERESTE_STATUS.INTERESTE) {
+      if (type === INTERESTE_STATUS.INTERESTED) {
         setInterested(checked);
       } else if (type === INTERESTE_STATUS.NEGOTIATING) {
         setNotInterested(checked);
@@ -69,23 +76,41 @@ const FilterDropdown = ({ changeFilterEvent }) => {
     if (changeFilterEvent) {
       let status = [];
       if (interested) {
-        status.push(INTERESTE_STATUS.INTERESTE);
+        status.push(INTERESTE_STATUS.INTERESTED);
       }
       if (notInterested) {
         status.push(INTERESTE_STATUS.NEGOTIATING);
       }
-      changeFilterEvent({
+      setFilter({
         list:
           filterList.length === 0 || filterList[0] === "all" ? [] : filterList,
         status: status,
       });
     }
   }, [filterList, interested, notInterested]);
+  useEffect(() => {
+    changeFilterEvent(filter);
+  }, [filter]);
   return (
     <>
       <DropdownButton
         variant="outline-primary"
-        title="Filter Prospects"
+        title={
+          filter.list.length === 0 && filter.status.length === 0 ? (
+            "Filter Prospects"
+          ) : filter.list.length === 0 && filter.status.length !== 0 ? (
+            filter.status[0]
+          ) : filter.list.length !== 0 && filter.status.length === 0 ? (
+            "Prospect List" +
+            (filter.list.length > 1 ? "(" + filter.list.length + ")" : "")
+          ) : (
+            <>
+              {"Prospect List" +
+                (filter.list.length > 1 ? "(" + filter.list.length + ")" : "")}
+              <span className="sub-option">{filter.status[0]}</span>
+            </>
+          )
+        }
         className="filter-dropdown"
       >
         <h5>Filters</h5>
@@ -133,7 +158,7 @@ const FilterDropdown = ({ changeFilterEvent }) => {
           className="mb-3"
           checked={interested}
           onChange={(event) =>
-            changeEvent(INTERESTE_STATUS.INTERESTE, event.target.checked)
+            changeEvent(INTERESTE_STATUS.INTERESTED, event.target.checked)
           }
         />
         <FormCheck

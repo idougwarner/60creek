@@ -34,8 +34,14 @@
 }
 .edit-field {
   height: 28px;
-  width: 120px;
-  // margin-bottom: 20px;
+  min-width: 120px;
+  width: 100%;
+}
+.enter-info {
+  line-height: 16px;
+  position: absolute;
+  font-style: italic;
+  margin-top: 0;
 }
 .missing-info {
   width: 120px;
@@ -47,6 +53,7 @@
     border-radius: 10px;
   }
   span {
+    position: absolute;
     font-style: italic;
     font-weight: normal;
     font-size: 12px;
@@ -60,4 +67,8 @@
   overflow: auto;
   max-width: 1400px;
   max-height: 500px;
+}
+
+table > tbody > tr > td {
+  position: relative;
 }

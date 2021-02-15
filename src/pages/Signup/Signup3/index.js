@@ -87,7 +87,7 @@ const Signup3 = (props) => {
           id="subscription-agreement"
           type="checkbox"
           checked={subscriptionAgreementValue}
-          onClick={(event) => showSubscriptionAgreementModal(event)}
+          onClick={(event) => event.preventDefault()}
           label="I agree to the "
         />
         <span className="agree-item" onClick={showSubscriptionAgreementModal}>
@@ -100,7 +100,7 @@ const Signup3 = (props) => {
           id="privacy-policy"
           type="checkbox"
           checked={privacyPolicyValue}
-          onClick={(event) => showPrivacyModal(event)}
+          onClick={(event) => event.preventDefault()}
           label="I agree to the "
         />
         <span className="agree-item" onClick={showPrivacyModal}>

@@ -108,6 +108,8 @@ export const prospect = /* GraphQL */ `
       phone
       email
       facebook
+      notes
+      interested
       prospectList {
         id
         userId
@@ -254,6 +256,8 @@ export const deletedProspect = /* GraphQL */ `
       phone
       email
       facebook
+      notes
+      interested
       prospectList {
         id
         userId
@@ -489,6 +493,8 @@ export const createProspect = /* GraphQL */ `
       phone
       email
       facebook
+      notes
+      interested
       prospectList {
         id
         userId
@@ -523,6 +529,8 @@ export const updateProspect = /* GraphQL */ `
       phone
       email
       facebook
+      notes
+      interested
       prospectList {
         id
         userId
@@ -557,6 +565,8 @@ export const deleteProspect = /* GraphQL */ `
       phone
       email
       facebook
+      notes
+      interested
       prospectList {
         id
         userId
