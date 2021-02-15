@@ -23,6 +23,8 @@ import FilterDropdown from "../../components/Prospects/FilterDropdown";
 import { ACTIONS } from "../../redux/actionTypes";
 import { useIndexedDB } from "react-indexed-db";
 import { IndexDBStores } from "../../helpers/DBConfig";
+import { NavLink, useHistory } from "react-router-dom";
+import { APP_URLS } from "../../helpers/routers";
 
 const tableFields = [
   { title: "STATUS", field: "status", sortable: false },
@@ -47,7 +49,7 @@ const ProspectsPage = () => {
   const [statusFilter, setStatusFilter] = useState([]);
   const [listFilter, setListFilter] = useState([]);
 
-  const [sortType, setSortType] = useState({ sort: DESC, field: "lastName" });
+  const [sortType, setSortType] = useState({ sort: ASC, field: "lastName" });
 
   const [showAddExistingModal, setShowAddExistingModal] = useState(false);
   const [showSingleModal, setShowSingleModal] = useState(false);
@@ -58,6 +60,8 @@ const ProspectsPage = () => {
 
   const user = useSelector((state) => state.userStore);
   const prospectsDb = useIndexedDB(IndexDBStores.PROSPECT);
+  const history = useHistory();
+
   const dispatch = useDispatch();
 
   const loadData = async () => {
@@ -136,7 +140,7 @@ const ProspectsPage = () => {
     if (field === sortType.field) {
       setSortType({ sort: 0 - sortType.sort, field: field });
     } else {
-      setSortType({ sort: DESC, field: field });
+      setSortType({ sort: ASC, field: field });
     }
   };
   const changeFilterEvent = (filter) => {
@@ -187,7 +191,7 @@ const ProspectsPage = () => {
       );
     }
     newData = newData.sort((a, b) => {
-      return a[sortType.field] > b[sortType.field]
+      return a[sortType.field] < b[sortType.field]
         ? 0 - sortType.sort
         : 0 + sortType.sort;
     });
@@ -205,6 +209,9 @@ const ProspectsPage = () => {
   useEffect(() => {
     checkLocalStorage();
   }, []);
+  const gotoDetailPage = (id) => {
+    history.push(APP_URLS.PROSPECTS + "/" + id);
+  };
   return (
     <>
       <h4>Prospect List</h4>
@@ -324,7 +331,7 @@ const ProspectsPage = () => {
             {!loading &&
               filteredData &&
               filteredData.map((item, idx) => (
-                <tr key={idx}>
+                <tr key={idx} className="clickable">
                   <td>
                     <FormCheck
                       custom
@@ -340,18 +347,17 @@ const ProspectsPage = () => {
                       }}
                     />
                   </td>
-                  <td>{item.status}</td>
-                  <td>{item.firstName}</td>
-                  <td>{item.lastName}</td>
-                  <td>{item.company}</td>
-                  <td>{item.address1}</td>
-                  <td>{item.city}</td>
-                  <td>{item.state}</td>
-                  <td>{item.zip}</td>
+                  {tableFields.map((field, col) => (
+                    <td key={col} onClick={() => gotoDetailPage(item.id)}>
+                      {item[field.field]}
+                    </td>
+                  ))}
                   <td>
                     <div className="contact-info">
-                      <img src="/assets/icons/facebook.svg" className="link" />
-                      <img src="/assets/icons/email.svg" className="link" />
+                      <img
+                        src="/assets/icons/email.svg"
+                        className="link mr-3"
+                      />
                       <img src="/assets/icons/phone.svg" className="link" />
                     </div>
                   </td>

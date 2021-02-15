@@ -82,6 +82,8 @@ export const onCreateProspect = /* GraphQL */ `
       phone
       email
       facebook
+      notes
+      interested
       prospectList {
         id
         userId
@@ -113,6 +115,8 @@ export const onUpdateProspect = /* GraphQL */ `
       phone
       email
       facebook
+      notes
+      interested
       prospectList {
         id
         userId
@@ -144,6 +148,8 @@ export const onDeleteProspect = /* GraphQL */ `
       phone
       email
       facebook
+      notes
+      interested
       prospectList {
         id
         userId

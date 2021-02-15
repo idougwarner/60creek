@@ -5,6 +5,7 @@ type schema {
 
 type Query {
   user(id: ID): User
+  prospectById(id: ID): Prospect
   prospectList: ProspectList
   prospect: Prospect
   paymentMethod: PaymentMethod
@@ -188,7 +189,10 @@ input CreateStripeSubscriptionInput {
 input ValidatePromoCodeInput {
   coupon: String
 }
-type User @model @auth(rules: [{ allow: public, provider: apiKey }]) {
+type User
+  @model
+  @searchable
+  @auth(rules: [{ allow: public, provider: apiKey }]) {
   id: ID!
   cognitoUserName: String!
   firstName: String
@@ -206,6 +210,7 @@ type User @model @auth(rules: [{ allow: public, provider: apiKey }]) {
 
 type Prospect
   @model
+  @searchable
   @key(name: "byProspectList", fields: ["prospectListId"])
   @auth(rules: [{ allow: public, provider: apiKey }]) {
   id: ID!
@@ -223,6 +228,9 @@ type Prospect
   phone: String
   email: String
   facebook: String
+  notes: String
+  interested: String
+  enhance: Boolean
   prospectList: ProspectList @connection(fields: ["prospectListId"])
 }
 

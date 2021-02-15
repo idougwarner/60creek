@@ -27,6 +27,7 @@ import { useIndexedDB } from "react-indexed-db";
 import { IndexDBStores } from "../../helpers/DBConfig";
 import CheckoutForm from "./CheckoutForm";
 import { messageConvert } from "../../helpers/messageConvert";
+import { toast, ToastContainer } from "react-toastify";
 const STEP1 = 0;
 const STEP2 = 1;
 const STEP3 = 2;
@@ -54,7 +55,7 @@ const NewProspectListModal = ({
   const [loadingEnhanceData, setLoadingEnhanceData] = useState(false);
   const [listName, setListName] = useState("");
   const [fileName, setFileName] = useState("");
-  const [enhance, setEnhance] = useState(false);
+  const [enhance, setEnhance] = useState(true);
   const [prospectList, setProspectList] = useState([]);
   const [isNext, setIsNext] = useState(false);
   const [errors, setErrors] = useState(0);
@@ -185,13 +186,16 @@ const NewProspectListModal = ({
       setCompleted(true);
       setPercentage(100);
 
+      toast.success("Uploaded successfully!");
       await prospectListDb.clear();
       await prospectsDb.clear();
 
       setTimeout(() => {
         close({ data: true });
       }, 3000);
-    } catch (err) {}
+    } catch (err) {
+      toast.error("Failed to upload!");
+    }
   };
 
   useEffect(() => {
@@ -202,8 +206,10 @@ const NewProspectListModal = ({
     if (originUpload) {
       let storedProspects = await prospectsDb.getAll();
       let storedUploadStep = await prospectUploadStepDb.getAll();
-      setStep(storedUploadStep[0].step || STEP1);
-      setProspectList(storedProspects);
+      if (storedUploadStep.length > 0 && storedProspects.length > 0) {
+        setStep(storedUploadStep[0].step || STEP1);
+        setProspectList(storedProspects);
+      }
     }
   }, [originUpload]);
   useEffect(() => {
@@ -249,13 +255,15 @@ const NewProspectListModal = ({
         if (field.required && !item[field.fieldName]) errCounts++;
       });
     });
-    await prospectsDb.clear();
-    for (let i = 0; i < prospectList.length; i++) {
-      const item = prospectList[i];
-      const rt = await prospectsDb.add(item);
-    }
     setErrors(errCounts);
-  }, [prospectList]);
+    if (step > STEP1) {
+      await prospectsDb.clear();
+      for (let i = 0; i < prospectList.length; i++) {
+        const item = prospectList[i];
+        const rt = await prospectsDb.add(item);
+      }
+    }
+  }, [prospectList, step]);
   const uploadCsvFile = () => {
     fileInputRef.current.click();
   };
@@ -274,19 +282,17 @@ const NewProspectListModal = ({
   const onChangeFile = async (event) => {
     event.stopPropagation();
     event.preventDefault();
-    setLoading(true);
-    try {
-      const fData = await getJsonFromFile(event.target.files[0]);
-      await prospectsDb.clear();
-      for (let i = 0; i < fData.length; i++) {
-        const item = fData[i];
-        const rt = await prospectsDb.add(item);
+    if (event.target.files.length > 0) {
+      setLoading(true);
+      try {
+        const fData = await getJsonFromFile(event.target.files[0]);
+        setFileData(fData);
+        setFileName(event.target.files[0].name);
+        event.target.value = null;
+      } catch (err) {
+      } finally {
+        setLoading(false);
       }
-      setFileData(fData);
-      setFileName(event.target.files[0].name);
-    } catch (err) {
-    } finally {
-      setLoading(false);
     }
   };
   const clearFile = () => {
@@ -296,20 +302,7 @@ const NewProspectListModal = ({
 
   useEffect(async () => {
     if (!token) return;
-    try {
-      await prospectListDb.clear();
-      await prospectListDb.add({
-        prospectName: listName,
-        prospectId: selectedList?.value || "",
-      });
-      await prospectUploadStepDb.clear();
-      await prospectUploadStepDb.add({
-        step: STEP2,
-      });
-    } catch (err) {}
-
     if (enhance) {
-      let newProspects = [...prospectList];
       setLoadingEnhanceData(true);
       setErrMsg("");
       try {
@@ -327,22 +320,6 @@ const NewProspectListModal = ({
           setLoadingEnhanceData(false);
           return;
         }
-        for (let i = 0; i < newProspects.length; i++) {
-          if (newProspects[i].email) {
-            let rt = await API.graphql(
-              graphqlOperation(getConsumerContactInfo, {
-                input: {
-                  email: newProspects[i].email,
-                },
-              })
-            );
-            if (rt.data.getConsumerContactInfo.data) {
-              const d = rt.data.getConsumerContactInfo.data;
-              newProspects[i] = { ...newProspects[i], ...d };
-            }
-          }
-        }
-        setProspectList(newProspects);
         next();
       } catch (err) {}
       setLoadingEnhanceData(false);
@@ -350,7 +327,22 @@ const NewProspectListModal = ({
   }, [token]);
 
   const gotoSecondStep = async () => {
-    setGenerateToken(!generateToken);
+    try {
+      await prospectListDb.clear();
+      await prospectListDb.add({
+        prospectName: listName,
+        prospectId: selectedList?.value || "",
+      });
+      await prospectUploadStepDb.clear();
+      await prospectUploadStepDb.add({
+        step: STEP2,
+      });
+    } catch (err) {}
+    if (enhance) {
+      setGenerateToken(!generateToken);
+    } else {
+      next();
+    }
   };
   const gotoThirdStep = async () => {
     await prospectUploadStepDb.add({
@@ -364,17 +356,20 @@ const NewProspectListModal = ({
       // (selectedField.fieldName !== fieldName || idx !== selectedField.idx) &&
       editing
     ) {
-      let newList = [...prospectList];
-      if (selectedField.idx !== -1 && selectedField.fieldName !== "") {
-        newList[selectedField.idx][selectedField.fieldName] = editField;
+      if (selectedField.idx === idx && selectedField.fieldName === fieldName) {
+      } else {
+        let newList = [...prospectList];
+        if (selectedField.idx !== -1 && selectedField.fieldName !== "") {
+          newList[selectedField.idx][selectedField.fieldName] = editField;
+        }
+        setProspectList(newList);
+        setSelectedField({
+          idx: -1,
+          fieldName: "",
+        });
+        setEditField("");
+        setEditing(false);
       }
-      setProspectList(newList);
-      setSelectedField({
-        idx: -1,
-        fieldName: "",
-      });
-      setEditField("");
-      setEditing(false);
     } else {
       setSelectedField({
         idx: idx,
@@ -410,7 +405,7 @@ const NewProspectListModal = ({
                 setEditField(event.target.value);
               }}
             />
-            <Form.Text className="text-primary font-italic mt-1">
+            <Form.Text className="text-primary enter-info">
               Enter info
             </Form.Text>
           </>
@@ -476,6 +471,7 @@ const NewProspectListModal = ({
   );
   return (
     <>
+      <ToastContainer />
       <Modal
         show={show}
         className={showCloseConfirm ? "d-none" : ""}
@@ -550,7 +546,7 @@ const NewProspectListModal = ({
                   </Form.Label>
                   <Form.Control
                     type="text"
-                    placeholder="Enter Prospect List Name"
+                    placeholder="List name"
                     value={listName}
                     onChange={(event) => {
                       setListName(event.target.value);
@@ -562,7 +558,7 @@ const NewProspectListModal = ({
                 <Form.Label>Total Number of Prospects</Form.Label>
                 <Form.Control
                   type="text"
-                  placeholder="Enter Number of Prospects. (optional)"
+                  placeholder="Number of records. (optional)"
                   value={totalNumber}
                   onChange={(e) => setTotalNumber(e.target.value)}
                 />
@@ -570,10 +566,18 @@ const NewProspectListModal = ({
               <Form.Group>
                 <Form.Label className="d-flex align-items-center">
                   Template Download
-                  <img
-                    src="/assets/icons/information-circle.svg"
-                    className="ml-1"
-                  />
+                  <OverlayTrigger
+                    placement="top"
+                    delay={{ show: 250, hide: 400 }}
+                    overlay={(props) => (
+                      <Tooltip {...props}>Template Download</Tooltip>
+                    )}
+                  >
+                    <img
+                      src="/assets/icons/information-circle.svg"
+                      className="ml-1"
+                    />
+                  </OverlayTrigger>
                 </Form.Label>
                 <Form.Text className="text-muted mb-3">
                   This template must be used for upload
@@ -627,7 +631,7 @@ const NewProspectListModal = ({
                 <Form.Label className="required d-flex align-items-center">
                   Enhance Data
                   <OverlayTrigger
-                    placement="right"
+                    placement="top"
                     delay={{ show: 250, hide: 400 }}
                     overlay={renderTooltip}
                   >
@@ -680,14 +684,6 @@ const NewProspectListModal = ({
                   . Please check before confirming.
                 </div>
                 <div>
-                  <Button
-                    variant="outline-primary"
-                    onClick={prev}
-                    disabled={originUpload}
-                    className="mr-2"
-                  >
-                    BACK
-                  </Button>
                   <Button
                     variant="primary"
                     onClick={gotoThirdStep}
@@ -766,6 +762,8 @@ const NewProspectListModal = ({
                 <>
                   <Spinner /> LOADING ...
                 </>
+              ) : enhance ? (
+                "SUBMIT"
               ) : (
                 "NEXT"
               )}

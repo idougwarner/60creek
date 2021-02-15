@@ -22,6 +22,39 @@ export const user = /* GraphQL */ `
     }
   }
 `;
+export const prospectById = /* GraphQL */ `
+  query ProspectById($id: ID) {
+    prospectById(id: $id) {
+      id
+      userId
+      prospectListId
+      status
+      firstName
+      lastName
+      company
+      address1
+      address2
+      city
+      state
+      zip
+      phone
+      email
+      facebook
+      notes
+      interested
+      prospectList {
+        id
+        userId
+        name
+        enhance
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
 export const prospectList = /* GraphQL */ `
   query ProspectList {
     prospectList {
@@ -52,6 +85,8 @@ export const prospect = /* GraphQL */ `
       phone
       email
       facebook
+      notes
+      interested
       prospectList {
         id
         userId
@@ -207,6 +242,8 @@ export const getProspect = /* GraphQL */ `
       phone
       email
       facebook
+      notes
+      interested
       prospectList {
         id
         userId
@@ -243,6 +280,8 @@ export const listProspects = /* GraphQL */ `
         phone
         email
         facebook
+        notes
+        interested
         prospectList {
           id
           userId
@@ -388,6 +427,92 @@ export const listMarketingCampaigns = /* GraphQL */ `
         updatedAt
       }
       nextToken
+    }
+  }
+`;
+export const searchUsers = /* GraphQL */ `
+  query SearchUsers(
+    $filter: SearchableUserFilterInput
+    $sort: SearchableUserSortInput
+    $limit: Int
+    $nextToken: String
+    $from: Int
+  ) {
+    searchUsers(
+      filter: $filter
+      sort: $sort
+      limit: $limit
+      nextToken: $nextToken
+      from: $from
+    ) {
+      items {
+        id
+        cognitoUserName
+        firstName
+        lastName
+        company
+        address1
+        address2
+        city
+        state
+        zip
+        phone
+        email
+        signature
+        createdAt
+        updatedAt
+      }
+      nextToken
+      total
+    }
+  }
+`;
+export const searchProspects = /* GraphQL */ `
+  query SearchProspects(
+    $filter: SearchableProspectFilterInput
+    $sort: SearchableProspectSortInput
+    $limit: Int
+    $nextToken: String
+    $from: Int
+  ) {
+    searchProspects(
+      filter: $filter
+      sort: $sort
+      limit: $limit
+      nextToken: $nextToken
+      from: $from
+    ) {
+      items {
+        id
+        userId
+        prospectListId
+        status
+        firstName
+        lastName
+        company
+        address1
+        address2
+        city
+        state
+        zip
+        phone
+        email
+        facebook
+        notes
+        interested
+        prospectList {
+          id
+          userId
+          name
+          enhance
+          createdAt
+          updatedAt
+        }
+        createdAt
+        updatedAt
+      }
+      nextToken
+      total
     }
   }
 `;

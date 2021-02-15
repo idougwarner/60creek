@@ -1,6 +1,13 @@
 @import "../../assets/styles/vars.scss";
 
 .filter-dropdown {
+  .dropdown-toggle {
+    text-transform: capitalize;
+  }
+  span.sub-option {
+    color: rgba(19, 22, 36, 0.6);
+    margin-left: 8px;
+  }
   .dropdown-menu {
     padding: 24px;
     min-width: 272px;

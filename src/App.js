@@ -17,14 +17,7 @@ function App() {
       <BrowserRouter>
         <Switch>
           {appRoutes.map((route, i) => (
-            <MakeRoutesWithSubRoutes
-              key={
-                route.component.displayName
-                  ? route.component.displayName
-                  : route.component.name
-              }
-              {...route}
-            />
+            <MakeRoutesWithSubRoutes key={i} {...route} />
           ))}
         </Switch>
       </BrowserRouter>

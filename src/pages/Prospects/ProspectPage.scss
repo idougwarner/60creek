@@ -1,0 +1,60 @@
+@import "../../assets//styles/vars.scss";
+
+.summary-item {
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 0.25px;
+  color: rgba(19, 22, 36, 0.6);
+  margin-bottom: 4px;
+  span {
+    font-weight: 600;
+    margin-left: 4px;
+    font-size: 16px;
+  }
+}
+.interested {
+  padding: 0;
+  height: auto;
+  min-height: unset;
+  text-decoration: none;
+  span {
+    display: inline-block;
+    background: #eaf2f8;
+    border-radius: 10px;
+    color: black;
+    padding: 4px 8px;
+  }
+  &::after {
+    margin-left: 6px;
+  }
+  &:hover {
+    text-decoration: none;
+  }
+  &:focus {
+    box-shadow: none;
+    text-decoration: none;
+  }
+}
+
+.interested-menu {
+  width: 190px;
+  .dropdown-item {
+    color: #131624;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    &.active {
+      color: $primary;
+      background-color: white;
+      &::after {
+        content: "";
+        width: 16px;
+        height: 12px;
+        background-repeat: no-repeat;
+        background-image: url(../../assets/icons/check-blue.svg);
+        background-position: center;
+      }
+    }
+  }
+}
