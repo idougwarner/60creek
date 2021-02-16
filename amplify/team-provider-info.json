@@ -49,7 +49,10 @@
         "validatePromoCode": {},
         "subscriptionInfo": {},
         "checkout": {},
-        "getConsumerContactInfo": {}
+        "getConsumerContactInfo": {
+          "deploymentBucketName": "amplify-60creek-staging-103715-deployment",
+          "s3Key": "amplify-builds/getConsumerContactInfo-792f7a50593366615a72-build.zip"
+        }
       },
       "hosting": {
         "amplifyhosting": {
