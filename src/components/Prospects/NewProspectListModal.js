@@ -19,7 +19,7 @@ import {
   createProspectList,
   getConsumerContactInfo,
 } from "../../graphql/mutations";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import ConfirmModal from "./ConfirmModal";
 import Select from "react-select";
 import { customSelectStyles } from "../../assets/styles/select-style";
@@ -28,6 +28,8 @@ import { IndexDBStores } from "../../helpers/DBConfig";
 import CheckoutForm from "./CheckoutForm";
 import { messageConvert } from "../../helpers/messageConvert";
 import { toast, ToastContainer } from "react-toastify";
+import { ACTIONS } from "../../redux/actionTypes";
+import { WORKER_STATUS } from "../../redux/uploadWorkerReducer";
 const STEP1 = 0;
 const STEP2 = 1;
 const STEP3 = 2;
@@ -76,6 +78,8 @@ const NewProspectListModal = ({
     fieldName: "",
   });
 
+  const uploadStatus = useSelector((state) => state.uploadWorkerStore);
+
   const [showCloseConfirm, setShowCloseConfirm] = useState(false);
 
   const fileInputRef = useRef();
@@ -88,6 +92,9 @@ const NewProspectListModal = ({
   const prospectsDb = useIndexedDB(IndexDBStores.PROSPECT);
   const prospectListDb = useIndexedDB(IndexDBStores.PROSPECT_LIST);
   const prospectUploadStepDb = useIndexedDB(IndexDBStores.PROSPECT_UPLOAD_STEP);
+
+  const dispatch = useDispatch();
+
   const loadData = async () => {
     if (list1) {
       setList(list1.map((item) => ({ value: item.id, label: item.name })));
@@ -97,105 +104,37 @@ const NewProspectListModal = ({
     loadData();
   }, [list1]);
 
+  useEffect(() => {
+    if (uploadStatus.status === WORKER_STATUS.IDLE) {
+    } else if (uploadStatus.status === WORKER_STATUS.START) {
+      setCompleted(false);
+      setPercentage(uploadStatus.percentage);
+      setEstimate(uploadStatus.estimate);
+    } else if (uploadStatus.status === WORKER_STATUS.CHANGE) {
+      setPercentage(uploadStatus.percentage);
+      setEstimate(uploadStatus.estimate);
+    } else if (uploadStatus.status === WORKER_STATUS.COMPLETED) {
+      setPercentage(uploadStatus.percentage);
+      setEstimate(uploadStatus.estimate);
+      setCompleted(true);
+      setTimeout(() => {
+        close({ data: true });
+      }, 3000);
+    } else if (uploadStatus.status === WORKER_STATUS.ERROR) {
+    } else {
+    }
+  }, [uploadStatus]);
+
   const prev = () => {
     if (step > STEP1) {
       setStep(step - 1);
     }
   };
 
-  const timeConversion = (millisec) => {
-    const seconds = (millisec / 1000).toFixed(1);
-    const minutes = (millisec / (1000 * 60)).toFixed(1);
-    const hours = (millisec / (1000 * 60 * 60)).toFixed(1);
-    const days = (millisec / (1000 * 60 * 60 * 24)).toFixed(1);
-    if (seconds < 60) {
-      return seconds + " secondes";
-    } else if (minutes < 60) {
-      return minutes + " minutes";
-    } else if (hours < 24) {
-      return hours + " hours";
-    } else {
-      return days + " days";
-    }
-  };
   const pushData = async () => {
-    try {
-      setCompleted(false);
-      let prospectListId;
-      let storedProspects = await prospectsDb.getAll();
-      let storedProspectList = await prospectListDb.getAll();
-      if (storedProspectList[0].prospectId) {
-        prospectListId = storedProspectList[0].prospectId;
-      } else {
-        const start = new Date().getTime();
-        const listInfo = await API.graphql(
-          graphqlOperation(createProspectList, {
-            input: {
-              userId: user.id,
-              name: storedProspectList[0].prospectName,
-              enhance: enhance,
-            },
-          })
-        );
-        const end = new Date().getTime();
-        const delta = end - start;
-        prospectListId = listInfo.data.createProspectList.id;
-        setEstimate(timeConversion(delta * prospectList.length));
-        setPercentage(Math.round((1 / (prospectList.length + 1)) * 100));
-      }
-
-      await prospectListDb.clear();
-      await prospectListDb.add({
-        prospectName: storedProspectList[0].prospectName,
-        prospectId: prospectListId,
-      });
-
-      for (let i = 0; i < storedProspects.length; i++) {
-        const start = new Date().getTime();
-        const rt = await API.graphql(
-          graphqlOperation(createProspect, {
-            input: {
-              userId: user.id,
-              prospectListId: prospectListId,
-              firstName: storedProspects[i].firstName,
-              lastName: storedProspects[i].lastName,
-              address1: storedProspects[i].address1,
-              city: storedProspects[i].city,
-              state: storedProspects[i].state,
-              zip: storedProspects[i].zip,
-              company: storedProspects[i].company,
-              phone: storedProspects[i].phone,
-              email: storedProspects[i].email,
-              facebook: storedProspects[i].facebook,
-              status: storedProspects[i].status,
-            },
-          })
-        );
-        await prospectsDb.deleteRecord(storedProspects[i].id);
-        const end = new Date().getTime();
-        const delta = end - start;
-        setEstimate(timeConversion(delta * (prospectList.length - i + 1)));
-        setPercentage(
-          Math.round(
-            ((i + 1 + (existingList ? 0 : 1)) /
-              (prospectList.length + (existingList ? 0 : 1))) *
-              100
-          )
-        );
-      }
-      setCompleted(true);
-      setPercentage(100);
-
-      toast.success("Uploaded successfully!");
-      await prospectListDb.clear();
-      await prospectsDb.clear();
-
-      setTimeout(() => {
-        close({ data: true });
-      }, 3000);
-    } catch (err) {
-      toast.error("Failed to upload!");
-    }
+    dispatch({
+      type: ACTIONS.START_UPLOADE_WORKER,
+    });
   };
 
   useEffect(() => {
@@ -212,11 +151,6 @@ const NewProspectListModal = ({
       }
     }
   }, [originUpload]);
-  useEffect(() => {
-    if (step === STEP3) {
-      pushData();
-    }
-  }, [step]);
   const next = async () => {
     if (step < STEP3) {
       setStep(step + 1);
@@ -256,14 +190,7 @@ const NewProspectListModal = ({
       });
     });
     setErrors(errCounts);
-    if (step > STEP1) {
-      await prospectsDb.clear();
-      for (let i = 0; i < prospectList.length; i++) {
-        const item = prospectList[i];
-        const rt = await prospectsDb.add(item);
-      }
-    }
-  }, [prospectList, step]);
+  }, [prospectList]);
   const uploadCsvFile = () => {
     fileInputRef.current.click();
   };
@@ -333,10 +260,16 @@ const NewProspectListModal = ({
         prospectName: listName,
         prospectId: selectedList?.value || "",
       });
-      await prospectUploadStepDb.clear();
-      await prospectUploadStepDb.add({
-        step: STEP2,
-      });
+      // await prospectUploadStepDb.clear();
+      // await prospectUploadStepDb.add({
+      //   step: STEP2,
+      // });
+
+      await prospectsDb.clear();
+      for (let i = 0; i < prospectList.length; i++) {
+        const item = prospectList[i];
+        const rt = await prospectsDb.add(item);
+      }
     } catch (err) {}
     if (enhance) {
       setGenerateToken(!generateToken);
@@ -345,9 +278,17 @@ const NewProspectListModal = ({
     }
   };
   const gotoThirdStep = async () => {
+    await prospectUploadStepDb.clear();
     await prospectUploadStepDb.add({
       step: STEP3,
     });
+
+    await prospectsDb.clear();
+    for (let i = 0; i < prospectList.length; i++) {
+      const item = prospectList[i];
+      const rt = await prospectsDb.add(item);
+    }
+    pushData();
     next();
   };
 

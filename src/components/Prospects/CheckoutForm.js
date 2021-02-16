@@ -77,7 +77,6 @@ const CheckOutForm = ({
   const getToken = () => {
     return new Promise(async (resolver, reject) => {
       if (!stripe) {
-        console.log("Stripejs has not loaded yet.");
         changeToken(null);
         return;
       }

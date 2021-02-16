@@ -31,10 +31,7 @@ const ProspectPage = () => {
         if (rt.data.listProspects.items) {
           setData(rt.data.listProspects.items[0]);
         }
-        console.log(rt);
-      } catch (err) {
-        console.log(err);
-      }
+      } catch (err) {}
       setLoading(false);
     }
   }, [id]);
@@ -61,17 +58,14 @@ const ProspectPage = () => {
     try {
       setData(newData);
       const putData = { ...newData };
-      console.log(putData);
       delete putData.prospectList;
       delete putData.createdAt;
       delete putData.updatedAt;
       const rt = await API.graphql(
         graphqlOperation(updateProspect, { input: putData })
       );
-      console.log(rt);
       toast.success("Updated successfully.");
     } catch (err) {
-      console.log(err);
       toast.error("Failed to update item.");
     }
   };

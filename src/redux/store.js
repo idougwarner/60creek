@@ -6,12 +6,14 @@ import { createLogger } from "redux-logger";
 import userStore from "./userReducers";
 import prospectStore from "./prospectReducers";
 import signupStore from "./signupReducer";
+import uploadWorkerStore from "./uploadWorkerReducer";
 export const history = createHashHistory();
 
 const rootReducer = combineReducers({
   userStore,
   prospectStore,
   signupStore,
+  uploadWorkerStore,
 });
 
 export const configureStore = () => {

@@ -19,7 +19,6 @@ exports.handler = async (event) => {
         d_email: email,
       },
     });
-    console.log(rt);
     let dt = null;
     if (rt.data && rt.data.datafinder["num-results"] > 0) {
       dt = {
@@ -36,7 +35,6 @@ exports.handler = async (event) => {
 
     return { data: dt, error: null };
   } catch (err) {
-    console.log(err);
     return { data: null, error: { message: new Error(err).message } };
   }
 };

@@ -25,6 +25,7 @@ import { useIndexedDB } from "react-indexed-db";
 import { IndexDBStores } from "../../helpers/DBConfig";
 import { NavLink, useHistory } from "react-router-dom";
 import { APP_URLS } from "../../helpers/routers";
+import { WORKER_STATUS } from "../../redux/uploadWorkerReducer";
 
 const tableFields = [
   { title: "STATUS", field: "status", sortable: false },
@@ -61,8 +62,9 @@ const ProspectsPage = () => {
   const user = useSelector((state) => state.userStore);
   const prospectsDb = useIndexedDB(IndexDBStores.PROSPECT);
   const history = useHistory();
-
   const dispatch = useDispatch();
+
+  const uploadStatus = useSelector((state) => state.uploadWorkerStore);
 
   const loadData = async () => {
     setLoading(true);
@@ -207,8 +209,22 @@ const ProspectsPage = () => {
     }
   };
   useEffect(() => {
-    checkLocalStorage();
-  }, []);
+    if (user) {
+      checkLocalStorage();
+    }
+  }, [user]);
+
+  useEffect(() => {
+    if (uploadStatus.status === WORKER_STATUS.IDLE) {
+    } else if (uploadStatus.status === WORKER_STATUS.START) {
+    } else if (uploadStatus.status === WORKER_STATUS.CHANGE) {
+    } else if (uploadStatus.status === WORKER_STATUS.COMPLETED) {
+      loadData();
+    } else if (uploadStatus.status === WORKER_STATUS.ERROR) {
+      checkLocalStorage();
+    } else {
+    }
+  }, [uploadStatus]);
   const gotoDetailPage = (id) => {
     history.push(APP_URLS.PROSPECTS + "/" + id);
   };
@@ -389,9 +405,6 @@ const ProspectsPage = () => {
             show={showAddExistingModal}
             close={(event) => {
               setShowAddExistingModal(false);
-              if (event && event.data) {
-                loadData();
-              }
             }}
             existingList={true}
           />
@@ -412,9 +425,6 @@ const ProspectsPage = () => {
             show={showNewListModal}
             close={(event) => {
               setShowNewListModal(false);
-              if (event && event.data) {
-                loadData();
-              }
             }}
           />
         )}

@@ -15,7 +15,6 @@ const ProspectListTab = ({ data, changeData }) => {
   const [phoneEditable, setPhoneEditable] = useState(false);
   const [notesEditable, setNotesEditable] = useState(false);
   useEffect(() => {
-    console.log(data);
     if (data) {
       setCompany(data.company);
       setAddress1(data.address1);
