@@ -194,7 +194,6 @@ const AddSingleProspectModal = ({ show, close }) => {
                     <Select
                       value={state}
                       onChange={(value) => {
-                        console.log(value);
                         setState(value);
                       }}
                       placeholder="State"
