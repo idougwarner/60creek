@@ -40,6 +40,11 @@ export const DBConfig = {
           keypath: "prospectId",
           options: { unique: false },
         },
+        {
+          name: "enhance",
+          keypath: "enhance",
+          options: { unique: false },
+        },
       ],
     },
     {

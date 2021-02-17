@@ -111,6 +111,59 @@ export const prospect = /* GraphQL */ `
       notes
       interested
       enhance
+      fetched
+      demographic {
+        DOB
+        ageRange
+        ethnicCode
+        singleParent
+        seniorAdultInHousehold
+        youngAdultInHousehold
+        workingWoman
+        SOHOIndicator
+        businessOwner
+        language
+        religion
+        numberOfChildren
+        maritalStatusInHousehold
+        homeOwnerRenter
+        education
+        occupation
+        occupationDetail
+        gender
+        socialPresence
+        presenceOfChildren
+      }
+      lifestyle {
+        magazines
+        computerAndTechnology
+        dietingWeightLoss
+        exerciseHealthGrouping
+        doItYourselferHomeImprovement
+        jewelry
+        mailOrderBuyer
+        membershipClubs
+        travelGrouping
+        onlineEducation
+        sportsGrouping
+        sportsOutdoorsGrouping
+        investing
+        booksAndReading
+        politicalDonor
+        hobbiesAndCrafts
+        cosmetics
+        charitableDonations
+        artsAntiquesCollectibles
+        petOwner
+        cooking
+        autoPartsAccessories
+        healthBeautyWellness
+        parentingAndChildrensProducts
+        music
+        movie
+        selfImprovement
+        womensApparel
+      }
       prospectList {
         id
         userId
@@ -260,6 +313,59 @@ export const deletedProspect = /* GraphQL */ `
       notes
       interested
       enhance
+      fetched
+      demographic {
+        DOB
+        ageRange
+        ethnicCode
+        singleParent
+        seniorAdultInHousehold
+        youngAdultInHousehold
+        workingWoman
+        SOHOIndicator
+        businessOwner
+        language
+        religion
+        numberOfChildren
+        maritalStatusInHousehold
+        homeOwnerRenter
+        education
+        occupation
+        occupationDetail
+        gender
+        socialPresence
+        presenceOfChildren
+      }
+      lifestyle {
+        magazines
+        computerAndTechnology
+        dietingWeightLoss
+        exerciseHealthGrouping
+        doItYourselferHomeImprovement
+        jewelry
+        mailOrderBuyer
+        membershipClubs
+        travelGrouping
+        onlineEducation
+        sportsGrouping
+        sportsOutdoorsGrouping
+        investing
+        booksAndReading
+        politicalDonor
+        hobbiesAndCrafts
+        cosmetics
+        charitableDonations
+        artsAntiquesCollectibles
+        petOwner
+        cooking
+        autoPartsAccessories
+        healthBeautyWellness
+        parentingAndChildrensProducts
+        music
+        movie
+        selfImprovement
+        womensApparel
+      }
       prospectList {
         id
         userId
@@ -389,12 +495,82 @@ export const getConsumerContactInfo = /* GraphQL */ `
       data {
         firstName
         lastName
-        address
+        address1
         city
         state
         zip
         phone
         email
+      }
+      error {
+        message
+      }
+    }
+  }
+`;
+export const getDemographicInfo = /* GraphQL */ `
+  mutation GetDemographicInfo($input: GetConsumerContactInfoInput) {
+    getDemographicInfo(input: $input) {
+      data {
+        DOB
+        ageRange
+        ethnicCode
+        singleParent
+        seniorAdultInHousehold
+        youngAdultInHousehold
+        workingWoman
+        SOHOIndicator
+        businessOwner
+        language
+        religion
+        numberOfChildren
+        maritalStatusInHousehold
+        homeOwnerRenter
+        education
+        occupation
+        occupationDetail
+        gender
+        socialPresence
+        presenceOfChildren
+      }
+      error {
+        message
+      }
+    }
+  }
+`;
+export const getLifestyleInfo = /* GraphQL */ `
+  mutation GetLifestyleInfo($input: GetConsumerContactInfoInput) {
+    getLifestyleInfo(input: $input) {
+      data {
+        magazines
+        computerAndTechnology
+        dietingWeightLoss
+        exerciseHealthGrouping
+        doItYourselferHomeImprovement
+        jewelry
+        mailOrderBuyer
+        membershipClubs
+        travelGrouping
+        onlineEducation
+        sportsGrouping
+        sportsOutdoorsGrouping
+        investing
+        booksAndReading
+        politicalDonor
+        hobbiesAndCrafts
+        cosmetics
+        charitableDonations
+        artsAntiquesCollectibles
+        petOwner
+        cooking
+        autoPartsAccessories
+        healthBeautyWellness
+        parentingAndChildrensProducts
+        music
+        movie
+        selfImprovement
+        womensApparel
       }
       error {
         message
@@ -498,6 +674,59 @@ export const createProspect = /* GraphQL */ `
       notes
       interested
       enhance
+      fetched
+      demographic {
+        DOB
+        ageRange
+        ethnicCode
+        singleParent
+        seniorAdultInHousehold
+        youngAdultInHousehold
+        workingWoman
+        SOHOIndicator
+        businessOwner
+        language
+        religion
+        numberOfChildren
+        maritalStatusInHousehold
+        homeOwnerRenter
+        education
+        occupation
+        occupationDetail
+        gender
+        socialPresence
+        presenceOfChildren
+      }
+      lifestyle {
+        magazines
+        computerAndTechnology
+        dietingWeightLoss
+        exerciseHealthGrouping
+        doItYourselferHomeImprovement
+        jewelry
+        mailOrderBuyer
+        membershipClubs
+        travelGrouping
+        onlineEducation
+        sportsGrouping
+        sportsOutdoorsGrouping
+        investing
+        booksAndReading
+        politicalDonor
+        hobbiesAndCrafts
+        cosmetics
+        charitableDonations
+        artsAntiquesCollectibles
+        petOwner
+        cooking
+        autoPartsAccessories
+        healthBeautyWellness
+        parentingAndChildrensProducts
+        music
+        movie
+        selfImprovement
+        womensApparel
+      }
       prospectList {
         id
         userId
@@ -535,6 +764,59 @@ export const updateProspect = /* GraphQL */ `
       notes
       interested
       enhance
+      fetched
+      demographic {
+        DOB
+        ageRange
+        ethnicCode
+        singleParent
+        seniorAdultInHousehold
+        youngAdultInHousehold
+        workingWoman
+        SOHOIndicator
+        businessOwner
+        language
+        religion
+        numberOfChildren
+        maritalStatusInHousehold
+        homeOwnerRenter
+        education
+        occupation
+        occupationDetail
+        gender
+        socialPresence
+        presenceOfChildren
+      }
+      lifestyle {
+        magazines
+        computerAndTechnology
+        dietingWeightLoss
+        exerciseHealthGrouping
+        doItYourselferHomeImprovement
+        jewelry
+        mailOrderBuyer
+        membershipClubs
+        travelGrouping
+        onlineEducation
+        sportsGrouping
+        sportsOutdoorsGrouping
+        investing
+        booksAndReading
+        politicalDonor
+        hobbiesAndCrafts
+        cosmetics
+        charitableDonations
+        artsAntiquesCollectibles
+        petOwner
+        cooking
+        autoPartsAccessories
+        healthBeautyWellness
+        parentingAndChildrensProducts
+        music
+        movie
+        selfImprovement
+        womensApparel
+      }
       prospectList {
         id
         userId
@@ -572,6 +854,59 @@ export const deleteProspect = /* GraphQL */ `
       notes
       interested
       enhance
+      fetched
+      demographic {
+        DOB
+        ageRange
+        ethnicCode
+        singleParent
+        seniorAdultInHousehold
+        youngAdultInHousehold
+        workingWoman
+        SOHOIndicator
+        businessOwner
+        language
+        religion
+        numberOfChildren
+        maritalStatusInHousehold
+        homeOwnerRenter
+        education
+        occupation
+        occupationDetail
+        gender
+        socialPresence
+        presenceOfChildren
+      }
+      lifestyle {
+        magazines
+        computerAndTechnology
+        dietingWeightLoss
+        exerciseHealthGrouping
+        doItYourselferHomeImprovement
+        jewelry
+        mailOrderBuyer
+        membershipClubs
+        travelGrouping
+        onlineEducation
+        sportsGrouping
+        sportsOutdoorsGrouping
+        investing
+        booksAndReading
+        politicalDonor
+        hobbiesAndCrafts
+        cosmetics
+        charitableDonations
+        artsAntiquesCollectibles
+        petOwner
+        cooking
+        autoPartsAccessories
+        healthBeautyWellness
+        parentingAndChildrensProducts
+        music
+        movie
+        selfImprovement
+        womensApparel
+      }
       prospectList {
         id
         userId

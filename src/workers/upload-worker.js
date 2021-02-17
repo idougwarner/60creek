@@ -66,7 +66,7 @@ export const startUploadProspects = async (
             phone: storedProspects[i].phone,
             email: storedProspects[i].email,
             facebook: storedProspects[i].facebook,
-            status: storedProspects[i].status,
+            status: storedProspects[i].status || "Interested",
           },
         })
       );

@@ -1,3 +1,5 @@
+@import "../../assets/styles/vars.scss";
+
 .summary {
   font-size: 16px;
   line-height: 24px;
@@ -44,7 +46,8 @@
   margin-top: 0;
 }
 .missing-info {
-  width: 120px;
+  min-width: 120px;
+  width: 100%;
   .missing-field {
     width: 100%;
     height: 28px;
@@ -61,12 +64,20 @@
     letter-spacing: 0.4px;
     color: #d95746;
   }
+  &.not-required {
+    .missing-field {
+      border-color: $primary;
+    }
+    span {
+      color: $primary;
+    }
+  }
 }
 
 .table-container {
-  overflow: auto;
-  max-width: 1400px;
-  max-height: 500px;
+  // overflow: auto;
+  // max-width: 1400px;
+  // max-height: 500px;
 }
 
 table > tbody > tr > td {

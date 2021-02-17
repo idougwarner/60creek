@@ -3,10 +3,20 @@ import MorePips from "../MorePips";
 import "./Signup1.scss";
 
 import BasicButton from "../../../components/controls/BasicButton";
-import { FormControl, FormGroup, FormLabel, FormText } from "react-bootstrap";
+import {
+  Button,
+  FormControl,
+  FormGroup,
+  FormLabel,
+  FormText,
+  OverlayTrigger,
+  Spinner,
+  Tooltip,
+} from "react-bootstrap";
 import { ACTIONS } from "../../../redux/actionTypes";
 import { useDispatch } from "react-redux";
 import { passwordStrengths, validateEmail } from "../../../helpers/validations";
+import { Auth } from "aws-amplify";
 
 //******************************************************************
 //*
@@ -17,6 +27,8 @@ import { passwordStrengths, validateEmail } from "../../../helpers/validations";
 const Signup1 = (props) => {
   const [nextButtonEnabledValue, setNextButtonEnabledValue] = useState(false);
   const [emailAddress, setEmailAddress] = useState(props.emailAddress || "");
+  const [emailErrMsg, setEmailErrMsg] = useState("");
+  const [checkingEmail, setCheckingEmail] = useState(false);
   const [password, setPassword] = useState(props.password || "");
   const [isValidEmail, setIsValidEmail] = useState(false);
   const [displayPassword, setDisplayPassword] = useState(false);
@@ -77,7 +89,44 @@ const Signup1 = (props) => {
     passwordStrength,
     isValidConfirmPassword,
   ]);
-
+  const gotoNext = async () => {
+    setEmailErrMsg("");
+    setCheckingEmail(true);
+    const msg = "Your email is already existed.";
+    try {
+      const rt = await Auth.signIn(
+        emailAddress,
+        "sldfow3902938dfsoiow349r-234289349S@#WEwewer@#@r"
+      );
+      Auth.signOut();
+      setEmailErrMsg(msg);
+    } catch (err) {
+      switch (err.code) {
+        case "UserNotFoundException":
+          // Only here, in .catch error block we actually send a user to sign up
+          props.next(
+            true,
+            firstNameValue,
+            lastNameValue,
+            emailAddress,
+            password
+          );
+          break;
+        case "NotAuthorizedException":
+          setEmailErrMsg(msg);
+          break;
+        case "PasswordResetRequiredException":
+          setEmailErrMsg(msg);
+          break;
+        case "UserNotConfirmedException":
+          setEmailErrMsg(msg);
+          break;
+        default:
+          break;
+      }
+    }
+    setCheckingEmail(false);
+  };
   return (
     <div>
       <FormGroup controlId="firstName">
@@ -107,11 +156,14 @@ const Signup1 = (props) => {
           placeholder="Enter Email Address"
           className={emailAddress && isValidEmail ? "completed" : ""}
           value={emailAddress}
-          onChange={(e) => setEmailAddress(e.target.value)}
-          isInvalid={!isValidEmail && emailAddress}
+          onChange={(e) => {
+            setEmailErrMsg("");
+            setEmailAddress(e.target.value);
+          }}
+          isInvalid={(!isValidEmail || emailErrMsg) && emailAddress}
         />
         <FormControl.Feedback type="invalid">
-          Invalid Email Address
+          {emailErrMsg ? emailErrMsg : "Invalid Email Address"}
         </FormControl.Feedback>
         <FormText className="font-italic pl-3">
           This will also be your username
@@ -126,7 +178,11 @@ const Signup1 = (props) => {
           className={password && passwordStrength > 1 ? "completed" : ""}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          isInvalid={password && password.length < 6}
         />
+        <FormControl.Feedback type="invalid">
+          Password must contain at least 6 characters
+        </FormControl.Feedback>
         <div
           className={
             "password-eye-icon" + (displayPassword ? " showing-password" : "")
@@ -146,7 +202,19 @@ const Signup1 = (props) => {
           </div>
           <div className="strength-label">
             {passwordStrengths[passwordStrength].legend}
-            <img src="assets/icons/information-circle.svg" />
+
+            <OverlayTrigger
+              placement="top"
+              delay={{ show: 250, hide: 400 }}
+              overlay={(props) => (
+                <Tooltip {...props}>
+                  Combining uppercase and lowercase letters, numbers, and
+                  special characters can create a stronger password
+                </Tooltip>
+              )}
+            >
+              <img src="assets/icons/information-circle.svg" />
+            </OverlayTrigger>
           </div>
         </div>
       </FormGroup>
@@ -169,27 +237,17 @@ const Signup1 = (props) => {
           onClick={() => setDisplayPassword(!displayPassword)}
         />
         <FormControl.Feedback type="invalid">
-          Confirm password should be matched with password.
+          Password doesn't match
         </FormControl.Feedback>
       </FormGroup>
-      <BasicButton
-        title="next"
-        additionalClass="next-button"
-        enabled={nextButtonEnabledValue}
-        buttonPushed={(e) => {
-          if (!validateEmail(emailAddress)) {
-            setIsValidEmail(true);
-          } else {
-            props.next(
-              true,
-              firstNameValue,
-              lastNameValue,
-              emailAddress,
-              password
-            );
-          }
-        }}
-      />
+      <Button
+        variant="primary"
+        className="w-100"
+        disabled={!nextButtonEnabledValue || checkingEmail}
+        onClick={() => gotoNext()}
+      >
+        {checkingEmail ? "CHECKING ..." : "NEXT"}
+      </Button>
       <MorePips pipsConfig={props.pipsConfig} />
     </div>
   );

@@ -96,20 +96,25 @@ const FilterDropdown = ({ changeFilterEvent }) => {
       <DropdownButton
         variant="outline-primary"
         title={
-          filter.list.length === 0 && filter.status.length === 0 ? (
-            "Filter Prospects"
-          ) : filter.list.length === 0 && filter.status.length !== 0 ? (
-            filter.status[0]
-          ) : filter.list.length !== 0 && filter.status.length === 0 ? (
-            "Prospect List" +
-            (filter.list.length > 1 ? "(" + filter.list.length + ")" : "")
-          ) : (
-            <>
-              {"Prospect List" +
-                (filter.list.length > 1 ? "(" + filter.list.length + ")" : "")}
-              <span className="sub-option">{filter.status[0]}</span>
-            </>
-          )
+          <>
+            <img src="/assets/icons/filter.svg" className="mr-3" />
+            {filter.list.length === 0 && filter.status.length === 0 ? (
+              "Filter Prospects"
+            ) : filter.list.length === 0 && filter.status.length !== 0 ? (
+              filter.status[0]
+            ) : filter.list.length !== 0 && filter.status.length === 0 ? (
+              "Prospect List" +
+              (filter.list.length > 1 ? "(" + filter.list.length + ")" : "")
+            ) : (
+              <>
+                {"Prospect List" +
+                  (filter.list.length > 1
+                    ? "(" + filter.list.length + ")"
+                    : "")}
+                <span className="sub-option">{filter.status[0]}</span>
+              </>
+            )}
+          </>
         }
         className="filter-dropdown"
       >

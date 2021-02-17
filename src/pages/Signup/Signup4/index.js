@@ -19,7 +19,7 @@ import {
   validatePromoCode,
 } from "../../../graphql/mutations";
 import { subscriptionInfo } from "../../../graphql/queries";
-import { Spinner } from "react-bootstrap";
+import { OverlayTrigger, Spinner, Tooltip } from "react-bootstrap";
 import { useDispatch } from "react-redux";
 import { ACTIONS } from "../../../redux/actionTypes";
 import { messageConvert } from "../../../helpers/messageConvert";
@@ -322,6 +322,7 @@ const CheckOutForm = ({
             placeholder="Enter Discount Code"
             value={discountCode}
             onChange={(e) => {
+              setErrorMsg("");
               setDiscountCode(e.target.value);
             }}
           />
@@ -359,7 +360,19 @@ const CheckOutForm = ({
         <div className="g-input-box g-half-input-box">
           <div className="g-input-label required d-flex align-items-center">
             Security Code
-            <img src={infoIcon} className="ml-2" />
+            <OverlayTrigger
+              placement="top"
+              delay={{ show: 250, hide: 400 }}
+              overlay={(props) => (
+                <Tooltip {...props}>
+                  Combining uppercase and lowercase letters, numbers, and
+                  special characters can create a stronger password
+                </Tooltip>
+              )}
+            >
+              <img src="assets/icons/information-circle.svg" className="ml-1" />
+            </OverlayTrigger>
+            {/* <img src={infoIcon} className="ml-2" /> */}
           </div>
           <CardCvcElement
             className={"g-input-container " + (cardCvc ? "completed" : "")}

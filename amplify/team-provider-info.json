@@ -17,7 +17,19 @@
       },
       "function": {
         "createStripeSubscription": {},
-        "preSignUp": {}
+        "preSignUp": {},
+        "getConsumerContactInfo": {
+          "deploymentBucketName": "amplify-60creek-devtest-44357-deployment",
+          "s3Key": "amplify-builds/getConsumerContactInfo-66354655665a6635496e-build.zip"
+        },
+        "getLifestyleInfo": {
+          "deploymentBucketName": "amplify-60creek-devtest-44357-deployment",
+          "s3Key": "amplify-builds/getLifestyleInfo-35684a6d4b6c725a7876-build.zip"
+        },
+        "getDemographicInfo": {
+          "deploymentBucketName": "amplify-60creek-devtest-44357-deployment",
+          "s3Key": "amplify-builds/getDemographicInfo-54793356615832655745-build.zip"
+        }
       },
       "hosting": {
         "amplifyhosting": {

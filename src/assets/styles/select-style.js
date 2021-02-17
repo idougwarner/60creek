@@ -17,7 +17,7 @@ export const customSelectStyles = (
       ...styles,
       backgroundColor: "transparent",
     }),
-    menu: (styles) => ({ ...styles, zIndex: 1000 }),
+    menu: (styles) => ({ ...styles, zIndex: 10000 }),
     input: (styles) => ({ ...styles, height: Number(height) - 10 }),
     placeholder: (styles) => ({ ...styles }),
     singleValue: (styles) => ({ ...styles }),

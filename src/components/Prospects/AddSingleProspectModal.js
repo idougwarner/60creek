@@ -42,37 +42,42 @@ const AddSingleProspectModal = ({ show, close }) => {
   const edit = () => {
     setStep(STEP1);
   };
+  const uploadData = async () => {
+    try {
+      setLoading(true);
+      const dt = {
+        userId: user.id,
+        prospectListId: selectedList.value,
+        firstName: firstName,
+        lastName: lastName,
+        address1: address1,
+        address2: address2,
+        city: city,
+        state: state?.value || "",
+        zip: zip,
+        company: company,
+        phone: phone,
+        email: email,
+        facebook: facebook,
+        status: status.value,
+      };
+      let rt = await API.graphql(
+        graphqlOperation(createProspect, {
+          input: dt,
+        })
+      );
+      toast.success("Uploaded successfully", { hideProgressBar: true });
+      setTimeout(() => {
+        close({ data: true });
+      }, 2000);
+    } catch (err) {
+      toast.error("Failed to upload!", { hideProgressBar: true });
+    }
+    setLoading(false);
+  };
   const next = async () => {
     if (step === STEP3) {
-      try {
-        setLoading(true);
-        const dt = {
-          userId: user.id,
-          prospectListId: selectedList.value,
-          firstName: firstName,
-          lastName: lastName,
-          address1: address1,
-          address2: address2,
-          city: city,
-          state: state?.value || "",
-          zip: zip,
-          company: company,
-          phone: phone,
-          email: email,
-          facebook: facebook,
-          status: status.value,
-        };
-        let rt = await API.graphql(
-          graphqlOperation(createProspect, {
-            input: dt,
-          })
-        );
-        toast.success("Uploaded successfully");
-        close({ data: true });
-      } catch (err) {
-        toast.error("Failed to upload!");
-      }
-      setLoading(false);
+      uploadData();
     } else if (step < STEP3) {
       setStep(step + 1);
     }
@@ -100,7 +105,7 @@ const AddSingleProspectModal = ({ show, close }) => {
   return (
     <>
       <ToastContainer />
-      <Modal show={show} onHide={close}>
+      <Modal show={show} onHide={step === STEP3 ? uploadData : close}>
         <Modal.Header>
           <Modal.Title>
             {step === STEP3 ? "Prospect Created" : "Add Single Prospect"}
@@ -108,7 +113,7 @@ const AddSingleProspectModal = ({ show, close }) => {
           <img
             src="/assets/icons/close.svg"
             className="modal-close-btn"
-            onClick={close}
+            onClick={step === STEP3 ? uploadData : close}
           />
         </Modal.Header>
         <Modal.Body>
