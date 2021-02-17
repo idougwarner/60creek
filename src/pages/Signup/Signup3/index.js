@@ -17,7 +17,14 @@ import { ACTIONS } from "../../../redux/actionTypes";
 //*
 //******************************************************************
 
-const Signup3 = (props) => {
+const Signup3 = ({
+  subscriptionAgreement,
+  privacyPolicy,
+  signature,
+  next,
+  previous,
+  pipsConfig,
+}) => {
   let sigCanvas = null;
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [isPrivacy, setIsPrivacy] = useState(true);
@@ -40,12 +47,10 @@ const Signup3 = (props) => {
   };
   const [nextButtonEnabledValue, setNextButtonEnabledValue] = useState(false);
   const [subscriptionAgreementValue, setSubscriptionAgreementValue] = useState(
-    props.subscriptionAgreement
+    subscriptionAgreement
   );
-  const [privacyPolicyValue, setPrivacyPolicyValue] = useState(
-    props.privacyPolicy
-  );
-  const [signatureValue, setSignatureValue] = useState(props.signature);
+  const [privacyPolicyValue, setPrivacyPolicyValue] = useState(privacyPolicy);
+  const [signatureValue, setSignatureValue] = useState(signature);
 
   useEffect(() => {
     if (subscriptionAgreementValue && privacyPolicyValue && signatureValue) {
@@ -122,7 +127,7 @@ const Signup3 = (props) => {
           enabled={nextButtonEnabledValue}
           buttonPushed={(e) => {
             const signature = sigCanvas.toDataURL();
-            props.next(
+            next(
               true,
               subscriptionAgreementValue,
               privacyPolicyValue,
@@ -136,7 +141,7 @@ const Signup3 = (props) => {
           enabled={true}
           buttonPushed={(e) => {
             const signature = sigCanvas.toDataURL();
-            props.previous(
+            previous(
               false,
               subscriptionAgreementValue,
               privacyPolicyValue,
@@ -144,7 +149,7 @@ const Signup3 = (props) => {
             );
           }}
         />
-        <MorePips pipsConfig={props.pipsConfig} />
+        <MorePips pipsConfig={pipsConfig} />
       </div>
       <Modal show={modalIsOpen} onHide={() => setModalIsOpen(false)} size="lg">
         <Modal.Header>

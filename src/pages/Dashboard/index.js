@@ -10,8 +10,7 @@ import DashboardMessagesSection from "../../components/DashboardSections/Dashboa
 import AddProspectForm from "../../components/AddProspectForm";
 // import { createProspectInStore } from '../../redux/actions'
 import "./Dashboard.scss";
-import Menu from "../../components/Menu";
-
+import ComingSoon from "../../components/layout/ComingSoon";
 export class Dashboard extends React.Component {
   constructor(props) {
     super(props);
@@ -46,8 +45,10 @@ export class Dashboard extends React.Component {
       );
     }
     return (
-      <div className="sixty-creek-markets">
-        <div className="g-page-background-with-nav">
+      <div className="position-relative vh-100">
+        <h4>Dashboard</h4>
+        <ComingSoon />
+        {/* <div className="g-page-background-with-nav">
           <div className="g-page-header">
             <div className="g-page-title">Dashboard</div>
           </div>
@@ -73,19 +74,10 @@ export class Dashboard extends React.Component {
               <DashboardMessagesSection />
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     );
   }
 }
-
-// const mapDispatchToProps = dispatch => ({
-//   onCreatePressed: prospect => dispatch(createProspectInStore(prospect)),
-// })
-
-// const mapStateToProps = (state) => ({
-//   marketingCampaigns: serializeMarketingCampaigns(state.marketingCampaigns),
-//   prospectLists: serializeProspectLists(state.prospectLists),
-// })
 
 export default Dashboard;

@@ -18,7 +18,7 @@ import {
   updateProspect,
 } from "../../graphql/mutations";
 import { ToastContainer, toast } from "react-toastify";
-import ComingSoon from "../../components/layout/ComingSoon_";
+import ComingSoon from "../../components/layout/ComingSoon";
 
 const ProspectPage = () => {
   const [data, setData] = useState(null);

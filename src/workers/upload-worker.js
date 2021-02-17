@@ -51,7 +51,7 @@ export const startUploadProspects = async (
 
     for (let i = 0; i < storedProspects.length; i++) {
       const start = new Date().getTime();
-      const rt = await API.graphql(
+      await API.graphql(
         graphqlOperation(createProspect, {
           input: {
             userId: userId,

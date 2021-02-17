@@ -95,13 +95,10 @@ const NewProspectListModal = ({
 
   const dispatch = useDispatch();
 
-  const loadData = async () => {
+  useEffect(async () => {
     if (list1) {
       setList(list1.map((item) => ({ value: item.id, label: item.name })));
     }
-  };
-  useEffect(() => {
-    loadData();
   }, [list1]);
 
   useEffect(() => {
@@ -125,11 +122,11 @@ const NewProspectListModal = ({
     }
   }, [uploadStatus]);
 
-  const prev = () => {
-    if (step > STEP1) {
-      setStep(step - 1);
-    }
-  };
+  // const prev = () => {
+  //   if (step > STEP1) {
+  //     setStep(step - 1);
+  //   }
+  // };
 
   const pushData = async () => {
     dispatch({
@@ -213,6 +210,7 @@ const NewProspectListModal = ({
       setLoading(true);
       try {
         const fData = await getJsonFromFile(event.target.files[0]);
+        console.log(fData);
         setFileData(fData);
         setFileName(event.target.files[0].name);
         event.target.value = null;

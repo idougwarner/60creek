@@ -71,9 +71,9 @@ export const getJsonFromFile = (file) => {
           cnt = 0;
         for (let j = 0; j < dataField.length; j++) {
           if (j >= dt[i].length) break;
-          row[dataField[j]] = String(dt[i][j]).trim();
+          row[dataField[j]] = String(dt[i][j]).trim() || "";
           if (dataField[j] === "phone") {
-            row[dataField[j]] = formatPhoneNumber(row[dataField[j]]);
+            row[dataField[j]] = formatPhoneNumber(row[dataField[j]]) || "";
           }
           if (dt[i][j]) {
             cnt++;
