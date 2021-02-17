@@ -1,6 +1,5 @@
 import React from "react";
 import { withRouter } from "react-router-dom";
-import Menu from "../../components/Menu";
 import BasicButton from "../../components/controls/BasicButton";
 import "./YourAccount.scss";
 import { Auth } from "aws-amplify";

@@ -1,0 +1,11 @@
+.campaign-wizard {
+  padding: 36px 0;
+  .wizard-header {
+    display: flex;
+    flex-direction: column;
+
+    h4 {
+      margin-bottom: 16px;
+    }
+  }
+}

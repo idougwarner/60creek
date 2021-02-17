@@ -55,7 +55,7 @@ const FilterDropdown = ({ changeFilterEvent }) => {
       } else {
         oldList.push(value);
       }
-      if (oldList.length == 0) {
+      if (oldList.length === 0) {
         setFilterList(["all"]);
       } else {
         setFilterList(oldList);

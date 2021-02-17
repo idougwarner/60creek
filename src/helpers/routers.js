@@ -1,7 +1,8 @@
 import About from "../pages/About";
 import { Dashboard } from "../pages/Dashboard";
 import { Login } from "../pages/Login";
-import { Marketing } from "../pages/Marketing";
+import Marketing from "../pages/Marketing";
+import CreateCampaign from "../pages/Marketing/CreateCampaign";
 import PasswordReset from "../pages/PasswordReset";
 import ProspectsPage from "../pages/Prospects";
 import ProspectPage from "../pages/Prospects/ProspectPage";
@@ -17,6 +18,7 @@ export const APP_URLS = {
   INDIVIDUAL_PROSPECT: "/admin/prospects/:id",
   PROSPECTS: "/admin/prospects",
   MARKETING: "/admin/marketing",
+  CREATE_CAMPAIGN: "/admin/marketing/create-campaign",
   DASHBOARD: "/admin/dashboard",
   YOUR_ACCOINT: "/admin/youraccount",
   ABOUT: "/admin/about",
@@ -48,6 +50,12 @@ export const appRoutes = [
     exact: true,
   },
   { path: APP_URLS.MARKETING, component: Marketing, name: "", exact: true },
+  {
+    path: APP_URLS.CREATE_CAMPAIGN,
+    component: CreateCampaign,
+    name: "Create Campaign",
+    exact: true,
+  },
   { path: APP_URLS.DASHBOARD, component: Dashboard, name: "", exact: true },
   {
     path: APP_URLS.YOUR_ACCOINT,

@@ -1,353 +1,47 @@
-import React from "react";
-import { connect } from "react-redux";
-import {
-  serializeProspectLists,
-  serializeMarketingCampaigns,
-} from "../../redux/store";
+import React, { useState } from "react";
+import { Button, DropdownButton } from "react-bootstrap";
+import { NavLink } from "react-router-dom";
+import MarketingCampaignsCard from "../../components/Marketing/MarketingCampaignsCard";
+import MarketingInteractionRateCard from "../../components/Marketing/MarketingInteractionRateCard";
+import { APP_URLS } from "../../helpers/routers";
 import "./Marketing.scss";
-import Menu from "../../components/Menu";
-import DataTableHeader from "../../components/DataTable/DataTableHeader";
-import DataTableContents from "../../components/DataTable/DataTableContents";
-import searchIcon from "../../assets/images/search-icon.svg";
-import downArrowIcon from "../../assets/images/sort-down.svg";
-import menuDots from "../../assets/images/more-dots.svg";
-import BasicButton from "../../components/controls/BasicButton";
-// import AddMarketingCampaignForm from '../../components/AddMarketingCampaignForm'
-// import { createMarketingCampaignInStore } from '../../redux/actions'
 
-const marketingTableDescriptor = [
-  {
-    width: "24px",
-    fieldName: "selectCheckbox",
-    headerCellTitle: "",
-    isCheckBox: true,
-    checked: false,
-  },
-  {
-    sortDirection: "none",
-    width: "calc(15% - 47px)",
-    fieldName: "title",
-    headerCellTitle: "Title",
-  },
-  {
-    sortDirection: "none",
-    width: "calc(15% - 47px)",
-    fieldName: "prospectListName",
-    headerCellTitle: "Target List",
-  },
-  {
-    sortDirection: "none",
-    width: "calc(15% - 47px)",
-    fieldName: "automatedEmailText",
-    headerCellTitle: "Automated Email",
-  },
-  {
-    sortDirection: "none",
-    width: "calc(15% - 47px)",
-    fieldName: "automatedTextText",
-    headerCellTitle: "Automated Text",
-  },
-  {
-    sortDirection: "none",
-    width: "calc(15% - 47px)",
-    fieldName: "automatedRinglessVoicemailText",
-    headerCellTitle: "Automated Ringless Voicemail",
-  },
-  {
-    sortDirection: "none",
-    width: "calc(15% - 47px)",
-    fieldName: "automatedPostCardText",
-    headerCellTitle: "Automated Postcard",
-  },
-  {
-    sortDirection: "none",
-    width: "calc(15% - 47px)",
-    fieldName: "startDateTimeText",
-    headerCellTitle: "Start Date/Time",
-  },
-  {
-    sortDirection: "none",
-    width: "85px",
-    fieldName: "consentText",
-    headerCellTitle: "Consent",
-  },
-  {
-    sortDirection: "none",
-    width: "80px",
-    fieldName: "totalText",
-    headerCellTitle: "Total",
-  },
-];
-
-function formatDateTime(dateTime) {
-  const realDate = new Date(dateTime);
-  let hours = realDate.getHours();
-  let amPm = " am";
-  if (hours === 0) {
-    hours = 12;
-  } else if (hours > 12) {
-    hours -= 12;
-    amPm = " pm";
-  } else if (hours === 12) {
-    amPm = " pm";
-  }
+const Marketing = () => {
+  const [current] = useState(0);
+  const [upcoming] = useState(0);
   return (
-    realDate.getMonth() +
-    "/" +
-    realDate.getDate() +
-    "/" +
-    realDate.getFullYear() +
-    " " +
-    hours +
-    ":" +
-    (realDate.getMinutes() < 10 ? "0" : "") +
-    realDate.getMinutes() +
-    amPm
-  );
-}
-
-export class Marketing extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      marketingTableDescriptor: marketingTableDescriptor.filter((desc) => {
-        return desc;
-      }),
-      flattenedMarkets: [],
-    };
-
-    this.flattenMarkets = this.flattenMarkets.bind(this);
-    this.handleTableSort = this.handleTableSort.bind(this);
-    this.handleHeaderChecked = this.handleHeaderChecked.bind(this);
-    this.handleRowChecked = this.handleRowChecked.bind(this);
-    this.handleEditMarket = this.handleEditMarket.bind(this);
-    this.handleAddMarketButtonPushed = this.handleAddMarketButtonPushed.bind(
-      this
-    );
-    this.handleSearchInput = this.handleSearchInput.bind(this);
-    this.handleSearchKeyDown = this.handleSearchKeyDown.bind(this);
-    this.handleAddMarketingCampaign = this.handleAddMarketingCampaign.bind(
-      this
-    );
-  }
-
-  componentDidMount() {
-    const { marketingCampaigns } = this.props;
-    if (marketingCampaigns) {
-      this.flattenMarkets();
-    }
-  }
-
-  handleEditMarket(market) {}
-
-  handleAddMarketButtonPushed() {
-    this.setState({ showAddMarket: true });
-  }
-
-  handleTableSort(sortField, sortDirection) {
-    const { flattenedMarkets } = this.state;
-    flattenedMarkets.sort((row1, row2) => {
-      if (row1[sortField] < row2[sortField]) {
-        return sortDirection === "asc" ? -1 : 1;
-      } else if (row1[sortField] > row2[sortField]) {
-        return sortDirection === "desc" ? -1 : 1;
-      } else {
-        return 0;
-      }
-    });
-  }
-
-  handleHeaderChecked(checked) {
-    const { marketingTableDescriptor, flattenedMarkets } = this.state;
-    if (marketingTableDescriptor[0].checked !== checked) {
-      marketingTableDescriptor[0].checked = checked;
-      const checkedMarkets = flattenedMarkets.map((p) => {
-        p.checked = checked;
-        return p;
-      });
-      this.setState({
-        marketingTableDescriptor,
-        flattenedMarkets: checkedMarkets,
-      });
-    }
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    if (prevProps.marketingCampaigns !== this.props.marketingCampaigns) {
-      this.flattenMarkets();
-    }
-  }
-
-  handleRowChecked(id, checked) {
-    const { flattenedMarkets } = this.state;
-    const market = flattenedMarkets.find((p) => {
-      return p.id === id;
-    });
-    if (market) {
-      market.checked = checked;
-      this.setState({ flattenedMarkets });
-    }
-  }
-
-  flattenMarkets(searchString) {
-    const { marketingCampaigns } = this.props;
-    let filteredMarkets = marketingCampaigns;
-    if (searchString) {
-      filteredMarkets = marketingCampaigns.filter((mc) => {
-        return (
-          mc.title.indexOf(searchString) >= 0 ||
-          (mc.prospectList && mc.prospectList.name.indexOf(searchString) >= 0)
-        );
-      });
-    }
-    const flattenedMarkets = filteredMarkets.map((mc) => {
-      if (mc.prospectList) {
-        mc.prospectListName = mc.prospectList.name;
-      }
-      mc.automatedEmailText = mc.automatedEmail ? "Yes - $.25 a Target" : "No";
-      mc.automatedTextText = mc.automatedText ? "Yes - $.25 a Target" : "No";
-      mc.automatedRinglessVoicemailText = mc.automatedRinglessVoicemail
-        ? "Yes - $.25 a Target"
-        : "No";
-      mc.automatedPostCardText = mc.automatedPostCard
-        ? "Yes - $1.25 a Target"
-        : "No";
-      mc.startDateTimeText = formatDateTime(mc.startDateTime);
-      mc.consentText = mc.consent ? "Yes" : "No";
-      mc.totalText = mc.total ? "$" + mc.total.toFixed(2) : "$0.00";
-
-      return mc;
-    });
-    this.setState({ flattenedMarkets });
-  }
-
-  handleSearchInput(e) {
-    this.setState({ searchString: e.target.value }, () => {
-      if (!this.state.searchString) {
-        this.flattenMarkets();
-      } else {
-        this.flattenMarkets(this.state.searchString);
-      }
-    });
-  }
-
-  handleSearchKeyDown(e) {
-    if (e.keyCode === 27) {
-      this.setState({ searchString: "" });
-      this.flattenMarkets();
-    } else if (e.keyCode === 13) {
-      this.flattenMarkets(this.state.searchString);
-    }
-  }
-
-  handleAddMarketingCampaign(newCampaign) {
-    const { onCreatePressed } = this.props;
-    onCreatePressed(newCampaign);
-    this.setState({ showAddMarket: false });
-  }
-
-  render() {
-    const {
-      flattenedMarkets,
-      marketingTableDescriptor,
-      showAddMarket,
-      marketingCampaignToUpdate,
-    } = this.state;
-    const numberSelected = flattenedMarkets.filter((market) => {
-      return market.checked;
-    }).length;
-    const totalMarketsShowing = flattenedMarkets.length;
-    return (
-      <div className="sixty-creek-markets">
-        <div className="g-page-background-with-nav">
-          <div className="g-page-header">
-            <div className="g-page-title">Marketing</div>
-          </div>
-
-          <BasicButton
-            title="Add Marketing"
-            enabled={true}
-            buttonPushed={this.handleAddMarketButtonPushed}
-          />
-
-          {/* {this.state.showAddMarket ?
-            <AddMarketingCampaignForm
-              prospectLists={this.props.prospectLists}
-              addMarketingCampaign={this.handleAddMarketingCampaign}
-              marketingCampaignToUpdate={marketingCampaignToUpdate} />
-            :
-            null
-          } */}
-
-          <div
-            className="g-page-content"
-            onClick={() => {
-              this.setState({ showAddMarket: false });
-            }}
-          >
-            <div className="g-page-content-standard">
-              <div className="search-control">
-                <img className="search-icon" src={searchIcon} alt="search" />
-                <input
-                  className="search-input"
-                  value={this.state.searchString}
-                  placeholder="Search List..."
-                  onChange={this.handleSearchInput}
-                  onKeyDown={this.handleSearchKeyDown}
-                />
-              </div>
-              <img className="menu-dots" src={menuDots} alt="more-menu" />
-              <div className="number-selected">
-                {numberSelected > 0
-                  ? numberSelected + " selected"
-                  : "None selected"}
-              </div>
-              <div className="filter">
-                <span className="filter-text">Filter</span>
-                <img
-                  className="arrow-icon"
-                  src={downArrowIcon}
-                  alt="select-filter"
-                />
-              </div>
-              <div className="showing-markets">
-                <span className="showing-text not-bold">{"Showing "}</span>
-                <span className="showing-text bold">{totalMarketsShowing}</span>
-                <span className="showing-text not-bold">{" of "}</span>
-                <span className="showing-text bold">
-                  {flattenedMarkets.length}
-                </span>
-                <span className="showing-text not-bold">{" markets"}</span>
-              </div>
-              <div className="markets-list">
-                <DataTableHeader
-                  tableColumnsDescriptor={marketingTableDescriptor}
-                  handleTableSort={this.handleTableSort}
-                  handleCheck={this.handleHeaderChecked}
-                />
-                <DataTableContents
-                  tableColumnsDescriptor={marketingTableDescriptor}
-                  tableTitle={"Marketing"}
-                  data={flattenedMarkets}
-                  editData={this.handleEditMarket}
-                  handleCheck={this.handleRowChecked}
-                />
-              </div>
-            </div>
-          </div>
+    <>
+      <div className="d-flex align-items-end mb-4">
+        <h4 className="mb-0 mr-4">Marketing</h4>
+        <div className="marketing-summary mr-3">
+          Current <span>{current}</span>
+        </div>
+        <div className="marketing-summary">
+          Upcoming <span>{upcoming}</span>
         </div>
       </div>
-    );
-  }
-}
-
-// const mapStateToProps = state => ({
-//   marketingCampaigns: serializeMarketingCampaigns(state.marketingCampaigns),
-//   prospectLists: serializeProspectLists(state.prospectLists),
-// })
-
-// const mapDispatchToProps = dispatch => ({
-//   onCreatePressed: marketingCampaign => dispatch(createMarketingCampaignInStore(marketingCampaign))
-// })
+      <div className="d-flex mb-4">
+        <DropdownButton
+          title="Campaign Name"
+          variant="outline-primary"
+          className="mr-3"
+        >
+          <div class="px-3">Campaigns</div>
+        </DropdownButton>
+        <NavLink className="btn btn-primary" to={APP_URLS.CREATE_CAMPAIGN}>
+          NEW CAMPAIGN
+        </NavLink>
+      </div>
+      <div className="row">
+        <div className="col-12 col-md-6">
+          <MarketingCampaignsCard />
+        </div>
+        <div className="col-12 col-md-6">
+          <MarketingInteractionRateCard />
+        </div>
+      </div>
+    </>
+  );
+};
 
 export default Marketing;

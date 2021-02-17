@@ -10,7 +10,6 @@ import {
   ElementsConsumer,
 } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
-import infoIcon from "../../../assets/images/information-circle.svg";
 import { API, Auth, graphqlOperation } from "aws-amplify";
 import {
   createPaymentMethod,
@@ -144,7 +143,7 @@ const CheckOutForm = ({
       } catch (err) {}
     }
   };
-  useEffect(async () => {
+  useEffect(() => {
     loadMonthlyInfo();
   }, []);
   const handleSubmit = async () => {

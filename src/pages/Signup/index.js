@@ -23,8 +23,6 @@ export const Signup = (props) => {
     { current: false, completed: false },
   ];
 
-  const [cognitoUserNameValue, setCognitoUserName] = useState("");
-
   function handleCancel() {
     props.history.replace("/login");
   }

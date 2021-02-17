@@ -111,6 +111,7 @@ h5 {
   }
 }
 .btn-outline-primary {
+  background-color: white;
   border: 1px solid $primary;
   color: $primary;
   &:not(:disabled):not(.disabled):active,

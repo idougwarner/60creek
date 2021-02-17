@@ -61,7 +61,7 @@ const AddSingleProspectModal = ({ show, close }) => {
         facebook: facebook,
         status: status.value,
       };
-      let rt = await API.graphql(
+      await API.graphql(
         graphqlOperation(createProspect, {
           input: dt,
         })
@@ -82,15 +82,12 @@ const AddSingleProspectModal = ({ show, close }) => {
       setStep(step + 1);
     }
   };
-  const loadData = async () => {
+  useEffect(async () => {
     if (list) {
       setProspectList(
         list.map((item) => ({ value: item.id, label: item.name }))
       );
     }
-  };
-  useEffect(() => {
-    loadData();
   }, [list]);
 
   const isValidZip = useCallback(() => {

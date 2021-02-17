@@ -3,7 +3,7 @@ import { Button, Dropdown, DropdownButton, FormControl } from "react-bootstrap";
 import "./Messages.scss";
 
 const Messages = () => {
-  const [messages, setMessages] = useState([
+  const [messages /*setMessages*/] = useState([
     {
       time: new Date(2020, 11, 15, 12, 19),
       type: "Text",
