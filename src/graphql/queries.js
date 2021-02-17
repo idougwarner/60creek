@@ -41,7 +41,6 @@ export const prospectById = /* GraphQL */ `
       email
       facebook
       notes
-      interested
       enhance
       fetched
       demographic {
@@ -140,7 +139,6 @@ export const prospect = /* GraphQL */ `
       email
       facebook
       notes
-      interested
       enhance
       fetched
       demographic {
@@ -351,7 +349,6 @@ export const getProspect = /* GraphQL */ `
       email
       facebook
       notes
-      interested
       enhance
       fetched
       demographic {
@@ -443,7 +440,6 @@ export const listProspects = /* GraphQL */ `
         email
         facebook
         notes
-        interested
         enhance
         fetched
         demographic {
@@ -715,7 +711,6 @@ export const searchProspects = /* GraphQL */ `
         email
         facebook
         notes
-        interested
         enhance
         fetched
         demographic {

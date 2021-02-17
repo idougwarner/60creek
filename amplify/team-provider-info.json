@@ -63,7 +63,7 @@
         "checkout": {},
         "getConsumerContactInfo": {
           "deploymentBucketName": "amplify-60creek-staging-103715-deployment",
-          "s3Key": "amplify-builds/getConsumerContactInfo-792f7a50593366615a72-build.zip"
+          "s3Key": "amplify-builds/getConsumerContactInfo-66354655665a6635496e-build.zip"
         }
       },
       "hosting": {

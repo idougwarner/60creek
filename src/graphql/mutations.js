@@ -109,7 +109,6 @@ export const prospect = /* GraphQL */ `
       email
       facebook
       notes
-      interested
       enhance
       fetched
       demographic {
@@ -311,7 +310,6 @@ export const deletedProspect = /* GraphQL */ `
       email
       facebook
       notes
-      interested
       enhance
       fetched
       demographic {
@@ -672,7 +670,6 @@ export const createProspect = /* GraphQL */ `
       email
       facebook
       notes
-      interested
       enhance
       fetched
       demographic {
@@ -762,7 +759,6 @@ export const updateProspect = /* GraphQL */ `
       email
       facebook
       notes
-      interested
       enhance
       fetched
       demographic {
@@ -852,7 +848,6 @@ export const deleteProspect = /* GraphQL */ `
       email
       facebook
       notes
-      interested
       enhance
       fetched
       demographic {
