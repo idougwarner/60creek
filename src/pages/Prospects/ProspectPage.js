@@ -11,8 +11,14 @@ import ProspectDetailsTab from "../../components/IndividualProspect/ProspectDeta
 import ProspectDemographicTab from "../../components/IndividualProspect/ProspectDemographicTab";
 import ProspectHomeTab from "../../components/IndividualProspect/ProspectHomeTab";
 import { INTERESTE_STATUS } from "../../components/Prospects/FilterDropdown";
-import { updateProspect } from "../../graphql/mutations";
+import {
+  getConsumerContactInfo,
+  getDemographicInfo,
+  getLifestyleInfo,
+  updateProspect,
+} from "../../graphql/mutations";
 import { ToastContainer, toast } from "react-toastify";
+import ComingSoon from "../../components/layout/ComingSoon_";
 
 const ProspectPage = () => {
   const [data, setData] = useState(null);
@@ -29,7 +35,57 @@ const ProspectPage = () => {
           graphqlOperation(listProspects, { filter: { id: { eq: id } } })
         );
         if (rt.data.listProspects.items) {
-          setData(rt.data.listProspects.items[0]);
+          let item = rt.data.listProspects.items[0];
+          if (item.prospectList.enhance && !item.fetched) {
+            item["fetched"] = true;
+            {
+              const consumerInfo = await API.graphql(
+                graphqlOperation(getConsumerContactInfo, {
+                  input: { email: item.email },
+                })
+              );
+              if (consumerInfo?.data?.getConsumerContactInfo?.data) {
+                item["enhance"] = true;
+                let fetchedData = consumerInfo.data.getConsumerContactInfo.data;
+                delete fetchedData.email;
+                item = {
+                  ...item,
+                  ...fetchedData,
+                };
+              }
+            }
+            {
+              const demogrInfo = await API.graphql(
+                graphqlOperation(getDemographicInfo, {
+                  input: { email: item.email },
+                })
+              );
+              if (demogrInfo?.data?.getDemographicInfo?.data) {
+                item = {
+                  ...item,
+                  demographic: demogrInfo.data.getDemographicInfo.data,
+                };
+              }
+            }
+
+            {
+              const lifestyleInfo = await API.graphql(
+                graphqlOperation(getLifestyleInfo, {
+                  input: { email: item.email },
+                })
+              );
+              if (lifestyleInfo?.data?.getLifestyleInfo?.data) {
+                item = {
+                  ...item,
+                  lifestyle: lifestyleInfo.data.getLifestyleInfo.data,
+                };
+              }
+            }
+            updateData(item);
+            setData(item);
+          } else {
+            setData(item);
+          }
         }
       } catch (err) {}
       setLoading(false);
@@ -37,9 +93,9 @@ const ProspectPage = () => {
   }, [id]);
   useEffect(() => {
     if (data) {
-      if (data.interested === INTERESTE_STATUS.INTERESTED) {
+      if (data.status === INTERESTE_STATUS.INTERESTED) {
         setInterested(INTERESTE_STATUS.INTERESTED);
-      } else if (data.interested === INTERESTE_STATUS.NOT_INTERESTED) {
+      } else if (data.status === INTERESTE_STATUS.NOT_INTERESTED) {
         setInterested(INTERESTE_STATUS.NOT_INTERESTED);
       } else {
         setInterested(INTERESTE_STATUS.UNKNOWN);
@@ -48,7 +104,7 @@ const ProspectPage = () => {
   }, [data]);
   const changeInterested = (value) => {
     setInterested(value);
-    updateData({ interested: value });
+    updateData({ status: value });
   };
   const updateData = async (newDt) => {
     const newData = {
@@ -64,9 +120,9 @@ const ProspectPage = () => {
       const rt = await API.graphql(
         graphqlOperation(updateProspect, { input: putData })
       );
-      toast.success("Updated successfully.");
+      toast.success("Updated successfully.", { hideProgressBar: true });
     } catch (err) {
-      toast.error("Failed to update item.");
+      toast.error("Failed to update item.", { hideProgressBar: true });
     }
   };
   return (
@@ -87,23 +143,11 @@ const ProspectPage = () => {
         </div>
       )}
       {data && !loading && (
-        <div className="row">
-          <div className="col-12 col-sm-5 col-xl-4">
+        <div className="d-flex flex-wrap">
+          <div className="prospect-card">
             <div className="card p-4">
               <div className="d-flex justify-content-between">
-                <div className="mb-4">
-                  <h4>{data.firstName + " " + data.lastName}</h4>
-                  <div className="summary-item">
-                    Prospect List <span>{data.prospectList.name}</span>
-                  </div>
-                  <div className="summary-item">
-                    Marketing Attempts <span>{2}</span>
-                  </div>
-                  <div className="summary-item">
-                    Last Attempt{" "}
-                    <span>{new Date(data.updatedAt).toLocaleDateString()}</span>
-                  </div>
-                </div>
+                <h4>{data.firstName + " " + data.lastName}</h4>
                 <Dropdown>
                   <Dropdown.Toggle
                     className="interested"
@@ -149,6 +193,18 @@ const ProspectPage = () => {
                   </Dropdown.Menu>
                 </Dropdown>
               </div>
+              <div className="mb-4">
+                <div className="summary-item">
+                  Prospect List <span>{data.prospectList.name}</span>
+                </div>
+                <div className="summary-item">
+                  Marketing Attempts <span>{2}</span>
+                </div>
+                <div className="summary-item">
+                  Last Attempt{" "}
+                  <span>{new Date(data.updatedAt).toLocaleDateString()}</span>
+                </div>
+              </div>
 
               <Tabs defaultActiveKey="list" id="uncontrolled-tab-example">
                 <Tab eventKey="list" title="LIST">
@@ -169,8 +225,9 @@ const ProspectPage = () => {
               </Tabs>
             </div>
           </div>
-          <div className="col-12 col-sm-7 col-xl-8">
-            <div className="card p-4">
+          <div className="message-card">
+            <div className="card p-4 position-relative">
+              <ComingSoon />
               <Messages />
             </div>
           </div>

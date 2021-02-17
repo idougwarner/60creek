@@ -36,7 +36,7 @@ const tableFields = [
   { title: "CITY", field: "city", sortable: true },
   { title: "STATE", field: "state", sortable: true },
   { title: "ZIP", field: "zip", sortable: true },
-  { title: "CONTACT INFO", field: "contactInfo", sortable: false },
+  // { title: "CONTACT INFO", field: "contactInfo", sortable: false },
 ];
 
 const ASC = 1;
@@ -334,6 +334,7 @@ const ProspectsPage = () => {
                   )}
                 </th>
               ))}
+              <th width="120">CONTACT INFO</th>
             </tr>
           </thead>
           <tbody>

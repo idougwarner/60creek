@@ -63,7 +63,7 @@ const Layout = ({ children }) => {
       } catch (err) {}
     } else if (uploadStatus.status === WORKER_STATUS.CHANGE) {
     } else if (uploadStatus.status === WORKER_STATUS.COMPLETED) {
-      toast.success("Successfully uploaded.");
+      toast.success("Successfully uploaded.", { hideProgressBar: true });
     } else if (uploadStatus.status === WORKER_STATUS.ERROR) {
     } else {
     }

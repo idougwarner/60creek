@@ -1,5 +1,13 @@
 @import "../../assets//styles/vars.scss";
 
+.prospect-card {
+  width: 380px;
+  margin-right: 40px;
+  margin-bottom: 30px;
+}
+.message-card {
+  flex-grow: 1;
+}
 .summary-item {
   font-size: 14px;
   line-height: 20px;

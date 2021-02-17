@@ -87,6 +87,13 @@ type Mutation {
     input: GetConsumerContactInfoInput
   ): GetConsumerContactInfoResult
     @function(name: "getConsumerContactInfo-${env}")
+
+  getDemographicInfo(
+    input: GetConsumerContactInfoInput
+  ): GetDemographicInfoResult @function(name: "getDemographicInfo-${env}")
+
+  getLifestyleInfo(input: GetConsumerContactInfoInput): GetLifestyleInfoResult
+    @function(name: "getLifestyleInfo-${env}")
 }
 input CheckoutInput {
   email: String
@@ -114,15 +121,75 @@ type CheckoutInfo {
   source: String
   status: String
 }
+type LifestyleInfo {
+  magazines: String
+  computerAndTechnology: String
+  dietingWeightLoss: String
+  exerciseHealthGrouping: String
+  doItYourselferHomeImprovement: String
+  jewelry: String
+  mailOrderBuyer: String
+  membershipClubs: String
+  travelGrouping: String
+  onlineEducation: String
+  sportsGrouping: String
+  sportsOutdoorsGrouping: String
+  investing: String
+  booksAndReading: String
+  politicalDonor: String
+  hobbiesAndCrafts: String
+  cosmetics: String
+  charitableDonations: String
+  artsAntiquesCollectibles: String
+  petOwner: String
+  cooking: String
+  autoPartsAccessories: String
+  healthBeautyWellness: String
+  parentingAndChildrensProducts: String
+  music: String
+  movie: String
+  selfImprovement: String
+  womensApparel: String
+}
+type DemographicInfo {
+  DOB: String
+  ageRange: String
+  ethnicCode: String
+  singleParent: String
+  seniorAdultInHousehold: String
+  youngAdultInHousehold: String
+  workingWoman: String
+  SOHOIndicator: String
+  businessOwner: String
+  language: String
+  religion: String
+  numberOfChildren: String
+  maritalStatusInHousehold: String
+  homeOwnerRenter: String
+  education: String
+  occupation: String
+  occupationDetail: String
+  gender: String
+  socialPresence: String
+  presenceOfChildren: String
+}
 type GetConsumerContactInfoResult {
   data: ConsumerContactInfo
+  error: ErrorResponse
+}
+type GetDemographicInfoResult {
+  data: DemographicInfo
+  error: ErrorResponse
+}
+type GetLifestyleInfoResult {
+  data: LifestyleInfo
   error: ErrorResponse
 }
 
 type ConsumerContactInfo {
   firstName: String
   lastName: String
-  address: String
+  address1: String
   city: String
   state: String
   zip: String
@@ -216,6 +283,8 @@ type Prospect
   id: ID!
   userId: ID!
   prospectListId: ID!
+
+  # personal info
   status: String
   firstName: String
   lastName: String
@@ -229,8 +298,16 @@ type Prospect
   email: String
   facebook: String
   notes: String
-  interested: String
+
   enhance: Boolean
+  fetched: Boolean
+
+  # Demographic data info
+  demographic: DemographicInfo
+
+  # Lifestyle data info
+  lifestyle: LifestyleInfo
+
   prospectList: ProspectList @connection(fields: ["prospectListId"])
 }
 

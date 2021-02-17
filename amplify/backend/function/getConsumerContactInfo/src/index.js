@@ -21,15 +21,16 @@ exports.handler = async (event) => {
     });
     let dt = null;
     if (rt.data && rt.data.datafinder["num-results"] > 0) {
+      const fetchedData = rt.data.datafinder.results[0];
       dt = {
-        firstName: rt.data.datafinder.results[0].FirstName,
-        lastName: rt.data.datafinder.results[0].LastName,
-        address: rt.data.datafinder.results[0].Address,
-        city: rt.data.datafinder.results[0].City,
-        state: rt.data.datafinder.results[0].State,
-        zip: rt.data.datafinder.results[0].Zip,
-        phone: rt.data.datafinder.results[0].Phone,
-        email: rt.data.datafinder.results[0].Email,
+        firstName: fetchedData.FirstName + " " + fetchedData.MiddleName,
+        lastName: fetchedData.LastName,
+        address1: fetchedData.Address,
+        city: fetchedData.City,
+        state: fetchedData.State,
+        zip: fetchedData.Zip,
+        phone: fetchedData.Phone,
+        email: fetchedData.Email,
       };
     }
 

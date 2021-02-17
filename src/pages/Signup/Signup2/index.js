@@ -142,7 +142,7 @@ const Signup2 = (props) => {
                 setStateValue(value);
               }}
               placeholder="State"
-              styles={customSelectStyles(40)}
+              styles={customSelectStyles(40, stateValue)}
               options={usStates.map((item) => ({ value: item, label: item }))}
             />
           </FormGroup>

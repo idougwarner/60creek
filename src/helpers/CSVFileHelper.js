@@ -1,5 +1,7 @@
 import { readString, jsonToCSV } from "react-papaparse";
 import * as XLSX from "xlsx";
+import * as loadash from "lodash";
+import { formatPhoneNumber } from "./utils";
 
 export const downloadCSVFromJSON = (
   jsonData,
@@ -44,7 +46,7 @@ export const getJsonFromFile = (file) => {
     const reader = new FileReader();
     reader.addEventListener("load", (event) => {
       const dt = readString(event.target.result).data;
-      const dataField = [
+      const validFields = [
         "firstName",
         "lastName",
         "company",
@@ -55,7 +57,14 @@ export const getJsonFromFile = (file) => {
         "phone",
         "email",
         "facebook",
+        "status",
       ];
+      const dataField = dt[0]
+        .map((item) => {
+          const va = loadash.camelCase(item);
+          return va === "street" || va === "address" ? "address1" : va;
+        })
+        .filter((item) => validFields.indexOf(item) >= 0);
       let data = [];
       for (let i = 1; i < dt.length; i++) {
         let row = {},
@@ -63,6 +72,9 @@ export const getJsonFromFile = (file) => {
         for (let j = 0; j < dataField.length; j++) {
           if (j >= dt[i].length) break;
           row[dataField[j]] = String(dt[i][j]).trim();
+          if (dataField[j] === "phone") {
+            row[dataField[j]] = formatPhoneNumber(row[dataField[j]]);
+          }
           if (dt[i][j]) {
             cnt++;
           }

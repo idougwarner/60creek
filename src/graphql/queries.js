@@ -42,6 +42,60 @@ export const prospectById = /* GraphQL */ `
       facebook
       notes
       interested
+      enhance
+      fetched
+      demographic {
+        DOB
+        ageRange
+        ethnicCode
+        singleParent
+        seniorAdultInHousehold
+        youngAdultInHousehold
+        workingWoman
+        SOHOIndicator
+        businessOwner
+        language
+        religion
+        numberOfChildren
+        maritalStatusInHousehold
+        homeOwnerRenter
+        education
+        occupation
+        occupationDetail
+        gender
+        socialPresence
+        presenceOfChildren
+      }
+      lifestyle {
+        magazines
+        computerAndTechnology
+        dietingWeightLoss
+        exerciseHealthGrouping
+        doItYourselferHomeImprovement
+        jewelry
+        mailOrderBuyer
+        membershipClubs
+        travelGrouping
+        onlineEducation
+        sportsGrouping
+        sportsOutdoorsGrouping
+        investing
+        booksAndReading
+        politicalDonor
+        hobbiesAndCrafts
+        cosmetics
+        charitableDonations
+        artsAntiquesCollectibles
+        petOwner
+        cooking
+        autoPartsAccessories
+        healthBeautyWellness
+        parentingAndChildrensProducts
+        music
+        movie
+        selfImprovement
+        womensApparel
+      }
       prospectList {
         id
         userId
@@ -87,6 +141,60 @@ export const prospect = /* GraphQL */ `
       facebook
       notes
       interested
+      enhance
+      fetched
+      demographic {
+        DOB
+        ageRange
+        ethnicCode
+        singleParent
+        seniorAdultInHousehold
+        youngAdultInHousehold
+        workingWoman
+        SOHOIndicator
+        businessOwner
+        language
+        religion
+        numberOfChildren
+        maritalStatusInHousehold
+        homeOwnerRenter
+        education
+        occupation
+        occupationDetail
+        gender
+        socialPresence
+        presenceOfChildren
+      }
+      lifestyle {
+        magazines
+        computerAndTechnology
+        dietingWeightLoss
+        exerciseHealthGrouping
+        doItYourselferHomeImprovement
+        jewelry
+        mailOrderBuyer
+        membershipClubs
+        travelGrouping
+        onlineEducation
+        sportsGrouping
+        sportsOutdoorsGrouping
+        investing
+        booksAndReading
+        politicalDonor
+        hobbiesAndCrafts
+        cosmetics
+        charitableDonations
+        artsAntiquesCollectibles
+        petOwner
+        cooking
+        autoPartsAccessories
+        healthBeautyWellness
+        parentingAndChildrensProducts
+        music
+        movie
+        selfImprovement
+        womensApparel
+      }
       prospectList {
         id
         userId
@@ -244,6 +352,60 @@ export const getProspect = /* GraphQL */ `
       facebook
       notes
       interested
+      enhance
+      fetched
+      demographic {
+        DOB
+        ageRange
+        ethnicCode
+        singleParent
+        seniorAdultInHousehold
+        youngAdultInHousehold
+        workingWoman
+        SOHOIndicator
+        businessOwner
+        language
+        religion
+        numberOfChildren
+        maritalStatusInHousehold
+        homeOwnerRenter
+        education
+        occupation
+        occupationDetail
+        gender
+        socialPresence
+        presenceOfChildren
+      }
+      lifestyle {
+        magazines
+        computerAndTechnology
+        dietingWeightLoss
+        exerciseHealthGrouping
+        doItYourselferHomeImprovement
+        jewelry
+        mailOrderBuyer
+        membershipClubs
+        travelGrouping
+        onlineEducation
+        sportsGrouping
+        sportsOutdoorsGrouping
+        investing
+        booksAndReading
+        politicalDonor
+        hobbiesAndCrafts
+        cosmetics
+        charitableDonations
+        artsAntiquesCollectibles
+        petOwner
+        cooking
+        autoPartsAccessories
+        healthBeautyWellness
+        parentingAndChildrensProducts
+        music
+        movie
+        selfImprovement
+        womensApparel
+      }
       prospectList {
         id
         userId
@@ -282,6 +444,60 @@ export const listProspects = /* GraphQL */ `
         facebook
         notes
         interested
+        enhance
+        fetched
+        demographic {
+          DOB
+          ageRange
+          ethnicCode
+          singleParent
+          seniorAdultInHousehold
+          youngAdultInHousehold
+          workingWoman
+          SOHOIndicator
+          businessOwner
+          language
+          religion
+          numberOfChildren
+          maritalStatusInHousehold
+          homeOwnerRenter
+          education
+          occupation
+          occupationDetail
+          gender
+          socialPresence
+          presenceOfChildren
+        }
+        lifestyle {
+          magazines
+          computerAndTechnology
+          dietingWeightLoss
+          exerciseHealthGrouping
+          doItYourselferHomeImprovement
+          jewelry
+          mailOrderBuyer
+          membershipClubs
+          travelGrouping
+          onlineEducation
+          sportsGrouping
+          sportsOutdoorsGrouping
+          investing
+          booksAndReading
+          politicalDonor
+          hobbiesAndCrafts
+          cosmetics
+          charitableDonations
+          artsAntiquesCollectibles
+          petOwner
+          cooking
+          autoPartsAccessories
+          healthBeautyWellness
+          parentingAndChildrensProducts
+          music
+          movie
+          selfImprovement
+          womensApparel
+        }
         prospectList {
           id
           userId
@@ -500,6 +716,60 @@ export const searchProspects = /* GraphQL */ `
         facebook
         notes
         interested
+        enhance
+        fetched
+        demographic {
+          DOB
+          ageRange
+          ethnicCode
+          singleParent
+          seniorAdultInHousehold
+          youngAdultInHousehold
+          workingWoman
+          SOHOIndicator
+          businessOwner
+          language
+          religion
+          numberOfChildren
+          maritalStatusInHousehold
+          homeOwnerRenter
+          education
+          occupation
+          occupationDetail
+          gender
+          socialPresence
+          presenceOfChildren
+        }
+        lifestyle {
+          magazines
+          computerAndTechnology
+          dietingWeightLoss
+          exerciseHealthGrouping
+          doItYourselferHomeImprovement
+          jewelry
+          mailOrderBuyer
+          membershipClubs
+          travelGrouping
+          onlineEducation
+          sportsGrouping
+          sportsOutdoorsGrouping
+          investing
+          booksAndReading
+          politicalDonor
+          hobbiesAndCrafts
+          cosmetics
+          charitableDonations
+          artsAntiquesCollectibles
+          petOwner
+          cooking
+          autoPartsAccessories
+          healthBeautyWellness
+          parentingAndChildrensProducts
+          music
+          movie
+          selfImprovement
+          womensApparel
+        }
         prospectList {
           id
           userId

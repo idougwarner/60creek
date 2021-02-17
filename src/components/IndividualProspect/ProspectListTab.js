@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Button, FormControl, FormGroup, FormLabel } from "react-bootstrap";
 
+var g_data = null;
 const ProspectListTab = ({ data, changeData }) => {
   const [company, setCompany] = useState("");
   const [address1, setAddress1] = useState("");
@@ -16,6 +17,7 @@ const ProspectListTab = ({ data, changeData }) => {
   const [notesEditable, setNotesEditable] = useState(false);
   useEffect(() => {
     if (data) {
+      g_data = { ...data };
       setCompany(data.company);
       setAddress1(data.address1);
       setFacebook(data.facebook);
@@ -25,6 +27,37 @@ const ProspectListTab = ({ data, changeData }) => {
     }
   }, [data]);
 
+  const handleClickEvent = (event) => {
+    if (
+      (event.target.className.indexOf("save-btn") >= 0 &&
+        event.target.innerText === "Save") ||
+      (event.target.className.indexOf("form-control") >= 0 &&
+        !event.target.readOnly)
+    ) {
+    } else {
+      console.log(data);
+      setCompanyEditable(false);
+      setAddress1Editable(false);
+      setFacebookEditable(false);
+      setEmailEditable(false);
+      setPhoneEditable(false);
+      setNotesEditable(false);
+      if (g_data) {
+        setCompany(g_data.company);
+        setAddress1(g_data.address1);
+        setFacebook(g_data.facebook);
+        setEmail(g_data.email);
+        setPhone(g_data.phone);
+        setNotes(g_data.notes);
+      }
+    }
+  };
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickEvent);
+    return () => {
+      document.removeEventListener("mousedown", handleClickEvent);
+    };
+  }, []);
   const change = (flag) => {
     if (flag) {
       if (changeData) {
@@ -54,6 +87,7 @@ const ProspectListTab = ({ data, changeData }) => {
           />
           <Button
             variant="outline-primary"
+            className="save-btn"
             onClick={() => {
               change(companyEditable);
               setCompanyEditable(!companyEditable);
@@ -76,6 +110,7 @@ const ProspectListTab = ({ data, changeData }) => {
           />
           <Button
             variant="outline-primary"
+            className="save-btn"
             onClick={() => {
               change(address1Editable);
               setAddress1Editable(!address1Editable);
@@ -98,6 +133,7 @@ const ProspectListTab = ({ data, changeData }) => {
           />
           <Button
             variant="outline-primary"
+            className="save-btn"
             onClick={() => {
               change(facebookEditable);
               setFacebookEditable(!facebookEditable);
@@ -120,6 +156,7 @@ const ProspectListTab = ({ data, changeData }) => {
           />
           <Button
             variant="outline-primary"
+            className="save-btn"
             onClick={() => {
               change(emailEditable);
               setEmailEditable(!emailEditable);
@@ -142,6 +179,7 @@ const ProspectListTab = ({ data, changeData }) => {
           />
           <Button
             variant="outline-primary"
+            className="save-btn"
             onClick={() => {
               change(phoneEditable);
               setPhoneEditable(!phoneEditable);
@@ -165,6 +203,7 @@ const ProspectListTab = ({ data, changeData }) => {
         <div className="d-flex justify-content-end">
           <Button
             variant="outline-primary"
+            className="save-btn"
             onClick={() => {
               change(notesEditable);
               setNotesEditable(!notesEditable);

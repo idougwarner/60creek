@@ -13,12 +13,7 @@ import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import { getJsonFromFile } from "../../helpers/CSVFileHelper";
 import { API, graphqlOperation } from "aws-amplify";
-import {
-  checkout,
-  createProspect,
-  createProspectList,
-  getConsumerContactInfo,
-} from "../../graphql/mutations";
+import { checkout } from "../../graphql/mutations";
 import { useDispatch, useSelector } from "react-redux";
 import ConfirmModal from "./ConfirmModal";
 import Select from "react-select";
@@ -27,9 +22,12 @@ import { useIndexedDB } from "react-indexed-db";
 import { IndexDBStores } from "../../helpers/DBConfig";
 import CheckoutForm from "./CheckoutForm";
 import { messageConvert } from "../../helpers/messageConvert";
-import { toast, ToastContainer } from "react-toastify";
 import { ACTIONS } from "../../redux/actionTypes";
 import { WORKER_STATUS } from "../../redux/uploadWorkerReducer";
+import { usStates } from "../../helpers/us-states";
+import { validateEmail, validateZip } from "../../helpers/validations";
+import InputMask from "react-input-mask";
+
 const STEP1 = 0;
 const STEP2 = 1;
 const STEP3 = 2;
@@ -41,8 +39,8 @@ const tableFields = [
   { fieldName: "city", required: true },
   { fieldName: "state", required: true },
   { fieldName: "zip", required: true },
-  { fieldName: "email", required: true },
   { fieldName: "phone", required: true },
+  { fieldName: "email", required: true },
   { fieldName: "facebook", required: false },
 ];
 const NewProspectListModal = ({
@@ -65,6 +63,8 @@ const NewProspectListModal = ({
   const [completed, setCompleted] = useState(false);
   const [totalNumber, setTotalNumber] = useState("");
   const [fileData, setFileData] = useState([]);
+
+  const [tmpState, setTmpState] = useState(null);
 
   const [editField, setEditField] = useState("");
   const [editing, setEditing] = useState(false);
@@ -259,6 +259,7 @@ const NewProspectListModal = ({
       await prospectListDb.add({
         prospectName: listName,
         prospectId: selectedList?.value || "",
+        enhance: enhance,
       });
       // await prospectUploadStepDb.clear();
       // await prospectUploadStepDb.add({
@@ -327,33 +328,119 @@ const NewProspectListModal = ({
         idx == selectedField.idx &&
         fieldName === selectedField.fieldName ? (
           <>
-            <Form.Control
-              type="text"
-              className="edit-field"
-              placeholder=""
-              autoFocus
-              value={editField}
-              onKeyDown={(event) => {
-                if (event.key === "Enter") {
-                  toggleEditing(idx, fieldName);
-                } else if (event.key === "Tab") {
-                  event.preventDefault();
-                  gotoNextField();
-                }
-              }}
-              onChange={(event) => {
-                event.stopPropagation();
-                setEditField(event.target.value);
-              }}
-            />
+            {fieldName === "state" ? (
+              <Select
+                value={tmpState}
+                onChange={(value) => {
+                  setTmpState(value);
+                  setEditField(value.value);
+                }}
+                placeholder="State"
+                styles={customSelectStyles(28)}
+                options={usStates.map((item) => ({
+                  value: item,
+                  label: item,
+                }))}
+              />
+            ) : fieldName === "zip" ? (
+              <Form.Control
+                type="text"
+                className="edit-field"
+                placeholder="Enter Zip"
+                autoFocus
+                value={editField}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter") {
+                    toggleEditing(idx, fieldName);
+                  } else if (event.key === "Tab") {
+                    event.preventDefault();
+                    gotoNextField();
+                  }
+                }}
+                isInvalid={editField && !validateZip(editField)}
+                onChange={(event) => {
+                  event.stopPropagation();
+                  setEditField(event.target.value);
+                }}
+              />
+            ) : fieldName === "phone" ? (
+              <InputMask
+                mask="(999) 999 - 9999"
+                type="tel"
+                placeholder="(555) 555 - 5555"
+                value={editField}
+                onChange={(event) => {
+                  event.stopPropagation();
+                  setEditField(event.target.value);
+                }}
+              >
+                {(inputProps) => (
+                  <Form.Control
+                    {...inputProps}
+                    className="edit-field"
+                    autoFocus
+                    isInvalid={editField && editField.indexOf("_") >= 0}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter") {
+                        toggleEditing(idx, fieldName);
+                      } else if (event.key === "Tab") {
+                        event.preventDefault();
+                        gotoNextField();
+                      }
+                    }}
+                  />
+                )}
+              </InputMask>
+            ) : fieldName === "email" ? (
+              <Form.Control
+                type="text"
+                className="edit-field"
+                placeholder="Enter Email Address"
+                autoFocus
+                value={editField}
+                isInvalid={editField && !validateEmail(editField)}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter") {
+                    toggleEditing(idx, fieldName);
+                  } else if (event.key === "Tab") {
+                    event.preventDefault();
+                    gotoNextField();
+                  }
+                }}
+                onChange={(event) => {
+                  event.stopPropagation();
+                  setEditField(event.target.value);
+                }}
+              />
+            ) : (
+              <Form.Control
+                type="text"
+                className="edit-field"
+                placeholder=""
+                autoFocus
+                value={editField}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter") {
+                    toggleEditing(idx, fieldName);
+                  } else if (event.key === "Tab") {
+                    event.preventDefault();
+                    gotoNextField();
+                  }
+                }}
+                onChange={(event) => {
+                  event.stopPropagation();
+                  setEditField(event.target.value);
+                }}
+              />
+            )}
             <Form.Text className="text-primary enter-info">
               Enter info
             </Form.Text>
           </>
-        ) : prospectList[idx][fieldName] || !required ? (
+        ) : prospectList[idx][fieldName].length > 0 ? (
           prospectList[idx][fieldName]
         ) : (
-          <div className="missing-info">
+          <div className={"missing-info" + (required ? "" : " not-required")}>
             <div className="missing-field"></div>
             <span>Enter missing info</span>
           </div>
@@ -412,7 +499,6 @@ const NewProspectListModal = ({
   );
   return (
     <>
-      <ToastContainer />
       <Modal
         show={show}
         className={showCloseConfirm ? "d-none" : ""}
@@ -420,6 +506,9 @@ const NewProspectListModal = ({
           if (step === STEP2) {
             setShowCloseConfirm(true);
           } else if (step === STEP1) {
+            prospectListDb.clear();
+            prospectsDb.clear();
+            prospectUploadStepDb.clear();
             close({ data: false });
           } else if (step === STEP3) {
             close({ data: true });
@@ -435,6 +524,9 @@ const NewProspectListModal = ({
               if (step === STEP2) {
                 setShowCloseConfirm(true);
               } else if (step === STEP1) {
+                prospectListDb.clear();
+                prospectsDb.clear();
+                prospectUploadStepDb.clear();
                 close({ data: false });
               } else if (step === STEP3) {
                 close({ data: true });
@@ -449,7 +541,11 @@ const NewProspectListModal = ({
                 "New Prospect List"
               )
             ) : step === STEP2 ? (
-              "Prospect Created"
+              existingList ? (
+                "Prospects Added to " + selectedList.label
+              ) : (
+                "Prospect Created"
+              )
             ) : (
               <>
                 {completed ? (
@@ -474,6 +570,7 @@ const NewProspectListModal = ({
                     Select Prospect List
                   </Form.Label>
                   <Select
+                    placeholder="Select Prospect List"
                     options={list}
                     value={selectedList}
                     styles={customSelectStyles("40px")}
@@ -499,7 +596,7 @@ const NewProspectListModal = ({
                 <Form.Label>Total Number of Prospects</Form.Label>
                 <Form.Control
                   type="text"
-                  placeholder="Number of records. (optional)"
+                  placeholder="Number of records"
                   value={totalNumber}
                   onChange={(e) => setTotalNumber(e.target.value)}
                 />
@@ -657,7 +754,7 @@ const NewProspectListModal = ({
                     </tr>
                   </thead>
                   <tbody>
-                    {prospectList.map((item, idx) => (
+                    {prospectList.map((a, idx) => (
                       <tr key={idx}>
                         {tableFields.map((item, id) => (
                           <td
@@ -719,6 +816,7 @@ const NewProspectListModal = ({
             if (rt.data) {
               await prospectListDb.clear();
               await prospectsDb.clear();
+              await prospectUploadStepDb.clear();
               close({ data: false });
             }
             setShowCloseConfirm(false);

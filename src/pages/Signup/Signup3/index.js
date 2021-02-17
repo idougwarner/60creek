@@ -5,35 +5,11 @@ import "./Signup3.scss";
 
 import BasicButton from "../../../components/controls/BasicButton";
 
-import Modal from "react-modal";
 import PrivacyPolicy from "./PrivacyPolicy";
 import SubscriptionAgreement from "./Subscription";
-import { Button, FormCheck, FormLabel } from "react-bootstrap";
+import { Button, FormCheck, FormLabel, Modal } from "react-bootstrap";
 import { useDispatch } from "react-redux";
 import { ACTIONS } from "../../../redux/actionTypes";
-
-const customStyles = {
-  content: {
-    top: "50%",
-    left: "50%",
-    right: "auto",
-    bottom: "auto",
-    marginRight: "-50%",
-    overflow: "unset",
-    transform: "translate(-50%, -50%)",
-    padding: 0,
-    width: "calc(100% - 40px)",
-    maxWidth: "930px",
-  },
-  overlay: {
-    zIndex: 1000,
-    background: "rgba(19, 22, 36, 0.6)",
-    backdropFilter: "blur(4px)",
-    overflow: "auto",
-  },
-};
-
-Modal.setAppElement("#modal-container");
 
 //******************************************************************
 //*
@@ -170,31 +146,33 @@ const Signup3 = (props) => {
         />
         <MorePips pipsConfig={props.pipsConfig} />
       </div>
-      <Modal
-        isOpen={modalIsOpen}
-        onRequestClose={() => setModalIsOpen(false)}
-        style={customStyles}
-        contentLabel="Example Modal"
-      >
-        <img
-          src="assets/icons/close.svg"
-          className="close-btn"
-          onClick={() => setModalIsOpen(false)}
-        />
-        {isPrivacy ? <PrivacyPolicy /> : <SubscriptionAgreement />}
-        <Button
-          className="agree-btn"
-          onClick={() => {
-            if (isPrivacy) {
-              setPrivacyPolicyValue(true);
-            } else {
-              setSubscriptionAgreementValue(true);
-            }
-            setModalIsOpen(false);
-          }}
-        >
-          I AGREE
-        </Button>
+      <Modal show={modalIsOpen} onHide={() => setModalIsOpen(false)} size="lg">
+        <Modal.Header>
+          <img
+            src="/assets/icons/close.svg"
+            className="modal-close-btn"
+            onClick={() => setModalIsOpen(false)}
+          />
+          <Modal.Title>
+            {isPrivacy ? "Privacy Policy" : "Subscription Agreement"}
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {isPrivacy ? <PrivacyPolicy /> : <SubscriptionAgreement />}
+          <Button
+            className="agree-btn"
+            onClick={() => {
+              if (isPrivacy) {
+                setPrivacyPolicyValue(true);
+              } else {
+                setSubscriptionAgreementValue(true);
+              }
+              setModalIsOpen(false);
+            }}
+          >
+            I AGREE
+          </Button>
+        </Modal.Body>
       </Modal>
     </>
   );

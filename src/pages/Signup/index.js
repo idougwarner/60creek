@@ -197,7 +197,10 @@ export const Signup = (props) => {
         currentPage = (
           <Singup4
             next={() => handleFourthPage(true)}
-            previous={() => handleFourthPage(false)}
+            previous={() => {
+              pipsConfigValue[3].current = false;
+              handleFourthPage(false);
+            }}
             pipsConfig={pipsConfigValue}
             userInfo={{
               address: {

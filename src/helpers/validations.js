@@ -1,5 +1,5 @@
 export const STRENGTH_0 = "strength";
-export const STRENGTH_1 = "week";
+export const STRENGTH_1 = "weak";
 export const STRENGTH_2 = "good";
 export const STRENGTH_3 = "strong";
 export const STRENGTH_4 = "perfect";
