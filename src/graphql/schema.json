@@ -946,6 +946,17 @@
           "isDeprecated" : false,
           "deprecationReason" : null
         }, {
+          "name" : "interested",
+          "description" : null,
+          "args" : [ ],
+          "type" : {
+            "kind" : "SCALAR",
+            "name" : "String",
+            "ofType" : null
+          },
+          "isDeprecated" : false,
+          "deprecationReason" : null
+        }, {
           "name" : "enhance",
           "description" : null,
           "args" : [ ],
@@ -3138,6 +3149,15 @@
           },
           "defaultValue" : null
         }, {
+          "name" : "interested",
+          "description" : null,
+          "type" : {
+            "kind" : "INPUT_OBJECT",
+            "name" : "ModelStringInput",
+            "ofType" : null
+          },
+          "defaultValue" : null
+        }, {
           "name" : "enhance",
           "description" : null,
           "type" : {
@@ -4641,6 +4661,15 @@
           },
           "defaultValue" : null
         }, {
+          "name" : "interested",
+          "description" : null,
+          "type" : {
+            "kind" : "INPUT_OBJECT",
+            "name" : "SearchableStringFilterInput",
+            "ofType" : null
+          },
+          "defaultValue" : null
+        }, {
           "name" : "enhance",
           "description" : null,
           "type" : {
@@ -4835,6 +4864,11 @@
           "deprecationReason" : null
         }, {
           "name" : "notes",
+          "description" : null,
+          "isDeprecated" : false,
+          "deprecationReason" : null
+        }, {
+          "name" : "interested",
           "description" : null,
           "isDeprecated" : false,
           "deprecationReason" : null
@@ -7472,6 +7506,15 @@
           },
           "defaultValue" : null
         }, {
+          "name" : "interested",
+          "description" : null,
+          "type" : {
+            "kind" : "SCALAR",
+            "name" : "String",
+            "ofType" : null
+          },
+          "defaultValue" : null
+        }, {
           "name" : "enhance",
           "description" : null,
           "type" : {
@@ -8102,6 +8145,15 @@
           },
           "defaultValue" : null
         }, {
+          "name" : "interested",
+          "description" : null,
+          "type" : {
+            "kind" : "INPUT_OBJECT",
+            "name" : "ModelStringInput",
+            "ofType" : null
+          },
+          "defaultValue" : null
+        }, {
           "name" : "enhance",
           "description" : null,
           "type" : {
@@ -8304,6 +8356,15 @@
           "defaultValue" : null
         }, {
           "name" : "notes",
+          "description" : null,
+          "type" : {
+            "kind" : "SCALAR",
+            "name" : "String",
+            "ofType" : null
+          },
+          "defaultValue" : null
+        }, {
+          "name" : "interested",
           "description" : null,
           "type" : {
             "kind" : "SCALAR",
@@ -10712,14 +10773,6 @@
         "onFragment" : false,
         "onField" : false
       }, {
-        "name" : "aws_api_key",
-        "description" : "Tells the service this field/object has access authorized by an API key.",
-        "locations" : [ "OBJECT", "FIELD_DEFINITION" ],
-        "args" : [ ],
-        "onOperation" : false,
-        "onFragment" : false,
-        "onField" : false
-      }, {
         "name" : "deprecated",
         "description" : null,
         "locations" : [ "FIELD_DEFINITION", "ENUM_VALUE" ],
@@ -10733,6 +10786,14 @@
           },
           "defaultValue" : "\"No longer supported\""
         } ],
+        "onOperation" : false,
+        "onFragment" : false,
+        "onField" : false
+      }, {
+        "name" : "aws_api_key",
+        "description" : "Tells the service this field/object has access authorized by an API key.",
+        "locations" : [ "OBJECT", "FIELD_DEFINITION" ],
+        "args" : [ ],
         "onOperation" : false,
         "onFragment" : false,
         "onField" : false

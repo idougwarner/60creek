@@ -83,6 +83,7 @@ export const onCreateProspect = /* GraphQL */ `
       email
       facebook
       notes
+      interested
       enhance
       fetched
       demographic {
@@ -169,6 +170,7 @@ export const onUpdateProspect = /* GraphQL */ `
       email
       facebook
       notes
+      interested
       enhance
       fetched
       demographic {
@@ -255,6 +257,7 @@ export const onDeleteProspect = /* GraphQL */ `
       email
       facebook
       notes
+      interested
       enhance
       fetched
       demographic {
