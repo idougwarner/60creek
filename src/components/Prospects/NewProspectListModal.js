@@ -1,13 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import {
-  Button,
-  Form,
-  Modal,
-  OverlayTrigger,
-  Spinner,
-  Table,
-  Tooltip,
-} from "react-bootstrap";
+import { Button, Form, Modal, Spinner, Table } from "react-bootstrap";
 import "./NewProspectListModal.scss";
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
@@ -27,6 +19,7 @@ import { WORKER_STATUS } from "../../redux/uploadWorkerReducer";
 import { usStates } from "../../helpers/us-states";
 import { validateEmail, validateZip } from "../../helpers/validations";
 import InputMask from "react-input-mask";
+import InfoTooltip from "../controls/InfoTooltip";
 
 const STEP1 = 0;
 const STEP2 = 1;
@@ -95,7 +88,7 @@ const NewProspectListModal = ({
 
   const dispatch = useDispatch();
 
-  useEffect(async () => {
+  useEffect(() => {
     if (list1) {
       setList(list1.map((item) => ({ value: item.id, label: item.name })));
     }
@@ -120,6 +113,7 @@ const NewProspectListModal = ({
     } else if (uploadStatus.status === WORKER_STATUS.ERROR) {
     } else {
     }
+    // eslint-disable-next-line
   }, [uploadStatus]);
 
   // const prev = () => {
@@ -138,16 +132,19 @@ const NewProspectListModal = ({
     setCompleted(false);
     setPercentage(0);
   }, []);
-  useEffect(async () => {
-    if (originUpload) {
-      let storedProspects = await prospectsDb.getAll();
-      let storedUploadStep = await prospectUploadStepDb.getAll();
-      if (storedUploadStep.length > 0 && storedProspects.length > 0) {
-        setStep(storedUploadStep[0].step || STEP1);
-        setProspectList(storedProspects);
+  useEffect(() => {
+    const f = async () => {
+      if (originUpload) {
+        let storedProspects = await prospectsDb.getAll();
+        let storedUploadStep = await prospectUploadStepDb.getAll();
+        if (storedUploadStep.length > 0 && storedProspects.length > 0) {
+          setStep(storedUploadStep[0].step || STEP1);
+          setProspectList(storedProspects);
+        }
       }
-    }
-  }, [originUpload]);
+    };
+    f();
+  }, [originUpload, prospectsDb, prospectUploadStepDb]);
   const next = async () => {
     if (step < STEP3) {
       setStep(step + 1);
@@ -179,7 +176,7 @@ const NewProspectListModal = ({
     enhance,
     cardStatus,
   ]);
-  useEffect(async () => {
+  useEffect(() => {
     let errCounts = 0;
     prospectList.forEach((item) => {
       tableFields.forEach((field) => {
@@ -210,7 +207,6 @@ const NewProspectListModal = ({
       setLoading(true);
       try {
         const fData = await getJsonFromFile(event.target.files[0]);
-        console.log(fData);
         setFileData(fData);
         setFileName(event.target.files[0].name);
         event.target.value = null;
@@ -225,30 +221,34 @@ const NewProspectListModal = ({
     setFileName("");
   };
 
-  useEffect(async () => {
-    if (!token) return;
-    if (enhance) {
-      setLoadingEnhanceData(true);
-      setErrMsg("");
-      try {
-        const rt = await API.graphql(
-          graphqlOperation(checkout, {
-            input: {
-              email: user.email,
-              token: token.id,
-              amount: prospectList.length,
-            },
-          })
-        );
-        if (rt.data.checkout.error) {
-          setErrMsg(messageConvert(rt.data.checkout.error.message));
-          setLoadingEnhanceData(false);
-          return;
-        }
-        next();
-      } catch (err) {}
-      setLoadingEnhanceData(false);
-    }
+  useEffect(() => {
+    const f = async () => {
+      if (!token) return;
+      if (enhance) {
+        setLoadingEnhanceData(true);
+        setErrMsg("");
+        try {
+          const rt = await API.graphql(
+            graphqlOperation(checkout, {
+              input: {
+                email: user.email,
+                token: token.id,
+                amount: prospectList.length,
+              },
+            })
+          );
+          if (rt.data.checkout.error) {
+            setErrMsg(messageConvert(rt.data.checkout.error.message));
+            setLoadingEnhanceData(false);
+            return;
+          }
+          next();
+        } catch (err) {}
+        setLoadingEnhanceData(false);
+      }
+    };
+    f();
+    // eslint-disable-next-line
   }, [token]);
 
   const gotoSecondStep = async () => {
@@ -267,7 +267,7 @@ const NewProspectListModal = ({
       await prospectsDb.clear();
       for (let i = 0; i < prospectList.length; i++) {
         const item = prospectList[i];
-        const rt = await prospectsDb.add(item);
+        await prospectsDb.add(item);
       }
     } catch (err) {}
     if (enhance) {
@@ -285,7 +285,7 @@ const NewProspectListModal = ({
     await prospectsDb.clear();
     for (let i = 0; i < prospectList.length; i++) {
       const item = prospectList[i];
-      const rt = await prospectsDb.add(item);
+      await prospectsDb.add(item);
     }
     pushData();
     next();
@@ -323,7 +323,7 @@ const NewProspectListModal = ({
     return (
       <>
         {editing &&
-        idx == selectedField.idx &&
+        idx === selectedField.idx &&
         fieldName === selectedField.fieldName ? (
           <>
             {fieldName === "state" ? (
@@ -488,325 +488,294 @@ const NewProspectListModal = ({
     });
     setEditField("");
   };
-  const renderTooltip = (props) => (
-    <Tooltip id="button-tooltip" {...props}>
-      Data Enhancement is a systematic process that will search and locate
-      corresponding phone, email, demographic, and relational data variables
-      specific to the uploaded prospects.
-    </Tooltip>
-  );
   return (
-    <>
-      <Modal
-        show={show}
-        className={showCloseConfirm ? "d-none" : ""}
-        onHide={() => {
-          if (step === STEP2) {
-            setShowCloseConfirm(true);
-          } else if (step === STEP1) {
-            prospectListDb.clear();
-            prospectsDb.clear();
-            prospectUploadStepDb.clear();
-            close({ data: false });
-          } else if (step === STEP3) {
-            close({ data: true });
-          }
-        }}
-        size={step === STEP2 ? "xl" : "md"}
-      >
-        <Modal.Header>
-          <img
-            src="/assets/icons/close.svg"
-            className="modal-close-btn"
-            onClick={() => {
-              if (step === STEP2) {
-                setShowCloseConfirm(true);
-              } else if (step === STEP1) {
-                prospectListDb.clear();
-                prospectsDb.clear();
-                prospectUploadStepDb.clear();
-                close({ data: false });
-              } else if (step === STEP3) {
-                close({ data: true });
-              }
-            }}
-          />
-          <Modal.Title>
-            {step === STEP1 ? (
-              existingList ? (
-                "Add To Existing List"
-              ) : (
-                "New Prospect List"
-              )
-            ) : step === STEP2 ? (
-              existingList ? (
-                "Prospects Added to " + selectedList.label
-              ) : (
-                "Prospect Created"
-              )
+    <Modal
+      show={show}
+      className={showCloseConfirm ? "d-none" : ""}
+      onHide={() => {
+        if (step === STEP2) {
+          setShowCloseConfirm(true);
+        } else if (step === STEP1) {
+          prospectListDb.clear();
+          prospectsDb.clear();
+          prospectUploadStepDb.clear();
+          close({ data: false });
+        } else if (step === STEP3) {
+          close({ data: true });
+        }
+      }}
+      size={step === STEP2 ? "xl" : "md"}
+    >
+      <Modal.Header>
+        <img
+          src="/assets/icons/close.svg"
+          className="modal-close-btn"
+          alt="close"
+          onClick={() => {
+            if (step === STEP2) {
+              setShowCloseConfirm(true);
+            } else if (step === STEP1) {
+              prospectListDb.clear();
+              prospectsDb.clear();
+              prospectUploadStepDb.clear();
+              close({ data: false });
+            } else if (step === STEP3) {
+              close({ data: true });
+            }
+          }}
+        />
+        <Modal.Title>
+          {step === STEP1 ? (
+            existingList ? (
+              "Add To Existing List"
             ) : (
-              <>
-                {completed ? (
-                  "Completed"
-                ) : (
-                  <>
-                    {" "}
-                    Uploading
-                    <br /> {prospectList.length} Prospects
-                  </>
-                )}
-              </>
-            )}
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {step === STEP1 && (
-            <div className="step-1">
-              {existingList ? (
-                <Form.Group>
-                  <Form.Label className="required">
-                    Select Prospect List
-                  </Form.Label>
-                  <Select
-                    placeholder="Select Prospect List"
-                    options={list}
-                    value={selectedList}
-                    styles={customSelectStyles("40px")}
-                    onChange={(value) => setSelectedList(value)}
-                  />
-                </Form.Group>
+              "New Prospect List"
+            )
+          ) : step === STEP2 ? (
+            existingList ? (
+              "Prospects Added to " + selectedList.label
+            ) : (
+              "Prospect Created"
+            )
+          ) : (
+            <>
+              {completed ? (
+                "Completed"
               ) : (
-                <Form.Group>
-                  <Form.Label className="required">
-                    Prospect List Name
-                  </Form.Label>
-                  <Form.Control
-                    type="text"
-                    placeholder="List name"
-                    value={listName}
-                    onChange={(event) => {
-                      setListName(event.target.value);
-                    }}
-                  />
-                </Form.Group>
+                <>
+                  {" "}
+                  Uploading
+                  <br /> {prospectList.length} Prospects
+                </>
               )}
-              <Form.Group>
-                <Form.Label>Total Number of Prospects</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Number of records"
-                  value={totalNumber}
-                  onChange={(e) => setTotalNumber(e.target.value)}
-                />
-              </Form.Group>
-              <Form.Group>
-                <Form.Label className="d-flex align-items-center">
-                  Template Download
-                  <OverlayTrigger
-                    placement="top"
-                    delay={{ show: 250, hide: 400 }}
-                    overlay={(props) => (
-                      <Tooltip {...props}>Template Download</Tooltip>
-                    )}
-                  >
-                    <img
-                      src="/assets/icons/information-circle.svg"
-                      className="ml-1"
-                    />
-                  </OverlayTrigger>
-                </Form.Label>
-                <Form.Text className="text-muted mb-3">
-                  This template must be used for upload
-                </Form.Text>
-                <Button
-                  variant="outline-primary"
-                  href="/assets/template/Prospect_Template.csv"
-                  download
-                >
-                  DOWNLOAD
-                </Button>
-              </Form.Group>
+            </>
+          )}
+        </Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        {step === STEP1 && (
+          <div className="step-1">
+            {existingList ? (
               <Form.Group>
                 <Form.Label className="required">
-                  Upload Prospect List
+                  Select Prospect List
                 </Form.Label>
-                <Form.Text className="text-muted mb-2 d-flex align-items-center">
-                  {fileName ? fileName : "No file selected"}
-                  {fileName && (
-                    <Button
-                      variant="link"
-                      className="text-muted ml-4"
-                      onClick={clearFile}
-                    >
-                      <img
-                        src="/assets/icons/close-small.svg"
-                        className="mr-1"
-                      />
-                      CLEAR
-                    </Button>
-                  )}
-                </Form.Text>
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept=".csv"
-                  name="name"
-                  hidden
-                  onChange={onChangeFile}
+                <Select
+                  placeholder="Select Prospect List"
+                  options={list}
+                  value={selectedList}
+                  styles={customSelectStyles("40px")}
+                  onChange={(value) => setSelectedList(value)}
                 />
-                <Button
-                  variant="outline-primary"
-                  onClick={uploadCsvFile}
-                  disabled={loading}
-                >
-                  {loading ? "UPLOADING" : "UPLOAD"}
-                </Button>
               </Form.Group>
-
+            ) : (
               <Form.Group>
-                <Form.Label className="required d-flex align-items-center">
-                  Enhance Data
-                  <OverlayTrigger
-                    placement="top"
-                    delay={{ show: 250, hide: 400 }}
-                    overlay={renderTooltip}
+                <Form.Label className="required">Prospect List Name</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="List name"
+                  value={listName}
+                  onChange={(event) => {
+                    setListName(event.target.value);
+                  }}
+                />
+              </Form.Group>
+            )}
+            <Form.Group>
+              <Form.Label>Total Number of Prospects</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Number of records"
+                value={totalNumber}
+                onChange={(e) => setTotalNumber(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group>
+              <Form.Label className="d-flex align-items-center">
+                Template Download
+                <InfoTooltip description="Template Download" />
+              </Form.Label>
+              <Form.Text className="text-muted mb-3">
+                - This template must be used for upload as a csv file
+              </Form.Text>
+              <Button
+                variant="outline-primary"
+                href="/assets/template/Prospect_Template.csv"
+                download
+              >
+                DOWNLOAD
+              </Button>
+            </Form.Group>
+            <Form.Group>
+              <Form.Label className="required">Upload Prospect List</Form.Label>
+              <Form.Text className="text-muted mb-2 d-flex align-items-center">
+                {fileName ? fileName : "No file selected"}
+                {fileName && (
+                  <Button
+                    variant="link"
+                    className="text-muted ml-4"
+                    onClick={clearFile}
                   >
                     <img
-                      src="/assets/icons/information-circle.svg"
-                      className="ml-1"
+                      src="/assets/icons/close-small.svg"
+                      className="mr-1"
+                      alt="close-small"
                     />
-                  </OverlayTrigger>
-                </Form.Label>
-                <Form.Check
-                  checked={enhance}
-                  name="enhance"
-                  className="mb-3"
-                  custom
-                  type="radio"
-                  id="enhance-yes"
-                  label="Yes"
-                  onChange={() => setEnhance(true)}
-                />
-                <Form.Check
-                  checked={!enhance}
-                  name="enhance"
-                  custom
-                  type="radio"
-                  id="enhance-no"
-                  label="No"
-                  onChange={() => setEnhance(false)}
-                />
-              </Form.Group>
-              {enhance && (
-                <CheckoutForm
-                  itemCounts={prospectList.length}
-                  generateToken={generateToken}
-                  changeToken={(event) => setToken(event)}
-                  changeCardStatus={(event) => setCardStatus(event)}
-                />
-              )}
-            </div>
-          )}
-          {step === STEP2 && (
-            <div className="step-2 mb-3">
-              <div className="d-flex justify-content-between mb-3">
-                <div className="summary">
-                  We detected {prospectList.length} contacts
-                  {errors ? (
-                    <>
-                      , and <span>{errors} errors</span>
-                    </>
-                  ) : null}
-                  . Please check before confirming.
-                </div>
-                <div>
-                  <Button
-                    variant="primary"
-                    onClick={gotoThirdStep}
-                    disabled={errors}
-                  >
-                    CONFIRM
+                    CLEAR
                   </Button>
-                </div>
-              </div>
-              <div className="table-container">
-                <Table responsive="xl" className="data-table">
-                  <thead>
-                    <tr>
-                      <th>
-                        FIRST<span className="sort-icon"></span>
-                      </th>
-                      <th>
-                        LAST<span className="sort-icon"></span>
-                      </th>
-                      <th>
-                        COMPANY<span className="sort-icon"></span>
-                      </th>
-                      <th>STREET</th>
-                      <th>CITY</th>
-                      <th>STATE</th>
-                      <th>ZIP</th>
-                      <th>PHONE</th>
-                      <th>EMAIL</th>
-                      <th>FACEBOOK</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {prospectList.map((a, idx) => (
-                      <tr key={idx}>
-                        {tableFields.map((item, id) => (
-                          <td
-                            key={id}
-                            onClick={() => toggleEditing(idx, item.fieldName)}
-                          >
-                            {fieldComponent(idx, item.fieldName, item.required)}
-                          </td>
-                        ))}
-                      </tr>
-                    ))}
-                  </tbody>
-                </Table>
-              </div>
-            </div>
-          )}
-          {step === STEP3 && (
-            <div className="step-4 d-flex flex-column align-items-center mb-3">
-              {!completed && (
-                <div className="text-muted mb-3">
-                  est. time remaining {estimate}
-                </div>
-              )}
-              <div className="progress">
-                <CircularProgressbar
-                  value={percentage}
-                  text={`${percentage}%`}
-                  strokeWidth={6}
-                />
-              </div>
-            </div>
-          )}
-          {errMsg && <Form.Text className="text-danger">{errMsg}</Form.Text>}
-        </Modal.Body>
-        {step === STEP1 && (
-          <Modal.Footer>
-            <Button
-              variant="primary"
-              disabled={!isNext || loadingEnhanceData}
-              onClick={() => gotoSecondStep()}
-            >
-              {loadingEnhanceData ? (
-                <>
-                  <Spinner /> LOADING ...
-                </>
-              ) : enhance ? (
-                "SUBMIT"
-              ) : (
-                "NEXT"
-              )}
-            </Button>
-          </Modal.Footer>
+                )}
+              </Form.Text>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept=".csv"
+                name="name"
+                hidden
+                onChange={onChangeFile}
+              />
+              <Button
+                variant="outline-primary"
+                onClick={uploadCsvFile}
+                disabled={loading}
+              >
+                {loading ? "UPLOADING" : "UPLOAD"}
+              </Button>
+            </Form.Group>
+
+            <Form.Group>
+              <Form.Label className="required d-flex align-items-center">
+                Enhance Data
+                <InfoTooltip description="Data Enhancement is a systematic process that will search and locate corresponding phone, email, demographic, and relational data variables specific to the uploaded prospects." />
+              </Form.Label>
+              <Form.Check
+                checked={enhance}
+                name="enhance"
+                className="mb-3"
+                custom
+                type="radio"
+                id="enhance-yes"
+                label="Yes"
+                onChange={() => setEnhance(true)}
+              />
+              <Form.Check
+                checked={!enhance}
+                name="enhance"
+                custom
+                type="radio"
+                id="enhance-no"
+                label="No"
+                onChange={() => setEnhance(false)}
+              />
+            </Form.Group>
+            {enhance && (
+              <CheckoutForm
+                itemCounts={prospectList.length}
+                generateToken={generateToken}
+                changeToken={(event) => setToken(event)}
+                changeCardStatus={(event) => setCardStatus(event)}
+              />
+            )}
+          </div>
         )}
-      </Modal>
+        {step === STEP2 && (
+          <div className="step-2 mb-3">
+            <div className="d-flex justify-content-between mb-3">
+              <div className="summary">
+                We detected {prospectList.length} contacts
+                {errors ? (
+                  <>
+                    , and <span>{errors} errors</span>
+                  </>
+                ) : null}
+                . Please check before confirming.
+              </div>
+              <div>
+                <Button
+                  variant="primary"
+                  onClick={gotoThirdStep}
+                  disabled={errors}
+                >
+                  CONFIRM
+                </Button>
+              </div>
+            </div>
+            <div className="table-container">
+              <Table responsive="xl" className="data-table">
+                <thead>
+                  <tr>
+                    <th>
+                      FIRST<span className="sort-icon"></span>
+                    </th>
+                    <th>
+                      LAST<span className="sort-icon"></span>
+                    </th>
+                    <th>
+                      COMPANY<span className="sort-icon"></span>
+                    </th>
+                    <th>STREET</th>
+                    <th>CITY</th>
+                    <th>STATE</th>
+                    <th>ZIP</th>
+                    <th>PHONE</th>
+                    <th>EMAIL</th>
+                    <th>FACEBOOK</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {prospectList.map((a, idx) => (
+                    <tr key={idx}>
+                      {tableFields.map((item, id) => (
+                        <td
+                          key={id}
+                          onClick={() => toggleEditing(idx, item.fieldName)}
+                        >
+                          {fieldComponent(idx, item.fieldName, item.required)}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            </div>
+          </div>
+        )}
+        {step === STEP3 && (
+          <div className="step-4 d-flex flex-column align-items-center mb-3">
+            {!completed && (
+              <div className="text-muted mb-3">
+                est. time remaining {estimate}
+              </div>
+            )}
+            <div className="progress">
+              <CircularProgressbar
+                value={percentage}
+                text={`${percentage}%`}
+                strokeWidth={6}
+              />
+            </div>
+          </div>
+        )}
+        {errMsg && <Form.Text className="text-danger">{errMsg}</Form.Text>}
+      </Modal.Body>
+      {step === STEP1 && (
+        <Modal.Footer>
+          <Button
+            variant="primary"
+            disabled={!isNext || loadingEnhanceData}
+            onClick={() => gotoSecondStep()}
+          >
+            {loadingEnhanceData ? (
+              <>
+                <Spinner /> LOADING ...
+              </>
+            ) : enhance ? (
+              "SUBMIT"
+            ) : (
+              "NEXT"
+            )}
+          </Button>
+        </Modal.Footer>
+      )}
       {step === STEP2 && (
         <ConfirmModal
           show={showCloseConfirm}
@@ -821,7 +790,7 @@ const NewProspectListModal = ({
           }}
         ></ConfirmModal>
       )}
-    </>
+    </Modal>
   );
 };
 

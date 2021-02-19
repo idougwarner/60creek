@@ -82,7 +82,7 @@ const AddSingleProspectModal = ({ show, close }) => {
       setStep(step + 1);
     }
   };
-  useEffect(async () => {
+  useEffect(() => {
     if (list) {
       setProspectList(
         list.map((item) => ({ value: item.id, label: item.name }))
@@ -110,6 +110,7 @@ const AddSingleProspectModal = ({ show, close }) => {
           <img
             src="/assets/icons/close.svg"
             className="modal-close-btn"
+            alt="close"
             onClick={step === STEP3 ? uploadData : close}
           />
         </Modal.Header>

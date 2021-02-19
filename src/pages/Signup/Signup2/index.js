@@ -34,16 +34,17 @@ const Signup2 = (props) => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch({ type: ACTIONS.SET_SINGUP_STEP, step: "step-2" });
+    // eslint-disable-next-line
   }, []);
   const isValidZip = useCallback(() => {
     return validateZip(zipValue);
   }, [zipValue]);
-  const isValidPhone = useCallback(() => {
+  const isValidPhone = () => {
     if (phoneValue.indexOf("_") < 0) {
       return true;
     }
     return false;
-  });
+  };
   useEffect(() => {
     if (
       companyNameValue &&
@@ -59,6 +60,7 @@ const Signup2 = (props) => {
     } else {
       setNextButtonEnabledValue(false);
     }
+    // eslint-disable-next-line
   }, [
     companyNameValue,
     phoneValue,
@@ -142,7 +144,7 @@ const Signup2 = (props) => {
                 setStateValue(value);
               }}
               placeholder="State"
-              styles={customSelectStyles(40, stateValue)}
+              styles={customSelectStyles(40, stateValue.value ? true : false)}
               options={usStates.map((item) => ({ value: item, label: item }))}
             />
           </FormGroup>

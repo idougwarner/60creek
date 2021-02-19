@@ -23,7 +23,7 @@ const ProspectListTab = ({ data, changeData }) => {
       setFacebook(data.facebook);
       setEmail(data.email);
       setPhone(data.phone);
-      setNotes(data.notes);
+      setNotes(data.notes || "");
     }
   }, [data]);
 
@@ -48,7 +48,7 @@ const ProspectListTab = ({ data, changeData }) => {
         setFacebook(g_data.facebook);
         setEmail(g_data.email);
         setPhone(g_data.phone);
-        setNotes(g_data.notes);
+        setNotes(g_data.notes || "");
       }
     }
   };
@@ -57,6 +57,7 @@ const ProspectListTab = ({ data, changeData }) => {
     return () => {
       document.removeEventListener("mousedown", handleClickEvent);
     };
+    // eslint-disable-next-line
   }, []);
   const change = (flag) => {
     if (flag) {
@@ -67,7 +68,7 @@ const ProspectListTab = ({ data, changeData }) => {
           facebook: facebook,
           email: email,
           phone: phone,
-          notes: notes,
+          notes: notes || "",
         });
       }
     }

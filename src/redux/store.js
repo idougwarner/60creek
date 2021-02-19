@@ -3,10 +3,11 @@ import thunk from "redux-thunk";
 import { createHashHistory } from "history";
 import { routerMiddleware } from "connected-react-router";
 // import { createLogger } from "redux-logger";
-import userStore from "./userReducers";
-import prospectStore from "./prospectReducers";
+import userStore from "./userReducer";
+import prospectStore from "./prospectReducer";
 import signupStore from "./signupReducer";
 import uploadWorkerStore from "./uploadWorkerReducer";
+import createCampaignStore from './createCampaignReducer';
 export const history = createHashHistory();
 
 const rootReducer = combineReducers({
@@ -14,6 +15,7 @@ const rootReducer = combineReducers({
   prospectStore,
   signupStore,
   uploadWorkerStore,
+  createCampaignStore
 });
 
 export const configureStore = () => {

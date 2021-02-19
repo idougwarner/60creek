@@ -2,21 +2,18 @@ import React, { useState, useEffect } from "react";
 import MorePips from "../MorePips";
 import "./Signup1.scss";
 
-import BasicButton from "../../../components/controls/BasicButton";
 import {
   Button,
   FormControl,
   FormGroup,
   FormLabel,
   FormText,
-  OverlayTrigger,
-  Spinner,
-  Tooltip,
 } from "react-bootstrap";
 import { ACTIONS } from "../../../redux/actionTypes";
 import { useDispatch } from "react-redux";
 import { passwordStrengths, validateEmail } from "../../../helpers/validations";
 import { Auth } from "aws-amplify";
+import InfoTooltip from "../../../components/controls/InfoTooltip";
 
 //******************************************************************
 //*
@@ -43,6 +40,7 @@ const Signup1 = (props) => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch({ type: ACTIONS.SET_SINGUP_STEP, step: "step-1" });
+    // eslint-disable-next-line
   }, []);
   useEffect(() => {
     setIsValidEmail(validateEmail(emailAddress));
@@ -94,7 +92,7 @@ const Signup1 = (props) => {
     setCheckingEmail(true);
     const msg = "Your email is already existed.";
     try {
-      const rt = await Auth.signIn(
+      await Auth.signIn(
         emailAddress,
         "sldfow3902938dfsoiow349r-234289349S@#WEwewer@#@r"
       );
@@ -202,19 +200,7 @@ const Signup1 = (props) => {
           </div>
           <div className="strength-label">
             {passwordStrengths[passwordStrength].legend}
-
-            <OverlayTrigger
-              placement="top"
-              delay={{ show: 250, hide: 400 }}
-              overlay={(props) => (
-                <Tooltip {...props}>
-                  Combining uppercase and lowercase letters, numbers, and
-                  special characters can create a stronger password
-                </Tooltip>
-              )}
-            >
-              <img src="assets/icons/information-circle.svg" />
-            </OverlayTrigger>
+            <InfoTooltip description="Combining uppercase and lowercase letters, numbers, and special characters can create a stronger password" />
           </div>
         </div>
       </FormGroup>

@@ -298,6 +298,7 @@ type Prospect
   email: String
   facebook: String
   notes: String
+  interested: String
 
   enhance: Boolean
   fetched: Boolean

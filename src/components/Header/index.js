@@ -9,7 +9,7 @@ const Header = (props) => {
   const signupStep = useSelector((state) => state.signupStore.step);
   return (
     <div className="sixty-creek-login-header">
-      <img src="/logo.png" className="sixty-creek-icon" />
+      <img src="/logo.png" className="sixty-creek-icon" alt="logo" />
       <div className="not-a-member-box">
         {pathname === APP_URLS.LOGIN || pathname === APP_URLS.HOME ? (
           <>

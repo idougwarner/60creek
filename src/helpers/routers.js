@@ -1,5 +1,5 @@
 import About from "../pages/About";
-import { Dashboard } from "../pages/Dashboard";
+import Dashboard from "../pages/Dashboard";
 import { Login } from "../pages/Login";
 import Marketing from "../pages/Marketing";
 import CreateCampaign from "../pages/Marketing/CreateCampaign";

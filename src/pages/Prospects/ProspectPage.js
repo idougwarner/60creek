@@ -1,5 +1,5 @@
 import { API, graphqlOperation } from "aws-amplify";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Dropdown, Spinner, Tab, Tabs } from "react-bootstrap";
 import { NavLink, useParams } from "react-router-dom";
 import { APP_URLS } from "../../helpers/routers";
@@ -27,69 +27,74 @@ const ProspectPage = () => {
 
   const { id } = useParams();
 
-  useEffect(async () => {
-    if (id) {
-      try {
-        setLoading(true);
-        const rt = await API.graphql(
-          graphqlOperation(listProspects, { filter: { id: { eq: id } } })
-        );
-        if (rt.data.listProspects.items) {
-          let item = rt.data.listProspects.items[0];
-          if (item.prospectList.enhance && !item.fetched) {
-            item["fetched"] = true;
-            {
-              const consumerInfo = await API.graphql(
-                graphqlOperation(getConsumerContactInfo, {
-                  input: { email: item.email },
-                })
-              );
-              if (consumerInfo?.data?.getConsumerContactInfo?.data) {
-                item["enhance"] = true;
-                let fetchedData = consumerInfo.data.getConsumerContactInfo.data;
-                delete fetchedData.email;
-                item = {
-                  ...item,
-                  ...fetchedData,
-                };
+  useEffect(() => {
+    const f = async () => {
+      if (id) {
+        try {
+          setLoading(true);
+          const rt = await API.graphql(
+            graphqlOperation(listProspects, { filter: { id: { eq: id } } })
+          );
+          if (rt.data.listProspects.items) {
+            let item = rt.data.listProspects.items[0];
+            if (item.prospectList.enhance && !item.fetched) {
+              item["fetched"] = true;
+              {
+                const consumerInfo = await API.graphql(
+                  graphqlOperation(getConsumerContactInfo, {
+                    input: { email: item.email },
+                  })
+                );
+                if (consumerInfo?.data?.getConsumerContactInfo?.data) {
+                  item["enhance"] = true;
+                  let fetchedData =
+                    consumerInfo.data.getConsumerContactInfo.data;
+                  delete fetchedData.email;
+                  item = {
+                    ...item,
+                    ...fetchedData,
+                  };
+                }
               }
-            }
-            {
-              const demogrInfo = await API.graphql(
-                graphqlOperation(getDemographicInfo, {
-                  input: { email: item.email },
-                })
-              );
-              if (demogrInfo?.data?.getDemographicInfo?.data) {
-                item = {
-                  ...item,
-                  demographic: demogrInfo.data.getDemographicInfo.data,
-                };
+              {
+                const demogrInfo = await API.graphql(
+                  graphqlOperation(getDemographicInfo, {
+                    input: { email: item.email },
+                  })
+                );
+                if (demogrInfo?.data?.getDemographicInfo?.data) {
+                  item = {
+                    ...item,
+                    demographic: demogrInfo.data.getDemographicInfo.data,
+                  };
+                }
               }
-            }
 
-            {
-              const lifestyleInfo = await API.graphql(
-                graphqlOperation(getLifestyleInfo, {
-                  input: { email: item.email },
-                })
-              );
-              if (lifestyleInfo?.data?.getLifestyleInfo?.data) {
-                item = {
-                  ...item,
-                  lifestyle: lifestyleInfo.data.getLifestyleInfo.data,
-                };
+              {
+                const lifestyleInfo = await API.graphql(
+                  graphqlOperation(getLifestyleInfo, {
+                    input: { email: item.email },
+                  })
+                );
+                if (lifestyleInfo?.data?.getLifestyleInfo?.data) {
+                  item = {
+                    ...item,
+                    lifestyle: lifestyleInfo.data.getLifestyleInfo.data,
+                  };
+                }
               }
+              updateData(item);
+              setData(item);
+            } else {
+              setData(item);
             }
-            updateData(item);
-            setData(item);
-          } else {
-            setData(item);
           }
-        }
-      } catch (err) {}
-      setLoading(false);
-    }
+        } catch (err) {}
+        setLoading(false);
+      }
+    };
+    f();
+    // eslint-disable-next-line
   }, [id]);
   useEffect(() => {
     if (data) {
@@ -117,9 +122,7 @@ const ProspectPage = () => {
       delete putData.prospectList;
       delete putData.createdAt;
       delete putData.updatedAt;
-      const rt = await API.graphql(
-        graphqlOperation(updateProspect, { input: putData })
-      );
+      await API.graphql(graphqlOperation(updateProspect, { input: putData }));
       toast.success("Updated successfully.", { hideProgressBar: true });
     } catch (err) {
       toast.error("Failed to update item.", { hideProgressBar: true });
@@ -132,7 +135,11 @@ const ProspectPage = () => {
         className="d-flex align-items-center mb-4 font-weight-bold"
         to={APP_URLS.PROSPECTS}
       >
-        <img src="/assets/icons/chevron-left-blue.svg" className="mr-2" />
+        <img
+          src="/assets/icons/chevron-left-blue.svg"
+          className="mr-2"
+          alt="back"
+        />
         BACK TO PROSPECT LIST
       </NavLink>
       {loading && (
