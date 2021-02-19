@@ -1,0 +1,64 @@
+@import "../../../assets/styles/vars.scss";
+
+.outreach-step-container {
+  .outreach-steps {
+    background: #eaf2f8;
+    padding: 20px 24px;
+    border-top: 2px solid #8accf8;
+    border-bottom: 2px solid #8accf8;
+    margin-bottom: 20px;
+    margin-left: -24px;
+    margin-right: -24px;
+    .outreach-step {
+      background-color: white;
+      border-radius: $border-radius;
+      padding: 10px;
+
+      display: flex;
+      align-items: center;
+      margin-bottom: 22px;
+      &:last-child {
+        margin-bottom: 0;
+      }
+      img {
+        margin-right: 16px;
+      }
+      .substep-title {
+        color: $text;
+        font-size: 14px;
+        line-height: 20px;
+        margin-bottom: 4px;
+        display: flex;
+        align-items: center;
+      }
+      .substep-price {
+        color: $label;
+        font-size: 14px;
+        line-height: 20px;
+      }
+      .edit-btn {
+        font-weight: 600;
+        font-size: 14px;
+        line-height: 16px;
+
+        letter-spacing: 1.25px;
+        color: $primary;
+        opacity: 1;
+        transition: $transition;
+        cursor: pointer;
+        &:hover {
+          opacity: 0.7;
+        }
+      }
+    }
+  }
+  .step-description {
+    font-style: italic;
+    font-size: 12px;
+    line-height: 16px;
+    letter-spacing: 0.4px;
+    text-align: center;
+    color: $label;
+    margin-bottom: 18px;
+  }
+}

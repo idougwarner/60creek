@@ -32,6 +32,7 @@ const Signup3 = ({
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch({ type: ACTIONS.SET_SINGUP_STEP, step: "step-1" });
+    // eslint-disable-next-line
   }, []);
   const showSubscriptionAgreementModal = (event) => {
     event.stopPropagation();
@@ -156,6 +157,7 @@ const Signup3 = ({
           <img
             src="/assets/icons/close.svg"
             className="modal-close-btn"
+            alt="close"
             onClick={() => setModalIsOpen(false)}
           />
           <Modal.Title>

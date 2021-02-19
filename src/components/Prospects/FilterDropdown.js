@@ -73,23 +73,22 @@ const FilterDropdown = ({ changeFilterEvent }) => {
     }
   }, [prospectList]);
   useEffect(() => {
-    if (changeFilterEvent) {
-      let status = [];
-      if (interested) {
-        status.push(INTERESTE_STATUS.INTERESTED);
-      }
-      if (notInterested) {
-        status.push(INTERESTE_STATUS.NEGOTIATING);
-      }
-      setFilter({
-        list:
-          filterList.length === 0 || filterList[0] === "all" ? [] : filterList,
-        status: status,
-      });
+    let status = [];
+    if (interested) {
+      status.push(INTERESTE_STATUS.INTERESTED);
     }
+    if (notInterested) {
+      status.push(INTERESTE_STATUS.NEGOTIATING);
+    }
+    setFilter({
+      list:
+        filterList.length === 0 || filterList[0] === "all" ? [] : filterList,
+      status: status,
+    });
   }, [filterList, interested, notInterested]);
   useEffect(() => {
     changeFilterEvent(filter);
+    // eslint-disable-next-line
   }, [filter]);
   return (
     <>
@@ -97,7 +96,7 @@ const FilterDropdown = ({ changeFilterEvent }) => {
         variant="outline-primary"
         title={
           <>
-            <img src="/assets/icons/filter.svg" className="mr-3" />
+            <img src="/assets/icons/filter.svg" className="mr-3" alt="filter" />
             {filter.list.length === 0 && filter.status.length === 0 ? (
               "Filter Prospects"
             ) : filter.list.length === 0 && filter.status.length !== 0 ? (

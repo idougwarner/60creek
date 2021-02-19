@@ -234,12 +234,24 @@ export const Signup = (props) => {
         currentPage = null;
     }
     setCurrentPageValue(currentPage);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     whichPageValue,
     firstNameValue,
     lastNameValue,
     emailAddressValue,
     passwordValue,
+    address1Value,
+    address2Value,
+    cityValue,
+    companyNameValue,
+    phoneValue,
+    pipsConfigValue,
+    privacyPolicyValue,
+    signatureValue,
+    stateValue,
+    subscriptionAgreementValue,
+    zipValue,
   ]);
 
   return (

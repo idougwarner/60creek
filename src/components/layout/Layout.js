@@ -27,47 +27,54 @@ const Layout = ({ children }) => {
   const prospectListDb = useIndexedDB(IndexDBStores.PROSPECT_LIST);
 
   const dispatch = useDispatch();
-  useEffect(async () => {
+  useEffect(() => {
     if (!user) {
-      let rt = await Auth.currentUserInfo();
-      if (rt) {
-        const rtUser = await API.graphql(
-          graphqlOperation(listUsers, {
-            filter: { cognitoUserName: { eq: rt.username } },
-          })
-        );
-        if (rtUser?.data?.listUsers?.items[0]) {
-          dispatch({
-            type: ACTIONS.SET_USER,
-            user: rtUser?.data?.listUsers?.items[0],
-          });
+      const f = async () => {
+        let rt = await Auth.currentUserInfo();
+        if (rt) {
+          const rtUser = await API.graphql(
+            graphqlOperation(listUsers, {
+              filter: { cognitoUserName: { eq: rt.username } },
+            })
+          );
+          if (rtUser?.data?.listUsers?.items[0]) {
+            dispatch({
+              type: ACTIONS.SET_USER,
+              user: rtUser?.data?.listUsers?.items[0],
+            });
+          }
+        } else {
+          history.replace(APP_URLS.LOGIN);
         }
-      } else {
-        history.replace(APP_URLS.LOGIN);
-      }
+      };
+      f();
     }
-  }, [user]);
+    // eslint-disable-next-line
+  }, [user, history]);
 
-  useEffect(async () => {
-    if (!g_workerInstance) return;
-    if (!user) return;
-    if (uploadStatus.status === WORKER_STATUS.START) {
-      try {
-        const storedProspectList = await prospectListDb.getAll();
-        const storedProspects = await prospectsDb.getAll();
-        g_workerInstance.startUploadProspects(
-          user.id,
-          storedProspects,
-          storedProspectList
-        );
-      } catch (err) {}
-    } else if (uploadStatus.status === WORKER_STATUS.CHANGE) {
-    } else if (uploadStatus.status === WORKER_STATUS.COMPLETED) {
-      toast.success("Successfully uploaded.", { hideProgressBar: true });
-    } else if (uploadStatus.status === WORKER_STATUS.ERROR) {
-    } else {
-    }
-  }, [uploadStatus]);
+  useEffect(() => {
+    const f = async () => {
+      if (!g_workerInstance) return;
+      if (!user) return;
+      if (uploadStatus.status === WORKER_STATUS.START) {
+        try {
+          const storedProspectList = await prospectListDb.getAll();
+          const storedProspects = await prospectsDb.getAll();
+          g_workerInstance.startUploadProspects(
+            user.id,
+            storedProspects,
+            storedProspectList
+          );
+        } catch (err) {}
+      } else if (uploadStatus.status === WORKER_STATUS.CHANGE) {
+      } else if (uploadStatus.status === WORKER_STATUS.COMPLETED) {
+        toast.success("Successfully uploaded.", { hideProgressBar: true });
+      } else if (uploadStatus.status === WORKER_STATUS.ERROR) {
+      } else {
+      }
+    };
+    f();
+  }, [uploadStatus, prospectListDb, prospectsDb, user]);
 
   const serviceWorkerListener = async ({ data }) => {
     if (data.type === UPLOAD_STATUS.STARTED) {
@@ -125,6 +132,7 @@ const Layout = ({ children }) => {
     return () => {
       workerInstance.removeEventListener("message", serviceWorkerListener);
     };
+    // eslint-disable-next-line
   }, []);
   return (
     <div className="admin-layout">

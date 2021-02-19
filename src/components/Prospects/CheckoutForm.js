@@ -71,9 +71,6 @@ const CheckOutForm = ({
     }
   }, [cardNumber, cardExpiry, cardCvc]);
 
-  useEffect(() => {
-    getToken();
-  }, [generateToken]);
   const getToken = () => {
     return new Promise(async (resolver, reject) => {
       if (!stripe) {
@@ -100,6 +97,11 @@ const CheckOutForm = ({
   };
 
   useEffect(() => {
+    getToken();
+    // eslint-disable-next-line
+  }, [generateToken]);
+
+  useEffect(() => {
     if (cardStatus && cardholderName) {
       changeCardStatus(true);
     } else {
@@ -107,6 +109,7 @@ const CheckOutForm = ({
     }
 
     changeToken(null);
+    // eslint-disable-next-line
   }, [cardStatus, cardholderName]);
 
   return (
@@ -120,7 +123,7 @@ const CheckOutForm = ({
         <Form.Label className="required">Credit Card Number</Form.Label>
         <InputGroup>
           <InputGroup.Prepend>
-            <img src="/assets/icons/credit-card.svg" />
+            <img src="/assets/icons/credit-card.svg" alt="credit-card" />
           </InputGroup.Prepend>
           <CardNumberElement
             className={"form-control " + (cardNumber ? "completed" : "")}

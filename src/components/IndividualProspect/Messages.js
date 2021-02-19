@@ -28,19 +28,26 @@ const Messages = () => {
         <DropdownButton
           variant="light"
           className="more-menu-btn"
-          title={<img src="/assets/icons/more.svg" />}
+          title={<img src="/assets/icons/more.svg" alt="more" />}
         >
           <Dropdown.Item>
-            <img src="/assets/icons/excel.svg" className="item-icon" /> Excel
+            <img
+              src="/assets/icons/excel.svg"
+              className="item-icon"
+              alt="excel"
+            />{" "}
+            Excel
           </Dropdown.Item>
           <Dropdown.Item>
-            <img src="/assets/icons/csv.svg" className="item-icon" /> CSV
+            <img src="/assets/icons/csv.svg" className="item-icon" alt="csv" />{" "}
+            CSV
           </Dropdown.Item>
         </DropdownButton>
       </div>
       <div className="messages-container">
         {messages.map((item, idx) => (
           <div
+            key={idx}
             className={"message-item" + (item.sender === "me" ? " sent" : "")}
           >
             <div className="time">
@@ -54,6 +61,7 @@ const Messages = () => {
         <img
           src="/assets/icons/attach.svg"
           className="attach-file mr-3 clickable"
+          alt="attach file"
         />
         <FormControl placeholder="Enter your message here" className="mr-3" />
         <Button>SEND</Button>

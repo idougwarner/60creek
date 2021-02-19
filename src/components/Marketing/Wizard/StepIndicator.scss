@@ -1,0 +1,62 @@
+@import "../../../assets//styles/vars.scss";
+
+.wizard-steps {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  padding-top: 24px;
+  margin-bottom: 24px;
+
+  .wizard-step {
+    width: 25%;
+    position: relative;
+    text-align: center;
+    color: $label;
+    letter-spacing: 1.5px;
+    font-size: 10px;
+    font-weight: 500;
+    line-height: 16px;
+    &::before {
+      position: absolute;
+      left: calc(50% - 8px);
+      top: -24px;
+      content: "";
+      width: 16px;
+      height: 16px;
+      min-width: 16px;
+      border-radius: 100%;
+      border: solid 1px $label;
+    }
+    &::after {
+      position: absolute;
+      left: calc(50% + 8px);
+      top: -16px;
+      content: "";
+      width: calc(100% - 16px);
+      border-bottom: solid 1px $label;
+    }
+    &:last-child {
+      &::after {
+        content: unset;
+      }
+    }
+
+    &.completed {
+      &::before {
+        background-color: $primary;
+        background-image: url(../../../assets/icons/completed-mark.svg);
+        background-repeat: no-repeat;
+        background-position: center;
+        border-color: $primary;
+      }
+      &::after {
+        border-color: $primary;
+      }
+    }
+    &.current {
+      &::before {
+        border-color: $primary;
+      }
+    }
+  }
+}

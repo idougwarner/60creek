@@ -18,10 +18,11 @@ import {
   validatePromoCode,
 } from "../../../graphql/mutations";
 import { subscriptionInfo } from "../../../graphql/queries";
-import { OverlayTrigger, Spinner, Tooltip } from "react-bootstrap";
+import { Spinner } from "react-bootstrap";
 import { useDispatch } from "react-redux";
 import { ACTIONS } from "../../../redux/actionTypes";
 import { messageConvert } from "../../../helpers/messageConvert";
+import InfoTooltip from "../../../components/controls/InfoTooltip";
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY);
 
 const createOptions = () => {
@@ -176,7 +177,7 @@ const CheckOutForm = ({
         })
       );
       if (rt.data.createStripeSubscription.data) {
-        let paymentMethod = await API.graphql(
+        await API.graphql(
           graphqlOperation(createPaymentMethod, {
             input: {
               ...rt.data.createStripeSubscription.data,
@@ -359,19 +360,7 @@ const CheckOutForm = ({
         <div className="g-input-box g-half-input-box">
           <div className="g-input-label required d-flex align-items-center">
             Security Code
-            <OverlayTrigger
-              placement="top"
-              delay={{ show: 250, hide: 400 }}
-              overlay={(props) => (
-                <Tooltip {...props}>
-                  Combining uppercase and lowercase letters, numbers, and
-                  special characters can create a stronger password
-                </Tooltip>
-              )}
-            >
-              <img src="assets/icons/information-circle.svg" className="ml-1" />
-            </OverlayTrigger>
-            {/* <img src={infoIcon} className="ml-2" /> */}
+            <InfoTooltip description="Usually a 3 - or 4 - digit number found printed on the back of your credit card." />
           </div>
           <CardCvcElement
             className={"g-input-container " + (cardCvc ? "completed" : "")}

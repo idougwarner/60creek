@@ -23,7 +23,7 @@ import FilterDropdown from "../../components/Prospects/FilterDropdown";
 import { ACTIONS } from "../../redux/actionTypes";
 import { useIndexedDB } from "react-indexed-db";
 import { IndexDBStores } from "../../helpers/DBConfig";
-import { NavLink, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { APP_URLS } from "../../helpers/routers";
 import { WORKER_STATUS } from "../../redux/uploadWorkerReducer";
 
@@ -40,7 +40,7 @@ const tableFields = [
 ];
 
 const ASC = 1;
-const DESC = -1;
+// const DESC = -1;
 const ProspectsPage = () => {
   const [data, setData] = useState([]);
 
@@ -151,8 +151,10 @@ const ProspectsPage = () => {
   };
   useEffect(() => {
     if (user) {
+      checkLocalStorage();
       loadData();
     }
+    // eslint-disable-next-line
   }, [user]);
   const sortData = () => {
     let newData = [];
@@ -201,6 +203,7 @@ const ProspectsPage = () => {
   };
   useEffect(() => {
     sortData();
+    // eslint-disable-next-line
   }, [strFilter, statusFilter, listFilter, data, sortType]);
   const checkLocalStorage = async () => {
     const localProspects = await prospectsDb.getAll();
@@ -208,11 +211,6 @@ const ProspectsPage = () => {
       setShowOriginUpload(true);
     }
   };
-  useEffect(() => {
-    if (user) {
-      checkLocalStorage();
-    }
-  }, [user]);
 
   useEffect(() => {
     if (uploadStatus.status === WORKER_STATUS.IDLE) {
@@ -224,6 +222,7 @@ const ProspectsPage = () => {
       checkLocalStorage();
     } else {
     }
+    // eslint-disable-next-line
   }, [uploadStatus]);
   const gotoDetailPage = (id) => {
     history.push(APP_URLS.PROSPECTS + "/" + id);
@@ -243,7 +242,11 @@ const ProspectsPage = () => {
               setShowNewListModal(true);
             }}
           >
-            <img src="/assets/icons/new-list.svg" className="item-icon" />
+            <img
+              src="/assets/icons/new-list.svg"
+              className="item-icon"
+              alt="new-list"
+            />
             CREATE NEW LIST
           </Dropdown.Item>
           <Dropdown.Item
@@ -255,11 +258,16 @@ const ProspectsPage = () => {
             <img
               src="/assets/icons/add-to-existing-list.svg"
               className="item-icon"
+              alt="add-new-to-existing-list"
             />
             ADD TO EXISTING LIST
           </Dropdown.Item>
           <Dropdown.Item eventKey="3" onClick={() => setShowSingleModal(true)}>
-            <img src="/assets/icons/new-list.svg" className="item-icon" />
+            <img
+              src="/assets/icons/new-list.svg"
+              className="item-icon"
+              alt="add-single"
+            />
             ADD SINGLE PROSPECT
           </Dropdown.Item>
         </SplitButton>
@@ -269,7 +277,7 @@ const ProspectsPage = () => {
           <div className="d-flex">
             <InputGroup className="search-input">
               <InputGroup.Prepend>
-                <img src="/assets/icons/search.svg" />
+                <img src="/assets/icons/search.svg" alt="search" />
               </InputGroup.Prepend>
               <FormControl
                 id=""
@@ -283,18 +291,24 @@ const ProspectsPage = () => {
           <DropdownButton
             variant="light"
             className="more-menu-btn"
-            title={<img src="/assets/icons/more.svg" />}
+            title={<img src="/assets/icons/more.svg" alt="search" />}
           >
             <Dropdown.Item href="#/action-1" onClick={downloadExcel}>
               <img
                 src="/assets/icons/excel.svg"
                 className="item-icon"
+                alt="excel"
                 onClick={downloadExcel}
               />{" "}
               Excel
             </Dropdown.Item>
             <Dropdown.Item href="#/action-2" onClick={downloadCSV}>
-              <img src="/assets/icons/csv.svg" className="item-icon" /> CSV
+              <img
+                src="/assets/icons/csv.svg"
+                className="item-icon"
+                alt="csv"
+              />{" "}
+              CSV
             </Dropdown.Item>
           </DropdownButton>
         </div>
@@ -374,8 +388,13 @@ const ProspectsPage = () => {
                       <img
                         src="/assets/icons/email.svg"
                         className="link mr-3"
+                        alt="email"
                       />
-                      <img src="/assets/icons/phone.svg" className="link" />
+                      <img
+                        src="/assets/icons/phone.svg"
+                        className="link"
+                        alt="phone"
+                      />
                     </div>
                   </td>
                 </tr>
@@ -404,7 +423,7 @@ const ProspectsPage = () => {
         {showAddExistingModal && (
           <NewProspectListModal
             show={showAddExistingModal}
-            close={(event) => {
+            close={() => {
               setShowAddExistingModal(false);
             }}
             existingList={true}
@@ -424,7 +443,7 @@ const ProspectsPage = () => {
         {showNewListModal && (
           <NewProspectListModal
             show={showNewListModal}
-            close={(event) => {
+            close={() => {
               setShowNewListModal(false);
             }}
           />

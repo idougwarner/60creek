@@ -29,9 +29,10 @@ const validateEmail = (email) => {
 
 export const Login = () => {
   const [enbled, setEnabled] = useState(false);
-  const [email, setUserName] = useState(null);
-  const [password, setPassword] = useState(null);
+  const [email, setUserName] = useState("");
+  const [password, setPassword] = useState("");
   const [userNameError, setUserNameError] = useState(false);
+  // eslint-disable-next-line
   const [loginError, setLoginError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -39,6 +40,7 @@ export const Login = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch({ type: ACTIONS.SET_SINGUP_STEP, step: "login" });
+    // eslint-disable-next-line
   }, []);
   useEffect(() => {
     if (email) {
@@ -89,6 +91,7 @@ export const Login = () => {
       } catch (err) {}
     };
     f();
+    // eslint-disable-next-line
   }, []);
   return (
     <div className="sixty-creek-login g-page-background">
