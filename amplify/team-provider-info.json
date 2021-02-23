@@ -61,16 +61,16 @@
       }
     }
   },
-  "staging": {
+  "qa": {
     "awscloudformation": {
-      "AuthRoleName": "amplify-60creek-staging-01142-authRole",
-      "UnauthRoleArn": "arn:aws:iam::313220278604:role/amplify-60creek-staging-01142-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::313220278604:role/amplify-60creek-staging-01142-authRole",
+      "AuthRoleName": "amplify-60creek-qa-10602-authRole",
+      "UnauthRoleArn": "arn:aws:iam::313220278604:role/amplify-60creek-qa-10602-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::313220278604:role/amplify-60creek-qa-10602-authRole",
       "Region": "us-west-2",
-      "DeploymentBucketName": "amplify-60creek-staging-01142-deployment",
-      "UnauthRoleName": "amplify-60creek-staging-01142-unauthRole",
-      "StackName": "amplify-60creek-staging-01142",
-      "StackId": "arn:aws:cloudformation:us-west-2:313220278604:stack/amplify-60creek-staging-01142/b9c3b5c0-7595-11eb-9024-0a29446165ab",
+      "DeploymentBucketName": "amplify-60creek-qa-10602-deployment",
+      "UnauthRoleName": "amplify-60creek-qa-10602-unauthRole",
+      "StackName": "amplify-60creek-qa-10602",
+      "StackId": "arn:aws:cloudformation:us-west-2:313220278604:stack/amplify-60creek-qa-10602/82821310-759d-11eb-8430-065e4333b4d9",
       "AmplifyAppId": "d2uhia5y233ztu"
     },
     "categories": {
@@ -79,39 +79,39 @@
       },
       "function": {
         "createStripeSubscription": {
-          "deploymentBucketName": "amplify-60creek-staging-01142-deployment",
+          "deploymentBucketName": "amplify-60creek-qa-10602-deployment",
           "s3Key": "amplify-builds/createStripeSubscription-5830306772434b44492b-build.zip"
         },
         "preSignUp": {
-          "deploymentBucketName": "amplify-60creek-staging-01142-deployment",
+          "deploymentBucketName": "amplify-60creek-qa-10602-deployment",
           "s3Key": "amplify-builds/preSignUp-77584f714d5672705a61-build.zip"
         },
         "validatePromoCode": {
-          "deploymentBucketName": "amplify-60creek-staging-01142-deployment",
+          "deploymentBucketName": "amplify-60creek-qa-10602-deployment",
           "s3Key": "amplify-builds/validatePromoCode-6e6b736d2b37785a645a-build.zip"
         },
         "subscriptionInfo": {
-          "deploymentBucketName": "amplify-60creek-staging-01142-deployment",
+          "deploymentBucketName": "amplify-60creek-qa-10602-deployment",
           "s3Key": "amplify-builds/subscriptionInfo-386d4b376c4c2f657839-build.zip"
         },
         "checkout": {
-          "deploymentBucketName": "amplify-60creek-staging-01142-deployment",
+          "deploymentBucketName": "amplify-60creek-qa-10602-deployment",
           "s3Key": "amplify-builds/checkout-4473677068796948745a-build.zip"
         },
         "getConsumerContactInfo": {
-          "deploymentBucketName": "amplify-60creek-staging-01142-deployment",
+          "deploymentBucketName": "amplify-60creek-qa-10602-deployment",
           "s3Key": "amplify-builds/getConsumerContactInfo-6d795a336948626f7172-build.zip"
         },
         "getDemographicInfo": {
-          "deploymentBucketName": "amplify-60creek-staging-01142-deployment",
+          "deploymentBucketName": "amplify-60creek-qa-10602-deployment",
           "s3Key": "amplify-builds/getDemographicInfo-3978536d4a6c78523170-build.zip"
         },
         "getLifestyleInfo": {
-          "deploymentBucketName": "amplify-60creek-staging-01142-deployment",
+          "deploymentBucketName": "amplify-60creek-qa-10602-deployment",
           "s3Key": "amplify-builds/getLifestyleInfo-74476d7258644a41467a-build.zip"
         },
         "sendCampaignConfirmEmail": {
-          "deploymentBucketName": "amplify-60creek-staging-01142-deployment",
+          "deploymentBucketName": "amplify-60creek-qa-10602-deployment",
           "s3Key": "amplify-builds/sendCampaignConfirmEmail-454d78387579492b4a71-build.zip"
         }
       },
