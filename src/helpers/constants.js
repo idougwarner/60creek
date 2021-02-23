@@ -22,6 +22,8 @@ export const authClientId = "<YOUR AUTH0 CLIENT ID>";
 export const authDomain = "<YOUR AUTH0 DOMAIN>";
 export const callbackUrl = `http://localhost:3000/callback`;
 
+export const QUERY_LIMIT = 20000;
+
 // Hasura cloud info User randall.w.wright@comcast.net password: SixtyCreek2020!
 // postgres db user: postgres, pw: 9xW96My1!
 

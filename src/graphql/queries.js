@@ -1,114 +1,6 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
-export const user = /* GraphQL */ `
-  query User($id: ID) {
-    user(id: $id) {
-      id
-      cognitoUserName
-      firstName
-      lastName
-      company
-      address1
-      address2
-      city
-      state
-      zip
-      phone
-      email
-      signature
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const prospectById = /* GraphQL */ `
-  query ProspectById($id: ID) {
-    prospectById(id: $id) {
-      id
-      userId
-      prospectListId
-      status
-      firstName
-      lastName
-      company
-      address1
-      address2
-      city
-      state
-      zip
-      phone
-      email
-      facebook
-      notes
-      interested
-      enhance
-      fetched
-      demographic {
-        DOB
-        ageRange
-        ethnicCode
-        singleParent
-        seniorAdultInHousehold
-        youngAdultInHousehold
-        workingWoman
-        SOHOIndicator
-        businessOwner
-        language
-        religion
-        numberOfChildren
-        maritalStatusInHousehold
-        homeOwnerRenter
-        education
-        occupation
-        occupationDetail
-        gender
-        socialPresence
-        presenceOfChildren
-      }
-      lifestyle {
-        magazines
-        computerAndTechnology
-        dietingWeightLoss
-        exerciseHealthGrouping
-        doItYourselferHomeImprovement
-        jewelry
-        mailOrderBuyer
-        membershipClubs
-        travelGrouping
-        onlineEducation
-        sportsGrouping
-        sportsOutdoorsGrouping
-        investing
-        booksAndReading
-        politicalDonor
-        hobbiesAndCrafts
-        cosmetics
-        charitableDonations
-        artsAntiquesCollectibles
-        petOwner
-        cooking
-        autoPartsAccessories
-        healthBeautyWellness
-        parentingAndChildrensProducts
-        music
-        movie
-        selfImprovement
-        womensApparel
-      }
-      prospectList {
-        id
-        userId
-        name
-        enhance
-        createdAt
-        updatedAt
-      }
-      createdAt
-      updatedAt
-    }
-  }
-`;
 export const prospectList = /* GraphQL */ `
   query ProspectList {
     prospectList {
@@ -140,7 +32,6 @@ export const prospect = /* GraphQL */ `
       email
       facebook
       notes
-      interested
       enhance
       fetched
       demographic {
@@ -235,16 +126,46 @@ export const marketingCampaign = /* GraphQL */ `
   query MarketingCampaign {
     marketingCampaign {
       id
+      userId
       title
       prospectListId
-      startDateTime
-      autmatedEmail
-      automatedText
-      automatedRinglessVoiceMail
-      automatedPostcard
-      paymentMethodId
-      consent
-      owningUserId
+      startDateTime {
+        day
+        month
+        year
+        hour
+        minute
+        am
+      }
+      automatedEmail {
+        prospects
+        message
+      }
+      automatedText {
+        prospects
+        text
+      }
+      automatedRinglessVoiceMail {
+        prospects
+        file
+        phone
+      }
+      automatedPostcard {
+        prospects
+        file
+      }
+      automatedSocialPost {
+        prospects
+        image
+        content
+      }
+      checkout {
+        brand
+        last4
+        total
+        discount
+        email
+      }
       createdAt
       updatedAt
     }
@@ -351,7 +272,6 @@ export const getProspect = /* GraphQL */ `
       email
       facebook
       notes
-      interested
       enhance
       fetched
       demographic {
@@ -443,7 +363,6 @@ export const listProspects = /* GraphQL */ `
         email
         facebook
         notes
-        interested
         enhance
         fetched
         demographic {
@@ -510,6 +429,8 @@ export const listProspects = /* GraphQL */ `
         updatedAt
       }
       nextToken
+      scannedCount
+      count
     }
   }
 `;
@@ -601,16 +522,46 @@ export const getMarketingCampaign = /* GraphQL */ `
   query GetMarketingCampaign($id: ID!) {
     getMarketingCampaign(id: $id) {
       id
+      userId
       title
       prospectListId
-      startDateTime
-      autmatedEmail
-      automatedText
-      automatedRinglessVoiceMail
-      automatedPostcard
-      paymentMethodId
-      consent
-      owningUserId
+      startDateTime {
+        day
+        month
+        year
+        hour
+        minute
+        am
+      }
+      automatedEmail {
+        prospects
+        message
+      }
+      automatedText {
+        prospects
+        text
+      }
+      automatedRinglessVoiceMail {
+        prospects
+        file
+        phone
+      }
+      automatedPostcard {
+        prospects
+        file
+      }
+      automatedSocialPost {
+        prospects
+        image
+        content
+      }
+      checkout {
+        brand
+        last4
+        total
+        discount
+        email
+      }
       createdAt
       updatedAt
     }
@@ -629,16 +580,46 @@ export const listMarketingCampaigns = /* GraphQL */ `
     ) {
       items {
         id
+        userId
         title
         prospectListId
-        startDateTime
-        autmatedEmail
-        automatedText
-        automatedRinglessVoiceMail
-        automatedPostcard
-        paymentMethodId
-        consent
-        owningUserId
+        startDateTime {
+          day
+          month
+          year
+          hour
+          minute
+          am
+        }
+        automatedEmail {
+          prospects
+          message
+        }
+        automatedText {
+          prospects
+          text
+        }
+        automatedRinglessVoiceMail {
+          prospects
+          file
+          phone
+        }
+        automatedPostcard {
+          prospects
+          file
+        }
+        automatedSocialPost {
+          prospects
+          image
+          content
+        }
+        checkout {
+          brand
+          last4
+          total
+          discount
+          email
+        }
         createdAt
         updatedAt
       }
@@ -715,7 +696,6 @@ export const searchProspects = /* GraphQL */ `
         email
         facebook
         notes
-        interested
         enhance
         fetched
         demographic {

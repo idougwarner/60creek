@@ -1,0 +1,21 @@
+.auth-container {
+  background-image: url(../../assets/images/auth-bg.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+  width: 100%;
+  min-height: calc(100vh - 84px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 48px 10px;
+  .auth-form {
+    min-width: 384px;
+    width: 440px;
+    padding: 32px;
+  }
+  .auth-title {
+    margin-bottom: 42px;
+    color: white;
+    text-align: center;
+  }
+}

@@ -1,9 +1,12 @@
-import React, { useState } from "react";
+import { API, graphqlOperation } from "aws-amplify";
+import React, { useEffect, useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 import Select from "react-select";
 import { customSelectStyles } from "../../../assets/styles/select-style";
+import { listProspectsCounts } from "../../../graphql/custom-queries";
+import { QUERY_LIMIT } from "../../../helpers/constants";
 import { APP_URLS } from "../../../helpers/routers";
 import { CREATE_CAMPAIGN_ACTIONS } from "../../../redux/actionTypes";
 import InfoTooltip from "../../controls/InfoTooltip";
@@ -13,9 +16,38 @@ const WizardDetailsStep = () => {
   const [selectedList, setSelectedList] = useState(null);
 
   const list = useSelector((state) => state.prospectStore.prospectList) || [];
+  const detailsInfo = useSelector((state) => state.createCampaignStore.details);
   const dispatch = useDispatch();
   const gotoNextStep = () => {
+    dispatch({
+      type: CREATE_CAMPAIGN_ACTIONS.UPDATE_DETAILS,
+      data: {
+        campaignTitle: campaignTitle,
+        targetList: selectedList,
+      },
+    });
     dispatch({ type: CREATE_CAMPAIGN_ACTIONS.UPDATE_STEP, data: 1 });
+  };
+  useEffect(() => {
+    if (detailsInfo) {
+      setCampaignTitle(detailsInfo.campaignTitle);
+      setSelectedList(detailsInfo.targetList);
+    }
+  }, [detailsInfo]);
+  const changeProspectList = async (value) => {
+    setSelectedList(value);
+    try {
+      const rt = await API.graphql(
+        graphqlOperation(listProspectsCounts, {
+          limit: QUERY_LIMIT,
+          filter: { prospectListId: { eq: value.value } },
+        })
+      );
+      dispatch({
+        type: CREATE_CAMPAIGN_ACTIONS.UPDATE_DEFAULT_PROSPECTS,
+        data: rt.data.listProspects.items.length,
+      });
+    } catch (err) {}
   };
   return (
     <div>
@@ -40,7 +72,7 @@ const WizardDetailsStep = () => {
             options={list.map((item) => ({ label: item.name, value: item.id }))}
             value={selectedList}
             styles={customSelectStyles("40px", selectedList ? true : false)}
-            onChange={(value) => setSelectedList(value)}
+            onChange={(value) => changeProspectList(value)}
           />
         ) : (
           <NavLink to={APP_URLS.PROSPECTS} className="d-block">

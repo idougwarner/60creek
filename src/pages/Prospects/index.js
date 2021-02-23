@@ -9,6 +9,8 @@ import {
   FormCheck,
   Spinner,
   SplitButton,
+  Pagination,
+  Button,
 } from "react-bootstrap";
 import AddSingleProspectModal from "../../components/Prospects/AddSingleProspectModal";
 import NewProspectListModal from "../../components/Prospects/NewProspectListModal";
@@ -26,6 +28,7 @@ import { IndexDBStores } from "../../helpers/DBConfig";
 import { useHistory } from "react-router-dom";
 import { APP_URLS } from "../../helpers/routers";
 import { WORKER_STATUS } from "../../redux/uploadWorkerReducer";
+import { QUERY_LIMIT } from "../../helpers/constants";
 
 const tableFields = [
   { title: "STATUS", field: "status", sortable: false },
@@ -43,6 +46,7 @@ const ASC = 1;
 // const DESC = -1;
 const ProspectsPage = () => {
   const [data, setData] = useState([]);
+  const [nextToken, setNextToken] = useState("");
 
   const [filteredData, setFilteredData] = useState([]);
   const [strFilter, setStrFilter] = useState("");
@@ -69,15 +73,23 @@ const ProspectsPage = () => {
   const loadData = async () => {
     setLoading(true);
     try {
+      const token = nextToken;
+      setNextToken("");
       const rt = await API.graphql(
-        graphqlOperation(listProspects, { filter: { userId: { eq: user.id } } })
+        graphqlOperation(listProspects, {
+          filter: { userId: { eq: user.id } },
+          limit: QUERY_LIMIT,
+          nextToken: token ? token : null,
+        })
       );
       if (rt?.data?.listProspects?.items) {
         setData(rt.data.listProspects.items);
+        setNextToken(rt.data.listProspects.nextToken);
       }
       const rtList = await API.graphql(
         graphqlOperation(listProspectLists, {
           filter: { userId: { eq: user.id } },
+          limit: QUERY_LIMIT,
         })
       );
       if (rtList?.data?.listProspectLists?.items) {
@@ -402,8 +414,13 @@ const ProspectsPage = () => {
           </tbody>
         </Table>
         <div className="d-flex justify-content-center">
-          {/* <Pagination>
-            <Pagination.First />
+          {nextToken && (
+            <Button variant="outline-primary" onClick={loadData}>
+              Next
+            </Button>
+          )}
+          <Pagination>
+            {/* <Pagination.First />
             <Pagination.Prev />
             <Pagination.Item>{1}</Pagination.Item>
             <Pagination.Ellipsis />
@@ -415,10 +432,10 @@ const ProspectsPage = () => {
             <Pagination.Item>{14}</Pagination.Item>
 
             <Pagination.Ellipsis />
-            <Pagination.Item>{20}</Pagination.Item>
-            <Pagination.Next />
-            <Pagination.Last />
-          </Pagination> */}
+            <Pagination.Item>{20}</Pagination.Item> */}
+            {/* {nextToken && <Pagination.Next onClick={loadData} />} */}
+            {/* <Pagination.Last /> */}
+          </Pagination>
         </div>
         {showAddExistingModal && (
           <NewProspectListModal

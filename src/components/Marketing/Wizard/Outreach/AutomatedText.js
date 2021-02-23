@@ -2,13 +2,16 @@ import React, { useEffect, useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { CREATE_CAMPAIGN_ACTIONS } from "../../../../redux/actionTypes";
-import { SUBSTEP_COMPLETED } from "../WizardConstants";
+import { SUBSTEP_COMPLETED } from "../wizardConstants";
 
 const AutomatedText = () => {
   const [prospects, setProspects] = useState("");
   const [text, setText] = useState("");
 
   const dispatch = useDispatch();
+  const defaultProspects = useSelector(
+    (state) => state.createCampaignStore.defaultProspects
+  );
   const textInfo = useSelector(
     (state) => state.createCampaignStore.outreach.text
   );
@@ -27,17 +30,23 @@ const AutomatedText = () => {
     dispatch({ type: CREATE_CAMPAIGN_ACTIONS.UPDATE_SUBSTEP, data: "" });
   };
   useEffect(() => {
-    if (textInfo) {
-      setProspects(textInfo.prospects);
+    if (textInfo && defaultProspects) {
+      setProspects(
+        textInfo.status === SUBSTEP_COMPLETED
+          ? textInfo.prospects
+          : defaultProspects
+      );
       setText(textInfo.text);
     }
-  }, [textInfo]);
+  }, [textInfo, defaultProspects]);
   return (
     <div className="card w-100">
       <Form.Group>
         <Form.Label className="required">Active Prospects to Text</Form.Label>
         <Form.Control
-          type="text"
+          type="number"
+          max={defaultProspects}
+          min={1}
           placeholder="Defaults to number of prospects in list"
           value={prospects}
           className={prospects ? "completed" : ""}

@@ -35,7 +35,6 @@ const ProspectListTab = ({ data, changeData }) => {
         !event.target.readOnly)
     ) {
     } else {
-      console.log(data);
       setCompanyEditable(false);
       setAddress1Editable(false);
       setFacebookEditable(false);

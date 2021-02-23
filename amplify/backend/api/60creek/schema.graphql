@@ -4,8 +4,6 @@ type schema {
 }
 
 type Query {
-  user(id: ID): User
-  prospectById(id: ID): Prospect
   prospectList: ProspectList
   prospect: Prospect
   paymentMethod: PaymentMethod
@@ -15,6 +13,12 @@ type Query {
     @function(name: "subscriptionInfo-${env}")
 }
 
+type ModelProspectConnection {
+  items: [Prospect]
+  nextToken: String
+  scannedCount: Int
+  count: Int
+}
 type Mutation {
   user(
     id: ID
@@ -94,11 +98,44 @@ type Mutation {
 
   getLifestyleInfo(input: GetConsumerContactInfoInput): GetLifestyleInfoResult
     @function(name: "getLifestyleInfo-${env}")
+
+  sendCampaignConfirmEmail(
+    input: SendCampaignConfirmEmailInput
+  ): SendCampaignConfirmEmailResult
+    @function(name: "sendCampaignConfirmEmail-${env}")
 }
+input AutomatedItem {
+  title: String
+  total: Float
+  price: Float
+  prospects: Int
+}
+input EmailData {
+  prospectList: String
+  startDate: String
+  startTime: String
+  items: [AutomatedItem]
+  brand: String
+  last4: String
+  total: Float
+  link: String
+}
+input SendCampaignConfirmEmailInput {
+  emailData: EmailData
+  email: String
+  name: String
+}
+
+type SendCampaignConfirmEmailResult {
+  data: String
+  error: ErrorResponse
+}
+
 input CheckoutInput {
   email: String
-  amount: Int
+  amount: Float
   token: String
+  description: String
 }
 
 input GetConsumerContactInfoInput {
@@ -110,9 +147,9 @@ type CheckoutResult {
 }
 type CheckoutInfo {
   id: String
-  amount: Int
-  amountCaptured: Int
-  amountRefunded: Int
+  amount: Float
+  amountCaptured: Float
+  amountRefunded: Float
   description: String
   paid: Boolean
   receiptEmail: String
@@ -298,7 +335,6 @@ type Prospect
   email: String
   facebook: String
   notes: String
-  interested: String
 
   enhance: Boolean
   fetched: Boolean
@@ -362,18 +398,57 @@ type PaymentMethod @model @auth(rules: [{ allow: public, provider: apiKey }]) {
   unitAmount: Int
 }
 
+type DateType {
+  day: Int
+  month: Int
+  year: Int
+  hour: Int
+  minute: Int
+  am: String
+}
+type EmailType {
+  prospects: Int
+  message: String
+}
+type TextType {
+  prospects: Int
+  text: String
+}
+type RinglessVoicemailType {
+  prospects: Int
+  file: String
+  phone: String
+}
+type PostCardType {
+  prospects: Int
+  file: String
+}
+type SocialPostType {
+  prospects: Int
+  image: String
+  content: String
+}
+type CheckoutType {
+  brand: String
+  last4: String
+  total: Float
+  discount: Float
+  email: String
+}
+
 type MarketingCampaign
   @model
   @auth(rules: [{ allow: public, provider: apiKey }]) {
   id: ID!
+  userId: String
+
   title: String
-  prospectListId: Int
-  startDateTime: String
-  autmatedEmail: Boolean
-  automatedText: Boolean
-  automatedRinglessVoiceMail: Boolean
-  automatedPostcard: Boolean
-  paymentMethodId: Int
-  consent: Boolean
-  owningUserId: Int
+  prospectListId: String
+  startDateTime: DateType
+  automatedEmail: EmailType
+  automatedText: TextType
+  automatedRinglessVoiceMail: RinglessVoicemailType
+  automatedPostcard: PostCardType
+  automatedSocialPost: SocialPostType
+  checkout: CheckoutType
 }

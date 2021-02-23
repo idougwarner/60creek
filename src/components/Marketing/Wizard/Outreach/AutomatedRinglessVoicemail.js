@@ -2,18 +2,24 @@ import React, { useEffect, useRef, useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { CREATE_CAMPAIGN_ACTIONS } from "../../../../redux/actionTypes";
-import { SUBSTEP_COMPLETED } from "../WizardConstants";
+import { SUBSTEP_COMPLETED } from "../wizardConstants";
 import InputMask from "react-input-mask";
 import InfoTooltip from "../../../controls/InfoTooltip";
+import { v4 as uuidv4 } from "uuid";
+import { Storage } from "aws-amplify";
 
 const AutomatedRinglessVoicemail = () => {
   const [prospects, setProspects] = useState("");
   const [phone, setPhone] = useState("");
   const [file, setFile] = useState(null);
+  const [uploading, setUploading] = useState(false);
 
   const fileInputRef = useRef();
 
   const dispatch = useDispatch();
+  const defaultProspects = useSelector(
+    (state) => state.createCampaignStore.defaultProspects
+  );
   const ringlessVoicemailInfo = useSelector(
     (state) => state.createCampaignStore.outreach.ringlessVoicemail
   );
@@ -33,28 +39,47 @@ const AutomatedRinglessVoicemail = () => {
     dispatch({ type: CREATE_CAMPAIGN_ACTIONS.UPDATE_SUBSTEP, data: "" });
   };
   useEffect(() => {
-    if (ringlessVoicemailInfo) {
-      setProspects(ringlessVoicemailInfo.prospects);
+    if (ringlessVoicemailInfo && defaultProspects) {
+      setProspects(
+        ringlessVoicemailInfo.status === SUBSTEP_COMPLETED
+          ? ringlessVoicemailInfo.prospects
+          : defaultProspects
+      );
       setPhone(ringlessVoicemailInfo.phone);
       setFile(ringlessVoicemailInfo.file);
     }
-  }, [ringlessVoicemailInfo]);
+  }, [ringlessVoicemailInfo, defaultProspects]);
 
   const onChangeFile = async (event) => {
     event.stopPropagation();
     event.preventDefault();
     if (event.target.files.length > 0) {
       try {
-        console.log(event.target.files[0]);
-        setFile(event.target.files[0]);
+        setUploading(true);
+        const fileInfo = event.target.files[0];
+        console.log(fileInfo);
+        if (file) {
+          await Storage.remove(file);
+        }
+        const rtInfo = await Storage.put(
+          uuidv4() + "-" + fileInfo.name,
+          fileInfo
+        );
+        console.log(rtInfo);
+        setFile(rtInfo.key);
+
         event.target.value = null;
       } catch (err) {
       } finally {
       }
+      setUploading(false);
     }
   };
 
-  const clearFile = () => {
+  const clearFile = async () => {
+    if (file) {
+      await Storage.remove(file);
+    }
     setFile(null);
   };
 
@@ -71,7 +96,9 @@ const AutomatedRinglessVoicemail = () => {
           Active Prospects to Send a Voicemail
         </Form.Label>
         <Form.Control
-          type="text"
+          type="number"
+          max={defaultProspects}
+          min={1}
           placeholder="Defaults to number of prospects in list"
           value={prospects}
           className={prospects ? "completed" : ""}
@@ -83,7 +110,7 @@ const AutomatedRinglessVoicemail = () => {
           Voicemail File <InfoTooltip description="Voicemail File" />
         </Form.Label>
         <Form.Text className="text-muted mb-2 d-flex align-items-center">
-          {file ? file.name : "No file selected"}
+          {file ? file.substr(37) : "No file selected"}
           {file && (
             <Button
               variant="link"
@@ -110,8 +137,9 @@ const AutomatedRinglessVoicemail = () => {
         <Button
           variant="outline-primary"
           onClick={() => fileInputRef.current.click()}
+          disabled={uploading}
         >
-          {"UPLOAD"}
+          {uploading ? "UPLOADING ..." : "UPLOAD"}
         </Button>
       </Form.Group>
       <Form.Group>
