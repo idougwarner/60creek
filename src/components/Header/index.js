@@ -3,8 +3,7 @@ import { useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
 import { APP_URLS } from "../../helpers/routers";
 import "./Header.scss";
-
-const Header = (props) => {
+const Header = () => {
   const { pathname } = useLocation();
   const signupStep = useSelector((state) => state.signupStore.step);
   return (

@@ -4,60 +4,74 @@ const initState = {
   step: 0,
   substep: "",
 
+  defaultProspects: 0,
+
   details: {
     campaignTitle: "",
-    targetList: "",
+    targetList: null,
   },
   outreach: {
     email: {
       status: "",
-      prospects: "",
+      prospects: 0,
       message: "",
     },
     text: {
       status: "",
-      prospects: "",
+      prospects: 0,
       text: "",
     },
     ringlessVoicemail: {
       status: "",
-      prospects: "",
+      prospects: 0,
       file: "",
       phone: "",
     },
-    postCard: {
+    postcard: {
       status: "",
-      prospects: "",
+      prospects: 0,
       file: null,
     },
     socialPost: {
       status: "",
-      prospects: "",
+      prospects: 0,
       image: "",
       content: "",
     },
   },
   timeline: {
-    start: null,
-    end: null,
+    day: null,
+    month: null,
+    year: null,
+    hour: null,
+    minute: null,
+    am: null,
     consent: false,
   },
   checkout: {
-    discount: "",
-    cardNumber: "",
-    expMonth: "",
-    expYear: "",
-    securityCode: "",
-    cardholderName: "",
+    brand: "",
+    last4: "",
+    total: 0,
+    discount: 0,
+    email: "",
   },
 };
 
 const createCampaignStore = (state = initState, action) => {
   switch (action.type) {
+    case CREATE_CAMPAIGN_ACTIONS.INIT:
+      return {
+        ...initState,
+      };
     case CREATE_CAMPAIGN_ACTIONS.UPDATE_STEP:
       return {
         ...state,
         step: action.data,
+      };
+    case CREATE_CAMPAIGN_ACTIONS.UPDATE_DEFAULT_PROSPECTS:
+      return {
+        ...state,
+        defaultProspects: action.data,
       };
     case CREATE_CAMPAIGN_ACTIONS.UPDATE_SUBSTEP:
       return {
@@ -98,7 +112,7 @@ const createCampaignStore = (state = initState, action) => {
         ...state,
         outreach: {
           ...state.outreach,
-          postCard: action.data,
+          postcard: action.data,
         },
       };
     case CREATE_CAMPAIGN_ACTIONS.UPDATE_OUTREACH_SOCIAL_POST:

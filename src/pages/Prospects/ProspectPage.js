@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Dropdown, Spinner, Tab, Tabs } from "react-bootstrap";
 import { NavLink, useParams } from "react-router-dom";
 import { APP_URLS } from "../../helpers/routers";
-import { listProspects } from "../../graphql/queries";
+import { getProspect } from "../../graphql/queries";
 import "./ProspectPage.scss";
 import ProspectListTab from "../../components/IndividualProspect/ProspectListTab";
 import Messages from "../../components/IndividualProspect/Messages";
@@ -33,10 +33,10 @@ const ProspectPage = () => {
         try {
           setLoading(true);
           const rt = await API.graphql(
-            graphqlOperation(listProspects, { filter: { id: { eq: id } } })
+            graphqlOperation(getProspect, { id: id })
           );
-          if (rt.data.listProspects.items) {
-            let item = rt.data.listProspects.items[0];
+          if (rt.data.getProspect) {
+            let item = rt.data.getProspect;
             if (item.prospectList.enhance && !item.fetched) {
               item["fetched"] = true;
               {

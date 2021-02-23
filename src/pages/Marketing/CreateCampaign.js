@@ -6,7 +6,7 @@ import CreateCampaignWizard from "../../components/Marketing/CreateCampaignWizar
 import { useDispatch, useSelector } from "react-redux";
 import { API, graphqlOperation } from "aws-amplify";
 import { listProspectLists } from "../../graphql/queries";
-import { ACTIONS } from "../../redux/actionTypes";
+import { ACTIONS, CREATE_CAMPAIGN_ACTIONS } from "../../redux/actionTypes";
 import AutomatedEmail from "../../components/Marketing/Wizard/Outreach/AutomatedEmail";
 import AutomatedText from "../../components/Marketing/Wizard/Outreach/AutomatedText";
 import AutomatedRinglessVoicemail from "../../components/Marketing/Wizard/Outreach/AutomatedRinglessVoicemail";
@@ -35,6 +35,10 @@ const CreateCampaign = () => {
     }
     // eslint-disable-next-line
   }, [user]);
+  useEffect(() => {
+    dispatch({ type: CREATE_CAMPAIGN_ACTIONS.INIT });
+    // eslint-disable-next-line
+  }, []);
   return (
     <>
       <NavLink

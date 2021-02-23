@@ -83,7 +83,6 @@ export const onCreateProspect = /* GraphQL */ `
       email
       facebook
       notes
-      interested
       enhance
       fetched
       demographic {
@@ -170,7 +169,6 @@ export const onUpdateProspect = /* GraphQL */ `
       email
       facebook
       notes
-      interested
       enhance
       fetched
       demographic {
@@ -257,7 +255,6 @@ export const onDeleteProspect = /* GraphQL */ `
       email
       facebook
       notes
-      interested
       enhance
       fetched
       demographic {
@@ -434,16 +431,46 @@ export const onCreateMarketingCampaign = /* GraphQL */ `
   subscription OnCreateMarketingCampaign {
     onCreateMarketingCampaign {
       id
+      userId
       title
       prospectListId
-      startDateTime
-      autmatedEmail
-      automatedText
-      automatedRinglessVoiceMail
-      automatedPostcard
-      paymentMethodId
-      consent
-      owningUserId
+      startDateTime {
+        day
+        month
+        year
+        hour
+        minute
+        am
+      }
+      automatedEmail {
+        prospects
+        message
+      }
+      automatedText {
+        prospects
+        text
+      }
+      automatedRinglessVoiceMail {
+        prospects
+        file
+        phone
+      }
+      automatedPostcard {
+        prospects
+        file
+      }
+      automatedSocialPost {
+        prospects
+        image
+        content
+      }
+      checkout {
+        brand
+        last4
+        total
+        discount
+        email
+      }
       createdAt
       updatedAt
     }
@@ -453,16 +480,46 @@ export const onUpdateMarketingCampaign = /* GraphQL */ `
   subscription OnUpdateMarketingCampaign {
     onUpdateMarketingCampaign {
       id
+      userId
       title
       prospectListId
-      startDateTime
-      autmatedEmail
-      automatedText
-      automatedRinglessVoiceMail
-      automatedPostcard
-      paymentMethodId
-      consent
-      owningUserId
+      startDateTime {
+        day
+        month
+        year
+        hour
+        minute
+        am
+      }
+      automatedEmail {
+        prospects
+        message
+      }
+      automatedText {
+        prospects
+        text
+      }
+      automatedRinglessVoiceMail {
+        prospects
+        file
+        phone
+      }
+      automatedPostcard {
+        prospects
+        file
+      }
+      automatedSocialPost {
+        prospects
+        image
+        content
+      }
+      checkout {
+        brand
+        last4
+        total
+        discount
+        email
+      }
       createdAt
       updatedAt
     }
@@ -472,16 +529,46 @@ export const onDeleteMarketingCampaign = /* GraphQL */ `
   subscription OnDeleteMarketingCampaign {
     onDeleteMarketingCampaign {
       id
+      userId
       title
       prospectListId
-      startDateTime
-      autmatedEmail
-      automatedText
-      automatedRinglessVoiceMail
-      automatedPostcard
-      paymentMethodId
-      consent
-      owningUserId
+      startDateTime {
+        day
+        month
+        year
+        hour
+        minute
+        am
+      }
+      automatedEmail {
+        prospects
+        message
+      }
+      automatedText {
+        prospects
+        text
+      }
+      automatedRinglessVoiceMail {
+        prospects
+        file
+        phone
+      }
+      automatedPostcard {
+        prospects
+        file
+      }
+      automatedSocialPost {
+        prospects
+        image
+        content
+      }
+      checkout {
+        brand
+        last4
+        total
+        discount
+        email
+      }
       createdAt
       updatedAt
     }

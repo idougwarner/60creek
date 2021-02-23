@@ -1,59 +1,40 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { CREATE_CAMPAIGN_ACTIONS } from "../../../redux/actionTypes";
 import InfoTooltip from "../../controls/InfoTooltip";
-import { SUBSTEP_COMPLETED } from "./WizardConstants";
+import { SUBSTEP_COMPLETED, _Prices, _Substeps } from "./wizardConstants";
 
 import "./WizardOutreachStep.scss";
-const substep = [
-  {
-    step: "email",
-    label: "Automated Email",
-    price: 0.25,
-    other: "An Automated Email sent to your prospects",
-    items: "",
-  },
-  {
-    step: "text",
-    label: "Automated Text",
-    price: 0.25,
-    other: "An Automated Text sent to your prospects",
-    items: "",
-  },
-  {
-    step: "ringlessVoicemail",
-    label: "Automated Ringless Voicemail",
-    price: 0.25,
-    other: "An automated voicemail sent to your prospects",
-    items: "",
-  },
-  {
-    step: "postCard",
-    label: "Automated Post Card",
-    price: 1.25,
-    other: "",
-    items: "4x6 ",
-  },
-  {
-    step: "socialPost",
-    label: "Automated Facebook/Instagram Post",
-    price: 0.5,
-    other: "",
-    items: "",
-  },
-];
 
 const WizardOutreachStep = () => {
   const dispatch = useDispatch();
   const outreach = useSelector((state) => state.createCampaignStore.outreach);
   const currentStep = useSelector((state) => state.createCampaignStore.substep);
+  const [isEnableNext, setIsEnableNext] = useState(false);
+
   const gotoStep = (step) => {
     dispatch({ type: CREATE_CAMPAIGN_ACTIONS.UPDATE_STEP, data: step });
+    dispatch({ type: CREATE_CAMPAIGN_ACTIONS.UPDATE_SUBSTEP, data: "" });
   };
   const selectSubstep = (step) => {
     dispatch({ type: CREATE_CAMPAIGN_ACTIONS.UPDATE_SUBSTEP, data: step });
   };
+  useEffect(() => {
+    if (outreach.email.status === SUBSTEP_COMPLETED) {
+      setIsEnableNext(true);
+    } else if (outreach.text.status === SUBSTEP_COMPLETED) {
+      setIsEnableNext(true);
+    } else if (outreach.ringlessVoicemail.status === SUBSTEP_COMPLETED) {
+      setIsEnableNext(true);
+    } else if (outreach.postcard.status === SUBSTEP_COMPLETED) {
+      setIsEnableNext(true);
+    } else if (outreach.socialPost.status === SUBSTEP_COMPLETED) {
+      setIsEnableNext(true);
+    } else {
+      setIsEnableNext(false);
+    }
+  }, [outreach]);
   const getIcon = (step) => {
     const status = outreach[step].status;
     if (step === currentStep) {
@@ -73,7 +54,7 @@ const WizardOutreachStep = () => {
   return (
     <div className="outreach-step-container">
       <div className="outreach-steps">
-        {substep.map((item, idx) => (
+        {_Substeps.map((item, idx) => (
           <div key={idx} className="outreach-step">
             <img
               src={"/assets/icons/" + getIcon(item.step) + ".svg"}
@@ -92,7 +73,13 @@ const WizardOutreachStep = () => {
               </div>
               <div className="d-flex justify-content-between align-items-center w-100 pr-3">
                 <div className="substep-price">
-                  {item.items}${item.price}/prospect
+                  {outreach[item.step].status === SUBSTEP_COMPLETED
+                    ? `$${
+                        _Prices[item.step] * outreach[item.step].prospects
+                      } ($${_Prices[item.step]}/prospect x ${
+                        outreach[item.step].prospects
+                      })`
+                    : `$${_Prices[item.step]}/prospect`}
                 </div>
                 {outreach[item.step].status === SUBSTEP_COMPLETED && (
                   <div
@@ -113,6 +100,7 @@ const WizardOutreachStep = () => {
         variant="primary"
         className="w-100 mb-3"
         onClick={() => gotoStep(2)}
+        disabled={!isEnableNext}
       >
         NEXT
       </Button>

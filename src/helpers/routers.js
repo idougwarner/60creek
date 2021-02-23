@@ -1,20 +1,22 @@
 import About from "../pages/About";
 import Dashboard from "../pages/Dashboard";
-import { Login } from "../pages/Login";
 import Marketing from "../pages/Marketing";
 import CreateCampaign from "../pages/Marketing/CreateCampaign";
-import PasswordReset from "../pages/PasswordReset";
 import ProspectsPage from "../pages/Prospects";
 import ProspectPage from "../pages/Prospects/ProspectPage";
-import ResetLinkSent from "../pages/ResetLinkSent";
-import { Signup } from "../pages/Signup";
 import YourAccount from "../pages/YourAccount";
+
+import { Login } from "../pages/Auth/Login";
+import ResetLinkSent from "../pages/Auth/ResetLinkSent";
+import { Signup } from "../pages/Auth/Signup";
+import PasswordReset from "../pages/Auth/PasswordReset";
 
 export const APP_URLS = {
   LOGIN: "/login",
   SIGNUP: "/signup",
   PASSWORD_RESET: "/password-reset",
   LINK_RESET: "/link-sent",
+
   INDIVIDUAL_PROSPECT: "/admin/prospects/:id",
   PROSPECTS: "/admin/prospects",
   MARKETING: "/admin/marketing",

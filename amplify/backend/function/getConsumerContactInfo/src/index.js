@@ -23,7 +23,9 @@ exports.handler = async (event) => {
     if (rt.data && rt.data.datafinder["num-results"] > 0) {
       const fetchedData = rt.data.datafinder.results[0];
       dt = {
-        firstName: fetchedData.FirstName + " " + fetchedData.MiddleName,
+        firstName:
+          fetchedData.FirstName +
+          (fetchedData.MiddleName ? " " + fetchedData.MiddleName : ""),
         lastName: fetchedData.LastName,
         address1: fetchedData.Address,
         city: fetchedData.City,

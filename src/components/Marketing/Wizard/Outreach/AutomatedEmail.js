@@ -3,13 +3,16 @@ import { Button, Form } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { CREATE_CAMPAIGN_ACTIONS } from "../../../../redux/actionTypes";
 import RichEditor from "../../../controls/RichEditor";
-import { SUBSTEP_COMPLETED } from "../WizardConstants";
+import { SUBSTEP_COMPLETED } from "../wizardConstants";
 
 const AutomatedEmail = () => {
   const [prospects, setProspects] = useState("");
   const [message, setMessage] = useState("");
 
   const dispatch = useDispatch();
+  const defaultProspects = useSelector(
+    (state) => state.createCampaignStore.defaultProspects
+  );
   const emailInfo = useSelector(
     (state) => state.createCampaignStore.outreach.email
   );
@@ -28,17 +31,23 @@ const AutomatedEmail = () => {
     dispatch({ type: CREATE_CAMPAIGN_ACTIONS.UPDATE_SUBSTEP, data: "" });
   };
   useEffect(() => {
-    if (emailInfo) {
-      setProspects(emailInfo.prospects);
+    if (emailInfo && defaultProspects) {
+      setProspects(
+        emailInfo.status === SUBSTEP_COMPLETED
+          ? emailInfo.prospects
+          : defaultProspects
+      );
       setMessage(emailInfo.message);
     }
-  }, [emailInfo]);
+  }, [emailInfo, defaultProspects]);
   return (
     <div className="card w-100">
       <Form.Group>
         <Form.Label className="required">Active Prospects to Email</Form.Label>
         <Form.Control
-          type="text"
+          type="number"
+          max={defaultProspects}
+          min={1}
           placeholder="Defaults to number of prospects in list"
           value={prospects}
           className={prospects ? "completed" : ""}
@@ -50,9 +59,7 @@ const AutomatedEmail = () => {
         <Form.Label className="required">Email Content</Form.Label>
         <RichEditor
           value={message}
-          onChange={(event) => {
-            setMessage(event);
-          }}
+          onChange={(event) => setMessage(event)}
           placeholder="Please enter your Email Content here. HTML or Plain Text is acceptable."
         />
       </Form.Group>

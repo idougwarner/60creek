@@ -62,6 +62,7 @@ h5 {
 }
 a {
   color: $primary;
+  font-weight: 600;
 }
 .dropdown-menu {
   padding: 16px 0;
@@ -121,6 +122,11 @@ a {
   &:not(:disabled):not(.disabled):active,
   &:not(:disabled):not(.disabled).active {
     background-color: #285ace;
+  }
+  &.disabled,
+  &:disabled {
+    background-color: #abc4ff;
+    border-color: #abc4ff;
   }
 }
 .btn-outline-primary {
@@ -193,6 +199,9 @@ a {
   border-radius: $border-radius;
   height: 40px;
   font-size: 16px;
+  &.form-control-lg {
+    height: 48px;
+  }
   &.StripeElement {
     display: flex;
     align-items: center;
@@ -235,6 +244,9 @@ a {
   right: 15px;
   cursor: pointer;
   z-index: 10;
+  &.lg {
+    top: 44px;
+  }
 
   &.showing-password {
     background-size: 18px 18px;

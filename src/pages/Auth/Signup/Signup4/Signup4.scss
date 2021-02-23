@@ -1,0 +1,69 @@
+.signup4-container {
+  .item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    .item-title {
+      font-size: 16px;
+      line-height: 24px;
+      letter-spacing: 0.5px;
+      color: #131624;
+    }
+    .item-value {
+      font-weight: 600;
+      font-size: 16px;
+      line-height: 24px;
+      text-align: right;
+      letter-spacing: 0.15px;
+      color: #131624;
+    }
+    .item-description {
+      font-size: 12px;
+      line-height: 16px;
+      letter-spacing: 0.4px;
+      color: rgba(19, 22, 36, 0.6);
+      font-style: italic;
+    }
+  }
+  .apply-btn {
+    width: unset;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 16px;
+    letter-spacing: 1.25px;
+    text-transform: uppercase;
+    background: transparent;
+    outline: none;
+    border: none;
+    &:disabled {
+      color: gray;
+    }
+  }
+  .completed {
+    border: 1px solid #245372 !important;
+    background: #f5f7fa !important;
+  }
+  .card-number {
+    background-image: url(../../../../assets/images/credit-card.svg) !important;
+    background-position-y: center !important;
+    background-position-x: 16px !important;
+    background-repeat: no-repeat !important;
+    padding-left: 40px !important;
+  }
+  .expires {
+    display: flex;
+    margin-top: 10px;
+    .g-input-container {
+      width: 50% !important;
+      &:first-child {
+        border-top-right-radius: 0 !important;
+        border-bottom-right-radius: 0 !important;
+      }
+      &:last-child {
+        border-top-left-radius: 0 !important;
+        border-bottom-left-radius: 0 !important;
+        border-left: none !important;
+      }
+    }
+  }
+}

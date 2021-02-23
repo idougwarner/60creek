@@ -109,7 +109,6 @@ export const prospect = /* GraphQL */ `
       email
       facebook
       notes
-      interested
       enhance
       fetched
       demographic {
@@ -244,16 +243,46 @@ export const marketingCampaign = /* GraphQL */ `
       owningUserId: $owningUserId
     ) {
       id
+      userId
       title
       prospectListId
-      startDateTime
-      autmatedEmail
-      automatedText
-      automatedRinglessVoiceMail
-      automatedPostcard
-      paymentMethodId
-      consent
-      owningUserId
+      startDateTime {
+        day
+        month
+        year
+        hour
+        minute
+        am
+      }
+      automatedEmail {
+        prospects
+        message
+      }
+      automatedText {
+        prospects
+        text
+      }
+      automatedRinglessVoiceMail {
+        prospects
+        file
+        phone
+      }
+      automatedPostcard {
+        prospects
+        file
+      }
+      automatedSocialPost {
+        prospects
+        image
+        content
+      }
+      checkout {
+        brand
+        last4
+        total
+        discount
+        email
+      }
       createdAt
       updatedAt
     }
@@ -311,7 +340,6 @@ export const deletedProspect = /* GraphQL */ `
       email
       facebook
       notes
-      interested
       enhance
       fetched
       demographic {
@@ -406,16 +434,46 @@ export const deletedMarketingCampaign = /* GraphQL */ `
   mutation DeletedMarketingCampaign($id: ID!) {
     deletedMarketingCampaign(id: $id) {
       id
+      userId
       title
       prospectListId
-      startDateTime
-      autmatedEmail
-      automatedText
-      automatedRinglessVoiceMail
-      automatedPostcard
-      paymentMethodId
-      consent
-      owningUserId
+      startDateTime {
+        day
+        month
+        year
+        hour
+        minute
+        am
+      }
+      automatedEmail {
+        prospects
+        message
+      }
+      automatedText {
+        prospects
+        text
+      }
+      automatedRinglessVoiceMail {
+        prospects
+        file
+        phone
+      }
+      automatedPostcard {
+        prospects
+        file
+      }
+      automatedSocialPost {
+        prospects
+        image
+        content
+      }
+      checkout {
+        brand
+        last4
+        total
+        discount
+        email
+      }
       createdAt
       updatedAt
     }
@@ -578,6 +636,16 @@ export const getLifestyleInfo = /* GraphQL */ `
     }
   }
 `;
+export const sendCampaignConfirmEmail = /* GraphQL */ `
+  mutation SendCampaignConfirmEmail($input: SendCampaignConfirmEmailInput) {
+    sendCampaignConfirmEmail(input: $input) {
+      data
+      error {
+        message
+      }
+    }
+  }
+`;
 export const createUser = /* GraphQL */ `
   mutation CreateUser(
     $input: CreateUserInput!
@@ -672,7 +740,6 @@ export const createProspect = /* GraphQL */ `
       email
       facebook
       notes
-      interested
       enhance
       fetched
       demographic {
@@ -762,7 +829,6 @@ export const updateProspect = /* GraphQL */ `
       email
       facebook
       notes
-      interested
       enhance
       fetched
       demographic {
@@ -852,7 +918,6 @@ export const deleteProspect = /* GraphQL */ `
       email
       facebook
       notes
-      interested
       enhance
       fetched
       demographic {
@@ -1050,16 +1115,46 @@ export const createMarketingCampaign = /* GraphQL */ `
   ) {
     createMarketingCampaign(input: $input, condition: $condition) {
       id
+      userId
       title
       prospectListId
-      startDateTime
-      autmatedEmail
-      automatedText
-      automatedRinglessVoiceMail
-      automatedPostcard
-      paymentMethodId
-      consent
-      owningUserId
+      startDateTime {
+        day
+        month
+        year
+        hour
+        minute
+        am
+      }
+      automatedEmail {
+        prospects
+        message
+      }
+      automatedText {
+        prospects
+        text
+      }
+      automatedRinglessVoiceMail {
+        prospects
+        file
+        phone
+      }
+      automatedPostcard {
+        prospects
+        file
+      }
+      automatedSocialPost {
+        prospects
+        image
+        content
+      }
+      checkout {
+        brand
+        last4
+        total
+        discount
+        email
+      }
       createdAt
       updatedAt
     }
@@ -1072,16 +1167,46 @@ export const updateMarketingCampaign = /* GraphQL */ `
   ) {
     updateMarketingCampaign(input: $input, condition: $condition) {
       id
+      userId
       title
       prospectListId
-      startDateTime
-      autmatedEmail
-      automatedText
-      automatedRinglessVoiceMail
-      automatedPostcard
-      paymentMethodId
-      consent
-      owningUserId
+      startDateTime {
+        day
+        month
+        year
+        hour
+        minute
+        am
+      }
+      automatedEmail {
+        prospects
+        message
+      }
+      automatedText {
+        prospects
+        text
+      }
+      automatedRinglessVoiceMail {
+        prospects
+        file
+        phone
+      }
+      automatedPostcard {
+        prospects
+        file
+      }
+      automatedSocialPost {
+        prospects
+        image
+        content
+      }
+      checkout {
+        brand
+        last4
+        total
+        discount
+        email
+      }
       createdAt
       updatedAt
     }
@@ -1094,16 +1219,46 @@ export const deleteMarketingCampaign = /* GraphQL */ `
   ) {
     deleteMarketingCampaign(input: $input, condition: $condition) {
       id
+      userId
       title
       prospectListId
-      startDateTime
-      autmatedEmail
-      automatedText
-      automatedRinglessVoiceMail
-      automatedPostcard
-      paymentMethodId
-      consent
-      owningUserId
+      startDateTime {
+        day
+        month
+        year
+        hour
+        minute
+        am
+      }
+      automatedEmail {
+        prospects
+        message
+      }
+      automatedText {
+        prospects
+        text
+      }
+      automatedRinglessVoiceMail {
+        prospects
+        file
+        phone
+      }
+      automatedPostcard {
+        prospects
+        file
+      }
+      automatedSocialPost {
+        prospects
+        image
+        content
+      }
+      checkout {
+        brand
+        last4
+        total
+        discount
+        email
+      }
       createdAt
       updatedAt
     }

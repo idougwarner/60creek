@@ -1,6 +1,6 @@
 {
     "identityPoolName": "60creek8853cd69_identitypool_8853cd69",
-    "allowUnauthenticatedIdentities": false,
+    "allowUnauthenticatedIdentities": true,
     "resourceNameTruncated": "60cree8853cd69",
     "userPoolName": "60creek8853cd69_userpool_8853cd69",
     "autoVerifiedAttributes": [

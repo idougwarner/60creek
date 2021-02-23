@@ -10,20 +10,20 @@ exports.handler = async (event) => {
   try {
     const stripeSecretKey = await stripeSecretKeyPromise;
     const stripe = require("stripe")(stripeSecretKey.Parameter.Value);
-    const { email, amount, token } = event.arguments.input;
+    const { email, amount, token, description } = event.arguments.input;
     const charge = await stripe.charges.create({
-      amount: amount * 100,
+      amount: parseInt(amount * 100),
       currency: "usd",
       source: token,
       receipt_email: email,
-      description: "Data Enhancement is payment.",
+      description: description || "Data Enhancement is payment.",
     });
     return {
       data: {
         id: charge.id,
-        amount: charge.amount / 100,
-        amountCaptured: charge.amount_captured / 100,
-        amountRefunded: charge.amount_refunded / 100,
+        amount: parseFloat(charge.amount / 100),
+        amountCaptured: parseFloat(charge.amount_captured / 100),
+        amountRefunded: parseFloat(charge.amount_refunded / 100),
         description: charge.description,
         paid: charge.paid,
         receiptEmail: charge.receipt_email,
