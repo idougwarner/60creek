@@ -9,11 +9,11 @@ import { configureStore, history } from "./redux/store";
 const store = configureStore();
 
 ReactDOM.render(
-  // <React.StrictMode>
-  <Provider store={store} history={history}>
-    <App />
-  </Provider>,
-  // </React.StrictMode>
+  <React.StrictMode>
+    <Provider store={store} history={history}>
+      <App />
+    </Provider>
+  </React.StrictMode>,
   document.getElementById("root")
 );
 

@@ -20,25 +20,29 @@
   .menu-wrapper {
     padding: 8px;
     background-color: white;
-    .link-item {
-      display: flex;
-      align-items: center;
-      font-weight: 600;
-      font-size: 14px;
-      color: rgba(19, 22, 36, 0.6);
-      letter-spacing: 0.1px;
-      height: 40px;
-      margin-bottom: 20px;
-      padding: 0 16px;
-      text-align: left;
-      text-decoration: none;
-      border: none;
+  }
+  .link-item {
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+    font-size: 14px;
+    color: rgba(19, 22, 36, 0.6);
+    letter-spacing: 0.1px;
+    height: 40px;
+    margin-bottom: 20px;
+    padding: 0 16px;
+    text-align: left;
+    text-decoration: none;
+    border: none;
 
-      &.active-link {
-        color: $primary;
-        background: #f5f7fa;
-        border-radius: 10px;
-      }
+    &.active-link {
+      color: $primary;
+      background: #f5f7fa;
+      border-radius: 10px;
     }
+  }
+  .logout {
+    position: absolute;
+    bottom: 40px;
   }
 }

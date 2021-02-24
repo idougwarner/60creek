@@ -1,17 +1,32 @@
 import React from "react";
 import "./Sidebar.scss";
-import { Link, NavLink } from "react-router-dom";
-import { withRouter } from "react-router-dom";
+import { NavLink, useHistory } from "react-router-dom";
 import { APP_URLS } from "../../helpers/routers";
+import { Auth } from "aws-amplify";
+import { ACTIONS } from "../../redux/actionTypes";
+import { useDispatch } from "react-redux";
 
 // Left sideboard menu
 
-const Sidebar = (props) => {
+const Sidebar = () => {
+  const history = useHistory();
+  const dispatch = useDispatch();
+
+  const logout = async (e) => {
+    e.preventDefault();
+
+    dispatch({
+      type: ACTIONS.SET_USER,
+      user: null,
+    });
+    await Auth.signOut();
+    history.replace(APP_URLS.LOGIN);
+  };
   return (
     <div className="menu">
-      <Link className="logo" to="/admin/about">
+      <NavLink className="logo" to={APP_URLS.ABOUT}>
         <img src="/assets/images/logo.png" alt="logo" />
-      </Link>
+      </NavLink>
       <div className="menu-wrapper">
         <NavLink
           className={"link-item"}
@@ -42,8 +57,16 @@ const Sidebar = (props) => {
           Your Account
         </NavLink>
       </div>
+
+      <NavLink
+        className={"link-item logout mb-0"}
+        to={"#"}
+        onClick={(e) => logout(e)}
+      >
+        Sign Out
+      </NavLink>
     </div>
   );
 };
 
-export default withRouter(Sidebar);
+export default Sidebar;

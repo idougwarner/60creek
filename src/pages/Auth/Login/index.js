@@ -7,23 +7,13 @@ import { listUsers } from "../../../graphql/queries";
 import { useDispatch } from "react-redux";
 import { ACTIONS } from "../../../redux/actionTypes";
 import { APP_URLS } from "../../../helpers/routers";
+import { validateEmail } from "../../../helpers/validations";
 
 //******************************************************************
 //*
 //* Login: class component
 //*
 //******************************************************************
-
-const validateEmail = (email) => {
-  if (
-    /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(
-      email
-    )
-  ) {
-    return true;
-  }
-  return false;
-};
 
 export const Login = () => {
   const [email, setEmail] = useState("");
