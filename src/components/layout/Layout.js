@@ -1,11 +1,11 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Sidebar from "./Sidebar";
 import "./Layout.scss";
-import { useHistory } from "react-router";
+import { useHistory, useLocation } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { APP_URLS } from "../../helpers/routers";
 import { API, Auth, graphqlOperation } from "aws-amplify";
-import { listUsers } from "../../graphql/queries";
+import { usersByUserId } from "../../graphql/queries";
 import { ACTIONS, UPLOAD_STATUS } from "../../redux/actionTypes";
 import { WORKER_STATUS } from "../../redux/uploadWorkerReducer";
 
@@ -15,6 +15,7 @@ import worker from "workerize-loader!../../workers/upload-worker"; // eslint-dis
 import { useIndexedDB } from "react-indexed-db";
 import { IndexDBStores } from "../../helpers/DBConfig";
 import { toast, ToastContainer } from "react-toastify";
+import { Spinner } from "react-bootstrap";
 
 var g_workerInstance;
 
@@ -26,31 +27,36 @@ const Layout = ({ children }) => {
   const prospectsDb = useIndexedDB(IndexDBStores.PROSPECT);
   const prospectListDb = useIndexedDB(IndexDBStores.PROSPECT_LIST);
 
+  const [loading, setLoading] = useState(false);
+
   const dispatch = useDispatch();
+  const location = useLocation();
   useEffect(() => {
     if (!user) {
       const f = async () => {
+        setLoading(true);
         let rt = await Auth.currentUserInfo();
         if (rt) {
           const rtUser = await API.graphql(
-            graphqlOperation(listUsers, {
-              filter: { cognitoUserName: { eq: rt.username } },
+            graphqlOperation(usersByUserId, {
+              cognitoUserName: rt.username,
             })
           );
-          if (rtUser?.data?.listUsers?.items[0]) {
+          if (rtUser?.data?.usersByUserId?.items[0]) {
             dispatch({
               type: ACTIONS.SET_USER,
-              user: rtUser?.data?.listUsers?.items[0],
+              user: rtUser?.data?.usersByUserId?.items[0],
             });
           }
         } else {
-          history.replace(APP_URLS.LOGIN);
+          history.replace(APP_URLS.LOGIN + "?returnUrl=" + location.pathname);
         }
+        setLoading(false);
       };
       f();
     }
     // eslint-disable-next-line
-  }, [user, history]);
+  }, [user, history, location]);
 
   useEffect(() => {
     const f = async () => {
@@ -138,7 +144,15 @@ const Layout = ({ children }) => {
     <div className="admin-layout">
       <ToastContainer />
       <Sidebar />
-      <main className="admin-body">{children}</main>
+      <main className="admin-body">
+        {loading ? (
+          <div className="d-flex p-5 justify-content-center">
+            <Spinner animation="border" role="status" />
+          </div>
+        ) : (
+          children
+        )}
+      </main>
     </div>
   );
 };

@@ -17,7 +17,7 @@ exports.handler = async (event) => {
     if (couponInfo.data && couponInfo.data.length > 0) {
       return { data: couponInfo.data[0].coupon, error: null };
     } else {
-      return { data: null, error: { message: `No such promotion code: '${coupon}'` } };
+      return { data: null, error: { message: `Promotion code not found: '${coupon}'` } };
     }
   } catch (err) {
     return { data: null, error: { message: new Error(err).message } }

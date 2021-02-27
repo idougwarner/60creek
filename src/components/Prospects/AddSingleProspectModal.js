@@ -103,16 +103,10 @@ const AddSingleProspectModal = ({ show, close }) => {
     <>
       <ToastContainer />
       <Modal show={show} onHide={step === STEP3 ? uploadData : close}>
-        <Modal.Header>
+        <Modal.Header closeButton>
           <Modal.Title>
             {step === STEP3 ? "Prospect Created" : "Add Single Prospect"}
           </Modal.Title>
-          <img
-            src="/assets/icons/close.svg"
-            className="modal-close-btn"
-            alt="close"
-            onClick={step === STEP3 ? uploadData : close}
-          />
         </Modal.Header>
         <Modal.Body>
           {step === STEP1 && (

@@ -10,6 +10,8 @@ import { ACTIONS, CREATE_CAMPAIGN_ACTIONS } from "../../redux/actionTypes";
 import AutomatedEmail from "../../components/Marketing/Wizard/Outreach/AutomatedEmail";
 import AutomatedText from "../../components/Marketing/Wizard/Outreach/AutomatedText";
 import AutomatedRinglessVoicemail from "../../components/Marketing/Wizard/Outreach/AutomatedRinglessVoicemail";
+import AutomatedPostCard from "../../components/Marketing/Wizard/Outreach/AutomatedPostCard";
+import AutomatedSocialContent from "../../components/Marketing/Wizard/Outreach/AutomatedSocialContent";
 
 const CreateCampaign = () => {
   const dispatch = useDispatch();
@@ -64,6 +66,8 @@ const CreateCampaign = () => {
               {substep === "ringlessVoicemail" && (
                 <AutomatedRinglessVoicemail />
               )}
+              {substep === "postcard" && <AutomatedPostCard />}
+              {substep === "socialPost" && <AutomatedSocialContent />}
             </div>
           )}
         </div>

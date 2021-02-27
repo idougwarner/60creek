@@ -17,7 +17,11 @@ import { messageConvert } from "../../helpers/messageConvert";
 import { ACTIONS } from "../../redux/actionTypes";
 import { WORKER_STATUS } from "../../redux/uploadWorkerReducer";
 import { usStates } from "../../helpers/us-states";
-import { validateEmail, validateZip } from "../../helpers/validations";
+import {
+  validateEmail,
+  validateZip,
+  validateField,
+} from "../../helpers/validations";
 import InputMask from "react-input-mask";
 import InfoTooltip from "../controls/InfoTooltip";
 
@@ -25,15 +29,15 @@ const STEP1 = 0;
 const STEP2 = 1;
 const STEP3 = 2;
 const tableFields = [
-  { fieldName: "firstName", required: true },
+  { fieldName: "firstName", required: false },
   { fieldName: "lastName", required: true },
   { fieldName: "company", required: true },
-  { fieldName: "address1", required: true },
-  { fieldName: "city", required: true },
-  { fieldName: "state", required: true },
-  { fieldName: "zip", required: true },
-  { fieldName: "phone", required: true },
-  { fieldName: "email", required: true },
+  { fieldName: "address1", required: false },
+  { fieldName: "city", required: false },
+  { fieldName: "state", required: false },
+  { fieldName: "zip", required: false },
+  { fieldName: "phone", required: false },
+  { fieldName: "email", required: false },
   { fieldName: "facebook", required: false },
 ];
 const NewProspectListModal = ({
@@ -138,7 +142,7 @@ const NewProspectListModal = ({
         let storedProspects = await prospectsDb.getAll();
         let storedUploadStep = await prospectUploadStepDb.getAll();
         if (storedUploadStep.length > 0 && storedProspects.length > 0) {
-          setStep(storedUploadStep[0].step || STEP1);
+          setStep(STEP2);
           setProspectList(storedProspects);
         }
       }
@@ -179,9 +183,10 @@ const NewProspectListModal = ({
   useEffect(() => {
     let errCounts = 0;
     prospectList.forEach((item) => {
-      tableFields.forEach((field) => {
-        if (field.required && !item[field.fieldName]) errCounts++;
-      });
+      if (!item.lastName && !item.company) errCounts++;
+      if (item.phone && !validateField("phone", item.phone)) errCounts++;
+      if (item.email && !validateField("email", item.email)) errCounts++;
+      if (item.zip && !validateField("zip", item.zip)) errCounts++;
     });
     setErrors(errCounts);
   }, [prospectList]);
@@ -315,10 +320,20 @@ const NewProspectListModal = ({
         idx: idx,
         fieldName: fieldName,
       });
-      setEditField(prospectList[idx][fieldName]);
+      if (fieldName === "state") {
+        const id = usStates.indexOf(prospectList[idx][fieldName]);
+        if (id < 0) {
+          setTmpState(null);
+        } else {
+          setTmpState({ value: usStates[id], label: usStates[id] });
+        }
+      } else {
+        setEditField(prospectList[idx][fieldName]);
+      }
       setEditing(true);
     }
   };
+
   const fieldComponent = (idx, fieldName, required = true) => {
     return (
       <>
@@ -436,9 +451,27 @@ const NewProspectListModal = ({
             </Form.Text>
           </>
         ) : prospectList[idx][fieldName].length > 0 ? (
-          prospectList[idx][fieldName]
+          validateField(fieldName, prospectList[idx][fieldName]) ? (
+            prospectList[idx][fieldName]
+          ) : (
+            <div className={"missing-info"}>
+              <div className="missing-field">
+                {prospectList[idx][fieldName]}
+              </div>
+              <span>Invalid field</span>
+            </div>
+          )
         ) : (
-          <div className={"missing-info" + (required ? "" : " not-required")}>
+          <div
+            className={
+              "missing-info" +
+              (required &&
+              ((fieldName === "lastName" && !prospectList[idx].company) ||
+                (fieldName === "company" && !prospectList[idx].lastName))
+                ? ""
+                : " not-required")
+            }
+          >
             <div className="missing-field"></div>
             <span>Enter missing info</span>
           </div>
@@ -467,8 +500,13 @@ const NewProspectListModal = ({
         tableFields[x].fieldName !== selectedField.fieldName
       ) {
         if (
-          prospectList[y][tableFields[x].fieldName] === "" &&
-          tableFields[x].required
+          (prospectList[y][tableFields[x].fieldName] === "" &&
+            tableFields[x].required) ||
+          (prospectList[y][tableFields[x].fieldName] &&
+            !validateField(
+              tableFields[x].fieldName,
+              prospectList[y][tableFields[x].fieldName]
+            ))
         ) {
           row = y;
           fieldName = tableFields[x].fieldName;
@@ -506,24 +544,7 @@ const NewProspectListModal = ({
       }}
       size={step === STEP2 ? "xl" : "md"}
     >
-      <Modal.Header>
-        <img
-          src="/assets/icons/close.svg"
-          className="modal-close-btn"
-          alt="close"
-          onClick={() => {
-            if (step === STEP2) {
-              setShowCloseConfirm(true);
-            } else if (step === STEP1) {
-              prospectListDb.clear();
-              prospectsDb.clear();
-              prospectUploadStepDb.clear();
-              close({ data: false });
-            } else if (step === STEP3) {
-              close({ data: true });
-            }
-          }}
-        />
+      <Modal.Header closeButton>
         <Modal.Title>
           {step === STEP1 ? (
             existingList ? (
@@ -535,7 +556,7 @@ const NewProspectListModal = ({
             existingList ? (
               "Prospects Added to " + selectedList.label
             ) : (
-              "Prospect Created"
+              "Prospects Created"
             )
           ) : (
             <>
@@ -593,10 +614,9 @@ const NewProspectListModal = ({
             <Form.Group>
               <Form.Label className="d-flex align-items-center">
                 Template Download
-                <InfoTooltip description="Template Download" />
               </Form.Label>
               <Form.Text className="text-muted mb-3">
-                - This template must be used for upload as a csv file
+                This template must be used for upload as a csv file
               </Form.Text>
               <Button
                 variant="outline-primary"

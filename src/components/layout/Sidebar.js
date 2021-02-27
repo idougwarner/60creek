@@ -15,12 +15,12 @@ const Sidebar = () => {
   const logout = async (e) => {
     e.preventDefault();
 
+    await Auth.signOut();
+    history.replace(APP_URLS.LOGIN);
     dispatch({
       type: ACTIONS.SET_USER,
       user: null,
     });
-    await Auth.signOut();
-    history.replace(APP_URLS.LOGIN);
   };
   return (
     <div className="menu">

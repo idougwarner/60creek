@@ -43,6 +43,8 @@ export const user = /* GraphQL */ `
       phone
       email
       signature
+      receiveEmail
+      code
       createdAt
       updatedAt
     }
@@ -109,6 +111,7 @@ export const prospect = /* GraphQL */ `
       email
       facebook
       notes
+      interested
       enhance
       fetched
       demographic {
@@ -283,6 +286,14 @@ export const marketingCampaign = /* GraphQL */ `
         discount
         email
       }
+      prospectList {
+        id
+        userId
+        name
+        enhance
+        createdAt
+        updatedAt
+      }
       createdAt
       updatedAt
     }
@@ -304,6 +315,8 @@ export const deletedUser = /* GraphQL */ `
       phone
       email
       signature
+      receiveEmail
+      code
       createdAt
       updatedAt
     }
@@ -340,6 +353,7 @@ export const deletedProspect = /* GraphQL */ `
       email
       facebook
       notes
+      interested
       enhance
       fetched
       demographic {
@@ -473,6 +487,14 @@ export const deletedMarketingCampaign = /* GraphQL */ `
         total
         discount
         email
+      }
+      prospectList {
+        id
+        userId
+        name
+        enhance
+        createdAt
+        updatedAt
       }
       createdAt
       updatedAt
@@ -646,6 +668,26 @@ export const sendCampaignConfirmEmail = /* GraphQL */ `
     }
   }
 `;
+export const requestPasswordReset = /* GraphQL */ `
+  mutation RequestPasswordReset($input: RequestPasswordResetInput) {
+    requestPasswordReset(input: $input) {
+      data
+      error {
+        message
+      }
+    }
+  }
+`;
+export const resetPassword = /* GraphQL */ `
+  mutation ResetPassword($input: ResetPasswordInput) {
+    resetPassword(input: $input) {
+      data
+      error {
+        message
+      }
+    }
+  }
+`;
 export const createUser = /* GraphQL */ `
   mutation CreateUser(
     $input: CreateUserInput!
@@ -665,6 +707,8 @@ export const createUser = /* GraphQL */ `
       phone
       email
       signature
+      receiveEmail
+      code
       createdAt
       updatedAt
     }
@@ -689,6 +733,8 @@ export const updateUser = /* GraphQL */ `
       phone
       email
       signature
+      receiveEmail
+      code
       createdAt
       updatedAt
     }
@@ -713,6 +759,8 @@ export const deleteUser = /* GraphQL */ `
       phone
       email
       signature
+      receiveEmail
+      code
       createdAt
       updatedAt
     }
@@ -740,6 +788,7 @@ export const createProspect = /* GraphQL */ `
       email
       facebook
       notes
+      interested
       enhance
       fetched
       demographic {
@@ -829,6 +878,7 @@ export const updateProspect = /* GraphQL */ `
       email
       facebook
       notes
+      interested
       enhance
       fetched
       demographic {
@@ -918,6 +968,7 @@ export const deleteProspect = /* GraphQL */ `
       email
       facebook
       notes
+      interested
       enhance
       fetched
       demographic {
@@ -1155,6 +1206,14 @@ export const createMarketingCampaign = /* GraphQL */ `
         discount
         email
       }
+      prospectList {
+        id
+        userId
+        name
+        enhance
+        createdAt
+        updatedAt
+      }
       createdAt
       updatedAt
     }
@@ -1207,6 +1266,14 @@ export const updateMarketingCampaign = /* GraphQL */ `
         discount
         email
       }
+      prospectList {
+        id
+        userId
+        name
+        enhance
+        createdAt
+        updatedAt
+      }
       createdAt
       updatedAt
     }
@@ -1258,6 +1325,14 @@ export const deleteMarketingCampaign = /* GraphQL */ `
         total
         discount
         email
+      }
+      prospectList {
+        id
+        userId
+        name
+        enhance
+        createdAt
+        updatedAt
       }
       createdAt
       updatedAt

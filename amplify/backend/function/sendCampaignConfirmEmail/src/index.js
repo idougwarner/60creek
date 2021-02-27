@@ -9,16 +9,21 @@ const sibApiKeyPromise = ssm
   })
   .promise();
 
+const sibCampaignConfirmationTemplatePromise = ssm
+  .getParameter({
+    Name: `/sixtycreek-${process.env.ENV}/sib-template-campaign-confirmation`,
+    WithDecryption: false,
+  })
+  .promise();
+
 exports.handler = async (event) => {
   const apiKey = defaultClient.authentications["api-key"];
   const sibApiV3Key = await sibApiKeyPromise;
-  console.log(sibApiV3Key);
   apiKey.apiKey = sibApiV3Key.Parameter.Value;
+  const sibCampaignConfirmationTemplate = await sibCampaignConfirmationTemplatePromise;
   const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
 
   let sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail(); // SendSmtpEmail | Values to send a transactional email
-
-  console.log(event.arguments.input.emailData);
   sendSmtpEmail = {
     to: [
       {
@@ -26,7 +31,7 @@ exports.handler = async (event) => {
         name: event.arguments.input.name,
       },
     ],
-    templateId: 1,
+    templateId: parseInt(sibCampaignConfirmationTemplate.Parameter.Value),
     params: event.arguments.input.emailData,
     headers: {
       "X-Mailin-custom":
@@ -35,9 +40,11 @@ exports.handler = async (event) => {
   };
   try {
     await apiInstance.sendTransacEmail(sendSmtpEmail);
-    return { data: "Sent email successfully!", error: null };
+    return {
+      data: "A campaign confirmation email has been sent successfully!",
+      error: null,
+    };
   } catch (err) {
-    console.log(err);
     return { data: null, error: { message: new Error(err).message } };
   }
 };

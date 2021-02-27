@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { CREATE_CAMPAIGN_ACTIONS } from "../../../../redux/actionTypes";
-import { SUBSTEP_COMPLETED } from "../wizardConstants";
+import { SUBSTEP_COMPLETED } from "../WizardConstants";
 
 const AutomatedText = () => {
   const [prospects, setProspects] = useState("");
@@ -62,6 +62,7 @@ const AutomatedText = () => {
           placeholder="Please enter your Text Content here. Plain Text only"
           value={text}
           className={text ? "completed" : ""}
+          style={{ padding: 16 }}
           onChange={(e) => setText(e.target.value)}
         />
       </Form.Group>

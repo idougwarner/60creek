@@ -32,6 +32,7 @@ export const prospect = /* GraphQL */ `
       email
       facebook
       notes
+      interested
       enhance
       fetched
       demographic {
@@ -166,6 +167,14 @@ export const marketingCampaign = /* GraphQL */ `
         discount
         email
       }
+      prospectList {
+        id
+        userId
+        name
+        enhance
+        createdAt
+        updatedAt
+      }
       createdAt
       updatedAt
     }
@@ -220,6 +229,8 @@ export const getUser = /* GraphQL */ `
       phone
       email
       signature
+      receiveEmail
+      code
       createdAt
       updatedAt
     }
@@ -246,6 +257,8 @@ export const listUsers = /* GraphQL */ `
         phone
         email
         signature
+        receiveEmail
+        code
         createdAt
         updatedAt
       }
@@ -272,6 +285,7 @@ export const getProspect = /* GraphQL */ `
       email
       facebook
       notes
+      interested
       enhance
       fetched
       demographic {
@@ -363,6 +377,7 @@ export const listProspects = /* GraphQL */ `
         email
         facebook
         notes
+        interested
         enhance
         fetched
         demographic {
@@ -562,6 +577,14 @@ export const getMarketingCampaign = /* GraphQL */ `
         discount
         email
       }
+      prospectList {
+        id
+        userId
+        name
+        enhance
+        createdAt
+        updatedAt
+      }
       createdAt
       updatedAt
     }
@@ -620,6 +643,14 @@ export const listMarketingCampaigns = /* GraphQL */ `
           discount
           email
         }
+        prospectList {
+          id
+          userId
+          name
+          enhance
+          createdAt
+          updatedAt
+        }
         createdAt
         updatedAt
       }
@@ -627,20 +658,22 @@ export const listMarketingCampaigns = /* GraphQL */ `
     }
   }
 `;
-export const searchUsers = /* GraphQL */ `
-  query SearchUsers(
-    $filter: SearchableUserFilterInput
-    $sort: SearchableUserSortInput
+export const usersByUserId = /* GraphQL */ `
+  query UsersByUserId(
+    $cognitoUserName: String
+    $lastName: ModelStringKeyConditionInput
+    $sortDirection: ModelSortDirection
+    $filter: ModelUserFilterInput
     $limit: Int
     $nextToken: String
-    $from: Int
   ) {
-    searchUsers(
+    usersByUserId(
+      cognitoUserName: $cognitoUserName
+      lastName: $lastName
+      sortDirection: $sortDirection
       filter: $filter
-      sort: $sort
       limit: $limit
       nextToken: $nextToken
-      from: $from
     ) {
       items {
         id
@@ -656,28 +689,111 @@ export const searchUsers = /* GraphQL */ `
         phone
         email
         signature
+        receiveEmail
+        code
         createdAt
         updatedAt
       }
       nextToken
-      total
     }
   }
 `;
-export const searchProspects = /* GraphQL */ `
-  query SearchProspects(
-    $filter: SearchableProspectFilterInput
-    $sort: SearchableProspectSortInput
+export const usersByUserEmail = /* GraphQL */ `
+  query UsersByUserEmail(
+    $email: String
+    $lastName: ModelStringKeyConditionInput
+    $sortDirection: ModelSortDirection
+    $filter: ModelUserFilterInput
     $limit: Int
     $nextToken: String
-    $from: Int
   ) {
-    searchProspects(
+    usersByUserEmail(
+      email: $email
+      lastName: $lastName
+      sortDirection: $sortDirection
       filter: $filter
-      sort: $sort
       limit: $limit
       nextToken: $nextToken
-      from: $from
+    ) {
+      items {
+        id
+        cognitoUserName
+        firstName
+        lastName
+        company
+        address1
+        address2
+        city
+        state
+        zip
+        phone
+        email
+        signature
+        receiveEmail
+        code
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const usersByUserResetToken = /* GraphQL */ `
+  query UsersByUserResetToken(
+    $code: String
+    $lastName: ModelStringKeyConditionInput
+    $sortDirection: ModelSortDirection
+    $filter: ModelUserFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    usersByUserResetToken(
+      code: $code
+      lastName: $lastName
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        cognitoUserName
+        firstName
+        lastName
+        company
+        address1
+        address2
+        city
+        state
+        zip
+        phone
+        email
+        signature
+        receiveEmail
+        code
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const prospectsByUserId = /* GraphQL */ `
+  query ProspectsByUserId(
+    $userId: ID
+    $prospectListId: ModelIDKeyConditionInput
+    $sortDirection: ModelSortDirection
+    $filter: ModelProspectFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    prospectsByUserId(
+      userId: $userId
+      prospectListId: $prospectListId
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
     ) {
       items {
         id
@@ -696,6 +812,7 @@ export const searchProspects = /* GraphQL */ `
         email
         facebook
         notes
+        interested
         enhance
         fetched
         demographic {
@@ -762,7 +879,111 @@ export const searchProspects = /* GraphQL */ `
         updatedAt
       }
       nextToken
-      total
+      scannedCount
+      count
+    }
+  }
+`;
+export const prospectListsByUserId = /* GraphQL */ `
+  query ProspectListsByUserId(
+    $userId: ID
+    $name: ModelStringKeyConditionInput
+    $sortDirection: ModelSortDirection
+    $filter: ModelProspectListFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    prospectListsByUserId(
+      userId: $userId
+      name: $name
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        userId
+        name
+        enhance
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const campaignsByUserId = /* GraphQL */ `
+  query CampaignsByUserId(
+    $userId: ID
+    $createdAt: ModelStringKeyConditionInput
+    $sortDirection: ModelSortDirection
+    $filter: ModelMarketingCampaignFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    campaignsByUserId(
+      userId: $userId
+      createdAt: $createdAt
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        userId
+        title
+        prospectListId
+        startDateTime {
+          day
+          month
+          year
+          hour
+          minute
+          am
+        }
+        automatedEmail {
+          prospects
+          message
+        }
+        automatedText {
+          prospects
+          text
+        }
+        automatedRinglessVoiceMail {
+          prospects
+          file
+          phone
+        }
+        automatedPostcard {
+          prospects
+          file
+        }
+        automatedSocialPost {
+          prospects
+          image
+          content
+        }
+        checkout {
+          brand
+          last4
+          total
+          discount
+          email
+        }
+        prospectList {
+          id
+          userId
+          name
+          enhance
+          createdAt
+          updatedAt
+        }
+        createdAt
+        updatedAt
+      }
+      nextToken
     }
   }
 `;

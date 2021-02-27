@@ -219,6 +219,7 @@ const CheckOutForm = ({
           email: userInfo.email,
           signature: userInfo.signature,
           cognitoUserName: signupResult.userSub,
+          receiveEmail: true,
         };
         await Auth.signIn(userInfo.email, password);
         const createdUserInfo = await API.graphql(

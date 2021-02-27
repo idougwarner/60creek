@@ -4,7 +4,7 @@ export const STRENGTH_2 = "good";
 export const STRENGTH_3 = "strong";
 export const STRENGTH_4 = "perfect";
 
-export const passwordStrengths = [
+export const _PasswordStrengths = [
   { legend: STRENGTH_0, regEx: "" },
   { legend: STRENGTH_1, regEx: "" },
   {
@@ -37,4 +37,22 @@ export const validateZip = (zip) => {
     return true;
   }
   return false;
+};
+
+export const validatePhone = (phone) => {
+  if (/\(([0-9]{3})\) ([0-9]{3}) - ([0-9]{4})/.test(phone)) {
+    return true;
+  }
+  return false;
+};
+
+export const validateField = (fieldType, value) => {
+  if (fieldType === "email") {
+    return validateEmail(value);
+  } else if (fieldType === "phone") {
+    return validatePhone(value);
+  } else if (fieldType === "zip") {
+    return validateZip(value);
+  }
+  return true;
 };

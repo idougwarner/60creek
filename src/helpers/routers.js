@@ -9,13 +9,17 @@ import YourAccount from "../pages/YourAccount";
 import { Login } from "../pages/Auth/Login";
 import ResetLinkSent from "../pages/Auth/ResetLinkSent";
 import { Signup } from "../pages/Auth/Signup";
-import PasswordReset from "../pages/Auth/PasswordReset";
+import ForgotPassword from "../pages/Auth/ForgotPassword";
+import ResetPassword from "../pages/Auth/ResetPassword";
+import CompletedResetPassword from "../pages/Auth/CompletedResetPassword";
 
 export const APP_URLS = {
   LOGIN: "/login",
   SIGNUP: "/signup",
-  PASSWORD_RESET: "/password-reset",
-  LINK_RESET: "/link-sent",
+  FORGOT_PASSWORD: "/forgot-password",
+  RESET_LINK_SENT: "/reset-link-sent",
+  RESET_PASSWORD: "/reset-password/:resetToken",
+  COMPLETED_RESET_PASSWORD: "/completed-reset-password",
 
   INDIVIDUAL_PROSPECT: "/admin/prospects/:id",
   PROSPECTS: "/admin/prospects",
@@ -33,14 +37,26 @@ export const appRoutes = [
   { path: APP_URLS.LOGIN, component: Login, name: "", exact: true },
   { path: APP_URLS.SIGNUP, component: Signup, name: "", exact: true },
   {
-    path: APP_URLS.PASSWORD_RESET,
-    component: PasswordReset,
+    path: APP_URLS.FORGOT_PASSWORD,
+    component: ForgotPassword,
     name: "",
     exact: true,
   },
   {
-    path: APP_URLS.LINK_RESET,
+    path: APP_URLS.RESET_LINK_SENT,
     component: ResetLinkSent,
+    name: "",
+    exact: true,
+  },
+  {
+    path: APP_URLS.COMPLETED_RESET_PASSWORD,
+    component: CompletedResetPassword,
+    name: "",
+    exact: true,
+  },
+  {
+    path: APP_URLS.RESET_PASSWORD,
+    component: ResetPassword,
     name: "",
     exact: true,
   },

@@ -3,7 +3,7 @@ import { Button } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { CREATE_CAMPAIGN_ACTIONS } from "../../../redux/actionTypes";
 import InfoTooltip from "../../controls/InfoTooltip";
-import { SUBSTEP_COMPLETED, _Prices, _Substeps } from "./wizardConstants";
+import { SUBSTEP_COMPLETED, _Prices, _Substeps } from "./WizardConstants";
 
 import "./WizardOutreachStep.scss";
 
@@ -35,7 +35,7 @@ const WizardOutreachStep = () => {
       setIsEnableNext(false);
     }
   }, [outreach]);
-  const getIcon = (step) => {
+  const getClassName = (step) => {
     const status = outreach[step].status;
     if (step === currentStep) {
       if (status === SUBSTEP_COMPLETED) {
@@ -56,16 +56,14 @@ const WizardOutreachStep = () => {
       <div className="outreach-steps">
         {_Substeps.map((item, idx) => (
           <div key={idx} className="outreach-step">
-            <img
-              src={"/assets/icons/" + getIcon(item.step) + ".svg"}
-              className="clickable"
-              alt="plus"
+            <div
+              className={"outreach-indicator " + getClassName(item.step)}
               onClick={() => {
                 if (outreach[item.step].status !== SUBSTEP_COMPLETED) {
                   selectSubstep(item.step);
                 }
               }}
-            />
+            ></div>
             <div className="flex-grow-1">
               <div className="substep-title">
                 {item.label}{" "}
@@ -81,7 +79,7 @@ const WizardOutreachStep = () => {
                       })`
                     : `$${_Prices[item.step]}/prospect`}
                 </div>
-                {outreach[item.step].status === SUBSTEP_COMPLETED && (
+                {getClassName(item.step) === "completed-blue-fill" && (
                   <div
                     className="edit-btn"
                     onClick={() => selectSubstep(item.step)}

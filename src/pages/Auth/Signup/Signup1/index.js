@@ -12,7 +12,7 @@ import {
 import { ACTIONS } from "../../../../redux/actionTypes";
 import { useDispatch } from "react-redux";
 import {
-  passwordStrengths,
+  _PasswordStrengths,
   validateEmail,
 } from "../../../../helpers/validations";
 import { Auth } from "aws-amplify";
@@ -50,7 +50,7 @@ const Signup1 = (props) => {
   }, [emailAddress]);
   useEffect(() => {
     let i;
-    for (i = passwordStrengths.length - 1; i >= 0; i--) {
+    for (i = _PasswordStrengths.length - 1; i >= 0; i--) {
       if (i === 0) {
         setPasswordStrength(i);
       } else if (i === 1) {
@@ -58,7 +58,7 @@ const Signup1 = (props) => {
           setPasswordStrength(i);
           break;
         }
-      } else if (passwordStrengths[i].regEx.test(password)) {
+      } else if (_PasswordStrengths[i].regEx.test(password)) {
         setPasswordStrength(i);
         break;
       }
@@ -193,7 +193,7 @@ const Signup1 = (props) => {
         <div className="password-strength">
           <div
             className={
-              "strength-bar " + passwordStrengths[passwordStrength].legend
+              "strength-bar " + _PasswordStrengths[passwordStrength].legend
             }
           >
             <div></div>
@@ -202,7 +202,7 @@ const Signup1 = (props) => {
             <div></div>
           </div>
           <div className="strength-label">
-            {passwordStrengths[passwordStrength].legend}
+            {_PasswordStrengths[passwordStrength].legend}
             <InfoTooltip description="Combining uppercase and lowercase letters, numbers, and special characters can create a stronger password" />
           </div>
         </div>

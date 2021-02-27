@@ -3,6 +3,7 @@ import { DropdownButton } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
 import MarketingCampaignsCard from "../../components/Marketing/MarketingCampaignsCard";
 import MarketingInteractionRateCard from "../../components/Marketing/MarketingInteractionRateCard";
+import MarketingMessageCard from "../../components/Marketing/MarketingMessageCard";
 import { APP_URLS } from "../../helpers/routers";
 import "./Marketing.scss";
 
@@ -35,9 +36,10 @@ const Marketing = () => {
       <div className="row">
         <div className="col-12 col-md-6">
           <MarketingCampaignsCard />
+          <MarketingInteractionRateCard />
         </div>
         <div className="col-12 col-md-6">
-          <MarketingInteractionRateCard />
+          <MarketingMessageCard />
         </div>
       </div>
     </>

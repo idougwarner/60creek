@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { CREATE_CAMPAIGN_ACTIONS } from "../../../../redux/actionTypes";
-import { SUBSTEP_COMPLETED } from "../wizardConstants";
+import { SUBSTEP_COMPLETED } from "../WizardConstants";
 import InputMask from "react-input-mask";
 import InfoTooltip from "../../../controls/InfoTooltip";
 import { v4 as uuidv4 } from "uuid";
@@ -57,7 +57,6 @@ const AutomatedRinglessVoicemail = () => {
       try {
         setUploading(true);
         const fileInfo = event.target.files[0];
-        console.log(fileInfo);
         if (file) {
           await Storage.remove(file);
         }
@@ -65,7 +64,6 @@ const AutomatedRinglessVoicemail = () => {
           uuidv4() + "-" + fileInfo.name,
           fileInfo
         );
-        console.log(rtInfo);
         setFile(rtInfo.key);
 
         event.target.value = null;

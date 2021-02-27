@@ -23,10 +23,14 @@ const Signup2 = (props) => {
   const [address1Value, setAddress1Value] = useState(props.address1);
   const [address2Value, setAddress2Value] = useState(props.address2);
   const [cityValue, setCityValue] = useState(props.city);
-  const [stateValue, setStateValue] = useState({
-    value: props.state,
-    label: props.state,
-  });
+  const [stateValue, setStateValue] = useState(
+    props?.state
+      ? {
+          value: props.state,
+          label: props.state,
+        }
+      : null
+  );
   const [zipValue, setZipValue] = useState(props.zip);
   const [nextButtonEnabledValue, setNextButtonEnabledValue] = useState(false);
 
@@ -143,7 +147,7 @@ const Signup2 = (props) => {
                 setStateValue(value);
               }}
               placeholder="State"
-              styles={customSelectStyles(40, stateValue.value ? true : false)}
+              styles={customSelectStyles(40, stateValue?.value ? true : false)}
               options={usStates.map((item) => ({ value: item, label: item }))}
             />
           </FormGroup>

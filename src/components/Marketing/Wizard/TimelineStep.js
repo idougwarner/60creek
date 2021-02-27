@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
 import { customSelectStyles } from "../../../assets/styles/select-style";
 import { CREATE_CAMPAIGN_ACTIONS } from "../../../redux/actionTypes";
-import { _Days, _HOURS, _Minutes, _Months, _Years } from "./wizardConstants";
+import { _Days, _HOURS, _Minutes, _Months, _Years } from "./WizardConstants";
 import "./TimelineStep.scss";
 
 const TimelineStep = () => {

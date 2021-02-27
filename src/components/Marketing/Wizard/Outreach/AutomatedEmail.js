@@ -3,7 +3,7 @@ import { Button, Form } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { CREATE_CAMPAIGN_ACTIONS } from "../../../../redux/actionTypes";
 import RichEditor from "../../../controls/RichEditor";
-import { SUBSTEP_COMPLETED } from "../wizardConstants";
+import { SUBSTEP_COMPLETED } from "../WizardConstants";
 
 const AutomatedEmail = () => {
   const [prospects, setProspects] = useState("");
