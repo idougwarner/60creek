@@ -64,7 +64,7 @@ const WizardDetailsStep = () => {
       <Form.Group>
         <Form.Label className="required">
           Target List
-          <InfoTooltip description="Which Prospect List do you want to market to?" />
+          <InfoTooltip description="Select a prospect list that would be the target of a new campaign" />
         </Form.Label>
         {list && list.length > 0 ? (
           <Select

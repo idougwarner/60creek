@@ -17,6 +17,8 @@ export const onCreateUser = /* GraphQL */ `
       phone
       email
       signature
+      receiveEmail
+      code
       createdAt
       updatedAt
     }
@@ -38,6 +40,8 @@ export const onUpdateUser = /* GraphQL */ `
       phone
       email
       signature
+      receiveEmail
+      code
       createdAt
       updatedAt
     }
@@ -59,6 +63,8 @@ export const onDeleteUser = /* GraphQL */ `
       phone
       email
       signature
+      receiveEmail
+      code
       createdAt
       updatedAt
     }
@@ -83,6 +89,7 @@ export const onCreateProspect = /* GraphQL */ `
       email
       facebook
       notes
+      interested
       enhance
       fetched
       demographic {
@@ -169,6 +176,7 @@ export const onUpdateProspect = /* GraphQL */ `
       email
       facebook
       notes
+      interested
       enhance
       fetched
       demographic {
@@ -255,6 +263,7 @@ export const onDeleteProspect = /* GraphQL */ `
       email
       facebook
       notes
+      interested
       enhance
       fetched
       demographic {
@@ -471,6 +480,14 @@ export const onCreateMarketingCampaign = /* GraphQL */ `
         discount
         email
       }
+      prospectList {
+        id
+        userId
+        name
+        enhance
+        createdAt
+        updatedAt
+      }
       createdAt
       updatedAt
     }
@@ -520,6 +537,14 @@ export const onUpdateMarketingCampaign = /* GraphQL */ `
         discount
         email
       }
+      prospectList {
+        id
+        userId
+        name
+        enhance
+        createdAt
+        updatedAt
+      }
       createdAt
       updatedAt
     }
@@ -568,6 +593,14 @@ export const onDeleteMarketingCampaign = /* GraphQL */ `
         total
         discount
         email
+      }
+      prospectList {
+        id
+        userId
+        name
+        enhance
+        createdAt
+        updatedAt
       }
       createdAt
       updatedAt

@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { withRouter, Link } from "react-router-dom";
-import "./PasswordReset.scss";
+import { Link, useHistory } from "react-router-dom";
+import "./ForgotPassword.scss";
 import { validateEmail } from "../../../helpers/validations";
 import { Button, FormControl, FormGroup, FormLabel } from "react-bootstrap";
-import { Auth } from "aws-amplify";
 import { APP_URLS } from "../../../helpers/routers";
+import { API, graphqlOperation } from "aws-amplify";
+import { requestPasswordReset } from "../../../graphql/mutations";
 
 //******************************************************************
 //*
@@ -12,23 +13,33 @@ import { APP_URLS } from "../../../helpers/routers";
 //*
 //******************************************************************
 
-const PasswordReset = (props) => {
-  const { history } = props;
+const ForgotPassword = () => {
+  const history = useHistory();
 
-  const [email, setEmail] = useState(null);
+  const [email, setEmail] = useState("");
   const [resetError, setResetError] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const resetPassword = async () => {
-    setSubmitting(true);
-    setResetError("");
-    try {
-      let rt = await Auth.forgotPassword(email);
-      console.log(rt);
-      history.push(APP_URLS.LINK_RESET);
-    } catch (err) {
-      setResetError("Please verify your email and try again");
-    }
-    setSubmitting(false);
+    // setSubmitting(true);
+    // setResetError("");
+    // try {
+    //   const rt = await API.graphql(
+    //     graphqlOperation(requestPasswordReset, {
+    //       input: {
+    //         email: email,
+    //         link: `${window.location.protocol}//${window.location.host}/reset-password`,
+    //       },
+    //     })
+    //   );
+    //   if (rt.data.requestPasswordReset.error) {
+    //     setResetError(rt.data.requestPasswordReset.error.message);
+    //   } else {
+    //     history.push(APP_URLS.RESET_LINK_SENT);
+    //   }
+    // } catch (err) {
+    //   setResetError("Please verify your email and try again");
+    // }
+    // setSubmitting(false);
   };
   return (
     <>
@@ -71,4 +82,4 @@ const PasswordReset = (props) => {
   );
 };
 
-export default withRouter(PasswordReset);
+export default ForgotPassword;

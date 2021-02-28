@@ -105,21 +105,22 @@ export const _Substeps = [
     step: "ringlessVoicemail",
     label: "Automated Ringless Voicemail",
     price: _Prices.ringlessVoicemail,
-    other: "An automated voicemail sent to your prospects",
+    other: "An Automated Voicemail sent to your prospects",
     items: "",
   },
-  {
-    step: "postcard",
-    label: "Automated Post Card",
-    price: _Prices.postcard,
-    other: "",
-    items: "4x6 ",
-  },
-  {
-    step: "socialPost",
-    label: "Automated Facebook/Instagram Post",
-    price: 0.5,
-    other: "",
-    items: "",
-  },
+  // {
+  //   step: "postcard",
+  //   label: "Automated Post Card",
+  //   price: _Prices.postcard,
+  //   other:
+  //     "Upload an mp3/mp4 file of the voicemail recording that you would like to send.",
+  //   items: "4x6 ",
+  // },
+  // {
+  //   step: "socialPost",
+  //   label: "Automated Facebook/Instagram Post",
+  //   price: 0.5,
+  //   other: "",
+  //   items: "",
+  // },
 ];

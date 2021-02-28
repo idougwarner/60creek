@@ -2,17 +2,14 @@ type schema {
   query: Query
   mutation: Mutation
 }
-
 type Query {
   prospectList: ProspectList
   prospect: Prospect
   paymentMethod: PaymentMethod
   marketingCampaign: MarketingCampaign
-
   subscriptionInfo: SubscriptionInfoResult
     @function(name: "subscriptionInfo-${env}")
 }
-
 type ModelProspectConnection {
   items: [Prospect]
   nextToken: String
@@ -83,31 +80,47 @@ type Mutation {
   ): PaymentMethodResult @function(name: "createStripeSubscription-${env}")
   validatePromoCode(input: ValidatePromoCodeInput): ValidatePromoCodeResult
     @function(name: "validatePromoCode-${env}")
-
   checkout(input: CheckoutInput): CheckoutResult
     @function(name: "checkout-${env}")
-
   getConsumerContactInfo(
     input: GetConsumerContactInfoInput
   ): GetConsumerContactInfoResult
     @function(name: "getConsumerContactInfo-${env}")
-
   getDemographicInfo(
     input: GetConsumerContactInfoInput
   ): GetDemographicInfoResult @function(name: "getDemographicInfo-${env}")
-
   getLifestyleInfo(input: GetConsumerContactInfoInput): GetLifestyleInfoResult
     @function(name: "getLifestyleInfo-${env}")
-
   sendCampaignConfirmEmail(
     input: SendCampaignConfirmEmailInput
   ): SendCampaignConfirmEmailResult
     @function(name: "sendCampaignConfirmEmail-${env}")
+  requestPasswordReset(
+    input: RequestPasswordResetInput
+  ): RequestPasswordResetResult @function(name: "requestPasswordReset-${env}")
+  resetPassword(input: ResetPasswordInput): ResetPasswordResult
+    @function(name: "resetPassword-${env}")
+}
+input ResetPasswordInput {
+  token: String
+  password: String
+}
+type ResetPasswordResult {
+  data: String
+  error: ErrorResponse
+}
+input RequestPasswordResetInput {
+  email: String
+  link: String
+}
+type RequestPasswordResetResult {
+  data: String
+  error: ErrorResponse
 }
 input AutomatedItem {
   title: String
-  total: Float
-  price: Float
+  total: String
+  price: String
   prospects: Int
 }
 input EmailData {
@@ -117,7 +130,7 @@ input EmailData {
   items: [AutomatedItem]
   brand: String
   last4: String
-  total: Float
+  total: String
   link: String
 }
 input SendCampaignConfirmEmailInput {
@@ -125,19 +138,16 @@ input SendCampaignConfirmEmailInput {
   email: String
   name: String
 }
-
 type SendCampaignConfirmEmailResult {
   data: String
   error: ErrorResponse
 }
-
 input CheckoutInput {
   email: String
   amount: Float
   token: String
   description: String
 }
-
 input GetConsumerContactInfoInput {
   email: String
 }
@@ -222,7 +232,6 @@ type GetLifestyleInfoResult {
   data: LifestyleInfo
   error: ErrorResponse
 }
-
 type ConsumerContactInfo {
   firstName: String
   lastName: String
@@ -233,14 +242,12 @@ type ConsumerContactInfo {
   phone: String
   email: String
 }
-
 type Recurring {
   aggregate_usage: String
   interval: String
   interval_count: Int
   usage_type: String
 }
-
 type SubscriptionInfo {
   id: String
   object: String
@@ -260,7 +267,6 @@ type SubscriptionInfo {
   unit_amount: Int
   unit_amount_decimal: String
 }
-
 type SubscriptionInfoResult {
   data: SubscriptionInfo
   error: ErrorResponse
@@ -295,7 +301,21 @@ input ValidatePromoCodeInput {
 }
 type User
   @model
-  @searchable
+  @key(
+    name: "usersByUserId"
+    fields: ["cognitoUserName", "lastName"]
+    queryField: "usersByUserId"
+  )
+  @key(
+    name: "usersByUserEmail"
+    fields: ["email", "lastName"]
+    queryField: "usersByUserEmail"
+  )
+  @key(
+    name: "usersByUserResetToken"
+    fields: ["code", "lastName"]
+    queryField: "usersByUserResetToken"
+  )
   @auth(rules: [{ allow: public, provider: apiKey }]) {
   id: ID!
   cognitoUserName: String!
@@ -308,19 +328,22 @@ type User
   state: String
   zip: String
   phone: String
-  email: String
+  email: String!
   signature: String
+  receiveEmail: Boolean
+  code: String!
 }
-
 type Prospect
   @model
-  @searchable
-  @key(name: "byProspectList", fields: ["prospectListId"])
+  @key(
+    name: "prospectsByUserId"
+    fields: ["userId", "prospectListId"]
+    queryField: "prospectsByUserId"
+  )
   @auth(rules: [{ allow: public, provider: apiKey }]) {
   id: ID!
   userId: ID!
   prospectListId: ID!
-
   # personal info
   status: String
   firstName: String
@@ -335,29 +358,28 @@ type Prospect
   email: String
   facebook: String
   notes: String
-
+  interested: String
   enhance: Boolean
   fetched: Boolean
-
   # Demographic data info
   demographic: DemographicInfo
-
   # Lifestyle data info
   lifestyle: LifestyleInfo
-
   prospectList: ProspectList @connection(fields: ["prospectListId"])
 }
-
 type ProspectList
+  @key(
+    name: "prospectListsByUserId"
+    fields: ["userId", "name"]
+    queryField: "prospectListsByUserId"
+  )
   @model
-  @key(name: "byUser", fields: ["userId"])
   @auth(rules: [{ allow: public, provider: apiKey }]) {
   id: ID!
   userId: ID!
   name: String
   enhance: Boolean
 }
-
 type ErrorResponse {
   message: String
 }
@@ -366,7 +388,6 @@ type PaymentMethodData {
   name: String
   email: String
   phone: String
-
   paymentMethodId: String
   subscriptionId: String
   customerId: String
@@ -378,14 +399,12 @@ type PaymentMethodResult {
   data: PaymentMethodData
   error: ErrorResponse
 }
-
 type PaymentMethod @model @auth(rules: [{ allow: public, provider: apiKey }]) {
   id: ID!
   address: String
   name: String
   email: String
   phone: String
-
   paymentMethodId: String
   subscriptionId: String
   customerId: String
@@ -397,7 +416,6 @@ type PaymentMethod @model @auth(rules: [{ allow: public, provider: apiKey }]) {
   discount: String
   unitAmount: Int
 }
-
 type DateType {
   day: Int
   month: Int
@@ -435,15 +453,18 @@ type CheckoutType {
   discount: Float
   email: String
 }
-
 type MarketingCampaign
   @model
+  @key(
+    name: "campaignsByUserId"
+    fields: ["userId", "createdAt"]
+    queryField: "campaignsByUserId"
+  )
   @auth(rules: [{ allow: public, provider: apiKey }]) {
   id: ID!
-  userId: String
-
+  userId: ID!
   title: String
-  prospectListId: String
+  prospectListId: ID
   startDateTime: DateType
   automatedEmail: EmailType
   automatedText: TextType
@@ -451,4 +472,6 @@ type MarketingCampaign
   automatedPostcard: PostCardType
   automatedSocialPost: SocialPostType
   checkout: CheckoutType
+  prospectList: ProspectList @connection(fields: ["prospectListId"])
+  createdAt: String!
 }

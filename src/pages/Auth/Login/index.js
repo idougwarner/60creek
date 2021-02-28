@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Link, useHistory } from "react-router-dom";
+import { Link, useHistory, useLocation } from "react-router-dom";
 import { API, Auth, graphqlOperation } from "aws-amplify";
 import "./Login.scss";
 import { Button, FormControl, FormGroup, FormLabel } from "react-bootstrap";
-import { listUsers } from "../../../graphql/queries";
+import { usersByUserId } from "../../../graphql/queries";
 import { useDispatch } from "react-redux";
 import { ACTIONS } from "../../../redux/actionTypes";
 import { APP_URLS } from "../../../helpers/routers";
 import { validateEmail } from "../../../helpers/validations";
-
+import queryString from "query-string";
 //******************************************************************
 //*
 //* Login: class component
@@ -18,11 +18,11 @@ import { validateEmail } from "../../../helpers/validations";
 export const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  // eslint-disable-next-line
   const [loginError, setLoginError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const history = useHistory();
+  const location = useLocation();
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch({ type: ACTIONS.SET_SINGUP_STEP, step: "login" });
@@ -32,16 +32,21 @@ export const Login = () => {
     try {
       setLoading(true);
       const user = await API.graphql(
-        graphqlOperation(listUsers, {
-          filter: { cognitoUserName: { eq: username } },
+        graphqlOperation(usersByUserId, {
+          cognitoUserName: username,
         })
       );
-      if (user?.data?.listUsers?.items[0]) {
+      if (user?.data?.usersByUserId?.items[0]) {
         dispatch({
           type: ACTIONS.SET_USER,
-          user: user?.data?.listUsers?.items[0],
+          user: user?.data?.usersByUserId?.items[0],
         });
-        history.replace(APP_URLS.DASHBOARD);
+        const params = queryString.parse(location.search);
+        if (params.returnUrl) {
+          history.replace(params.returnUrl);
+        } else {
+          history.replace(APP_URLS.DASHBOARD);
+        }
       }
     } catch (err) {}
     setLoading(false);
@@ -53,7 +58,6 @@ export const Login = () => {
       const user = await Auth.signIn(email, password);
       patchUserInfo(user.username);
     } catch (err) {
-      console.log(err);
       if (err.code === "UserNotFoundException") {
         setLoginError(
           "Please verify your username and password and then retry"
@@ -76,6 +80,15 @@ export const Login = () => {
     f();
     // eslint-disable-next-line
   }, []);
+  const keyEvent = (e) => {
+    if (e.key === "Enter") {
+      if (!password || !email || !validateEmail(email) || loading) {
+        return;
+      } else {
+        login();
+      }
+    }
+  };
   return (
     <>
       <h4 className="auth-title">Log In</h4>
@@ -94,6 +107,7 @@ export const Login = () => {
               setEmail(e.target.value);
             }}
             isInvalid={(email && !validateEmail(email)) || loginError}
+            onKeyDown={keyEvent}
           />
           <FormControl.Feedback type="invalid">
             {loginError ? "" : "Invalid Email Address"}
@@ -112,6 +126,7 @@ export const Login = () => {
               setPassword(e.target.value);
             }}
             isInvalid={!password || loginError}
+            onKeyDown={keyEvent}
           />
           <FormControl.Feedback type="invalid">
             {loginError}
@@ -124,7 +139,7 @@ export const Login = () => {
           />
         </FormGroup>
 
-        <Link className=" mb-4" to={APP_URLS.PASSWORD_RESET}>
+        <Link className=" mb-4" to={APP_URLS.FORGOT_PASSWORD}>
           Forgot your Password?
         </Link>
         <Button

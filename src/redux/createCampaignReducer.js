@@ -30,7 +30,7 @@ const initState = {
     postcard: {
       status: "",
       prospects: 0,
-      file: null,
+      file: "",
     },
     socialPost: {
       status: "",

@@ -16,7 +16,7 @@ exports.handler = async (event) => {
       currency: "usd",
       source: token,
       receipt_email: email,
-      description: description || "Data Enhancement is payment.",
+      description: description || "No description provided",
     });
     return {
       data: {

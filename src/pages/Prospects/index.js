@@ -15,7 +15,10 @@ import {
 import AddSingleProspectModal from "../../components/Prospects/AddSingleProspectModal";
 import NewProspectListModal from "../../components/Prospects/NewProspectListModal";
 import { API, graphqlOperation } from "aws-amplify";
-import { listProspectLists, listProspects } from "../../graphql/queries";
+import {
+  prospectListsByUserId,
+  prospectsByUserId,
+} from "../../graphql/queries";
 import {
   downloadCSVFromJSON,
   downloadXlsxFromJSON,
@@ -76,26 +79,26 @@ const ProspectsPage = () => {
       const token = nextToken;
       setNextToken("");
       const rt = await API.graphql(
-        graphqlOperation(listProspects, {
-          filter: { userId: { eq: user.id } },
+        graphqlOperation(prospectsByUserId, {
+          userId: user.id,
           limit: QUERY_LIMIT,
           nextToken: token ? token : null,
         })
       );
-      if (rt?.data?.listProspects?.items) {
-        setData(rt.data.listProspects.items);
-        setNextToken(rt.data.listProspects.nextToken);
+      if (rt?.data?.prospectsByUserId?.items) {
+        setData(rt.data.prospectsByUserId.items);
+        setNextToken(rt.data.prospectsByUserId.nextToken);
       }
       const rtList = await API.graphql(
-        graphqlOperation(listProspectLists, {
-          filter: { userId: { eq: user.id } },
+        graphqlOperation(prospectListsByUserId, {
+          userId: user.id,
           limit: QUERY_LIMIT,
         })
       );
-      if (rtList?.data?.listProspectLists?.items) {
+      if (rtList?.data?.prospectListsByUserId?.items) {
         dispatch({
           type: ACTIONS.SET_PROSPECT_LIST,
-          prospectList: rtList.data.listProspectLists.items,
+          prospectList: rtList.data.prospectListsByUserId.items,
         });
       }
     } catch (err) {}

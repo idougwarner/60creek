@@ -20,7 +20,7 @@ import { messageConvert } from "../../../helpers/messageConvert";
 import { APP_URLS } from "../../../helpers/routers";
 import { CREATE_CAMPAIGN_ACTIONS } from "../../../redux/actionTypes";
 import "./CheckoutStep.scss";
-import { SUBSTEP_COMPLETED, _Prices, _Substeps } from "./wizardConstants";
+import { SUBSTEP_COMPLETED, _Prices, _Substeps } from "./WizardConstants";
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY);
 
 const createOptions = () => {
@@ -207,8 +207,8 @@ const CheckOutForm = ({ stripe, elements }) => {
           };
           items.push({
             title: "Automated Email",
-            total: _Prices.email * outreach.email.prospects,
-            price: _Prices.email,
+            total: (_Prices.email * outreach.email.prospects).toFixed(2),
+            price: _Prices.email.toFixed(2),
             prospects: outreach.email.prospects,
           });
         }
@@ -219,8 +219,8 @@ const CheckOutForm = ({ stripe, elements }) => {
           };
           items.push({
             title: "Automated Text",
-            total: _Prices.text * outreach.text.prospects,
-            price: _Prices.text,
+            total: (_Prices.text * outreach.text.prospects).toFixed(2),
+            price: _Prices.text.toFixed(2),
             prospects: outreach.text.prospects,
           });
         }
@@ -232,9 +232,10 @@ const CheckOutForm = ({ stripe, elements }) => {
           };
           items.push({
             title: "Automated RinglessVoiceMail",
-            total:
-              _Prices.ringlessVoicemail * outreach.ringlessVoicemail.prospects,
-            price: _Prices.ringlessVoicemail,
+            total: (
+              _Prices.ringlessVoicemail * outreach.ringlessVoicemail.prospects
+            ).toFixed(2),
+            price: _Prices.ringlessVoicemail.toFixed(2),
             prospects: outreach.ringlessVoicemail.prospects,
           });
         }
@@ -245,8 +246,8 @@ const CheckOutForm = ({ stripe, elements }) => {
           };
           items.push({
             title: "Automated Postcard",
-            total: _Prices.postcard * outreach.postcard.prospects,
-            price: _Prices.postcard,
+            total: (_Prices.postcard * outreach.postcard.prospects).toFixed(2),
+            price: _Prices.postcard.toFixed(2),
             prospects: outreach.postcard.prospects,
           });
         }
@@ -258,8 +259,10 @@ const CheckOutForm = ({ stripe, elements }) => {
           };
           items.push({
             title: "Automated SocialPost",
-            total: _Prices.socialPost * outreach.socialPost.prospects,
-            price: _Prices.socialPost,
+            total: (_Prices.socialPost * outreach.socialPost.prospects).toFixed(
+              2
+            ),
+            price: _Prices.socialPost.toFixed(2),
             prospects: outreach.socialPost.prospects,
           });
         }
@@ -284,7 +287,7 @@ const CheckOutForm = ({ stripe, elements }) => {
               " MT",
             brand: token.card.brand,
             last4: token.card.last4,
-            total: total,
+            total: total.toFixed(2),
             link: `${window.location.protocol}//${window.location.host}${APP_URLS.MARKETING}`,
             items: items,
           },
@@ -312,7 +315,6 @@ const CheckOutForm = ({ stripe, elements }) => {
         }
       }
     } catch (err) {
-      console.log(err);
       if (typeof err.message === "string") {
         setErrorMsg(messageConvert(err.message));
       } else {

@@ -1,17 +1,10 @@
 import React from "react";
-import { Button } from "react-bootstrap";
-import { useDispatch, useSelector } from "react-redux";
-import { CREATE_CAMPAIGN_ACTIONS } from "../../../redux/actionTypes";
+import { useSelector } from "react-redux";
 import "./CreatedStep.scss";
-import { SUBSTEP_COMPLETED, _Substeps } from "./wizardConstants";
+import { SUBSTEP_COMPLETED, _Substeps } from "./WizardConstants";
 
 const CreatedStep = () => {
   const info = useSelector((state) => state.createCampaignStore);
-
-  const dispatch = useDispatch();
-  const gotoStep = (step) => {
-    dispatch({ type: CREATE_CAMPAIGN_ACTIONS.UPDATE_STEP, data: step });
-  };
 
   return (
     <div className="px-3">
@@ -64,15 +57,6 @@ const CreatedStep = () => {
             You will receive a confirmation email at the email{" "}
             <strong>{info.checkout.email}</strong>
           </div>
-
-          <Button
-            variant="light"
-            size="lg"
-            className="w-100"
-            onClick={() => gotoStep(3)}
-          >
-            PREVIOUS
-          </Button>
         </>
       )}
     </div>
