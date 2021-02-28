@@ -100,7 +100,7 @@
         },
         "subscriptionInfo": {
           "deploymentBucketName": "amplify-60creek-test-224707-deployment",
-          "s3Key": "amplify-builds/subscriptionInfo-386d4b376c4c2f657839-build.zip"
+          "s3Key": "amplify-builds/subscriptionInfo-3462717059384446414a-build.zip"
         },
         "checkout": {
           "deploymentBucketName": "amplify-60creek-test-224707-deployment",
