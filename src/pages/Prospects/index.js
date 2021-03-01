@@ -115,43 +115,31 @@ const ProspectsPage = () => {
     }
     setSelected(newSelected);
   };
+  const getExportData = () => {
+    let rtVal = [...filteredData];
+    if (selected.length > 0) {
+      rtVal = rtVal.filter((item) => selected.includes(item.id));
+    }
+    return rtVal.map((item) => ({
+      firstName: item.firstName,
+      lastName: item.lastName,
+      address1: item.address1,
+      address2: item.address2,
+      city: item.city,
+      state: item.state,
+      zip: item.zip,
+      company: item.company,
+      phone: item.phone,
+      email: item.email,
+      facebook: item.facebook,
+      status: item.status,
+    }));
+  };
   const downloadCSV = () => {
-    downloadCSVFromJSON(
-      filteredData.map((item) => ({
-        firstName: item.firstName,
-        lastName: item.lastName,
-        address1: item.address1,
-        address2: item.address2,
-        city: item.city,
-        state: item.state,
-        zip: item.zip,
-        company: item.company,
-        phone: item.phone,
-        email: item.email,
-        facebook: item.facebook,
-        status: item.status,
-      })),
-      "Prospects.csv"
-    );
+    downloadCSVFromJSON(getExportData(), "Prospects.csv");
   };
   const downloadExcel = () => {
-    downloadXlsxFromJSON(
-      filteredData.map((item) => ({
-        firstName: item.firstName,
-        lastName: item.lastName,
-        address1: item.address1,
-        address2: item.address2,
-        city: item.city,
-        state: item.state,
-        zip: item.zip,
-        company: item.company,
-        phone: item.phone,
-        email: item.email,
-        facebook: item.facebook,
-        status: item.status,
-      })),
-      "Prospects.xlsx"
-    );
+    downloadXlsxFromJSON(getExportData(), "Prospects.xlsx");
   };
   const changeSort = (field) => {
     if (field === sortType.field) {

@@ -220,6 +220,7 @@ const CheckOutForm = ({
           signature: userInfo.signature,
           cognitoUserName: signupResult.userSub,
           receiveEmail: true,
+          code: "-",
         };
         await Auth.signIn(userInfo.email, password);
         const createdUserInfo = await API.graphql(

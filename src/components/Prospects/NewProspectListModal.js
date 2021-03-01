@@ -295,13 +295,24 @@ const NewProspectListModal = ({
     pushData();
     next();
   };
+  const updateField = (value) => {
+    let newList = [...prospectList];
+    if (selectedField.idx !== -1 && selectedField.fieldName !== "") {
+      newList[selectedField.idx][selectedField.fieldName] = value;
+    }
+    setProspectList(newList);
+  };
 
   const toggleEditing = (idx, fieldName) => {
     if (
       // (selectedField.fieldName !== fieldName || idx !== selectedField.idx) &&
       editing
     ) {
-      if (selectedField.idx === idx && selectedField.fieldName === fieldName) {
+      if (
+        selectedField.idx === idx &&
+        selectedField.fieldName === fieldName &&
+        fieldName === "state"
+      ) {
       } else {
         let newList = [...prospectList];
         if (selectedField.idx !== -1 && selectedField.fieldName !== "") {
@@ -347,6 +358,7 @@ const NewProspectListModal = ({
                 onChange={(value) => {
                   setTmpState(value);
                   setEditField(value.value);
+                  updateField(value.value);
                 }}
                 placeholder="State"
                 styles={customSelectStyles(28)}
@@ -374,6 +386,7 @@ const NewProspectListModal = ({
                 onChange={(event) => {
                   event.stopPropagation();
                   setEditField(event.target.value);
+                  updateField(event.target.value);
                 }}
               />
             ) : fieldName === "phone" ? (
@@ -385,6 +398,7 @@ const NewProspectListModal = ({
                 onChange={(event) => {
                   event.stopPropagation();
                   setEditField(event.target.value);
+                  updateField(event.target.value);
                 }}
               >
                 {(inputProps) => (
@@ -423,6 +437,7 @@ const NewProspectListModal = ({
                 onChange={(event) => {
                   event.stopPropagation();
                   setEditField(event.target.value);
+                  updateField(event.target.value);
                 }}
               />
             ) : (
@@ -443,6 +458,7 @@ const NewProspectListModal = ({
                 onChange={(event) => {
                   event.stopPropagation();
                   setEditField(event.target.value);
+                  updateField(event.target.value);
                 }}
               />
             )}

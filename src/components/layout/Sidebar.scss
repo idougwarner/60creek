@@ -4,6 +4,7 @@
   position: fixed;
   left: 0;
   top: 0;
+  padding: 0px 8px 0px 16px;
   height: 100%;
   width: $sidebar-width;
   background-color: white;
@@ -18,7 +19,6 @@
     }
   }
   .menu-wrapper {
-    padding: 8px;
     background-color: white;
   }
   .link-item {
