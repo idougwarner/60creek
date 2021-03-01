@@ -26,7 +26,7 @@
         },
         "validatePromoCode": {
           "deploymentBucketName": "amplify-60creek-dev-94456-deployment",
-          "s3Key": "amplify-builds/validatePromoCode-7057717a666535617654-build.zip"
+          "s3Key": "amplify-builds/validatePromoCode-6e6b736d2b37785a645a-build.zip"
         },
         "subscriptionInfo": {
           "deploymentBucketName": "amplify-60creek-dev-94456-deployment",
@@ -34,7 +34,7 @@
         },
         "checkout": {
           "deploymentBucketName": "amplify-60creek-dev-94456-deployment",
-          "s3Key": "amplify-builds/checkout-5a64795a70546a534268-build.zip"
+          "s3Key": "amplify-builds/checkout-4473677068796948745a-build.zip"
         },
         "getConsumerContactInfo": {
           "deploymentBucketName": "amplify-60creek-dev-94456-deployment",
