@@ -105,7 +105,8 @@ export const _Substeps = [
     step: "ringlessVoicemail",
     label: "Automated Ringless Voicemail",
     price: _Prices.ringlessVoicemail,
-    other: "An Automated Voicemail sent to your prospects",
+    other:
+      "Upload an mp3/mp4 file of the voicemail recording that you would like to send.",
     items: "",
   },
   // {

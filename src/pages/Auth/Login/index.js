@@ -95,7 +95,7 @@ export const Login = () => {
 
       <div className="card auth-form">
         <FormGroup controlId="emailAddress">
-          <FormLabel className="required">Email Address</FormLabel>
+          <FormLabel>Username</FormLabel>
           <FormControl
             size="lg"
             type="email"
@@ -114,7 +114,7 @@ export const Login = () => {
           </FormControl.Feedback>
         </FormGroup>
         <FormGroup controlId="password">
-          <FormLabel className="required">Password</FormLabel>
+          <FormLabel>Password</FormLabel>
           <FormControl
             size="lg"
             type={!showPassword ? "password" : "text"}
@@ -125,7 +125,7 @@ export const Login = () => {
               setLoginError("");
               setPassword(e.target.value);
             }}
-            isInvalid={!password || loginError}
+            isInvalid={loginError}
             onKeyDown={keyEvent}
           />
           <FormControl.Feedback type="invalid">
@@ -138,10 +138,9 @@ export const Login = () => {
             onClick={() => setShowPassword(!showPassword)}
           />
         </FormGroup>
-
-        <Link className=" mb-4" to={APP_URLS.FORGOT_PASSWORD}>
-          Forgot your Password?
-        </Link>
+        <div className="mb-4">
+          <Link to={APP_URLS.FORGOT_PASSWORD}>Forgot your Password?</Link>
+        </div>
         <Button
           disabled={!password || !email || !validateEmail(email) || loading}
           className="w-100"

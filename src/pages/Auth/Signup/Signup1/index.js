@@ -93,7 +93,7 @@ const Signup1 = (props) => {
   const gotoNext = async () => {
     setEmailErrMsg("");
     setCheckingEmail(true);
-    const msg = "Your email is already existed.";
+    const msg = "This email address is already in use.";
     try {
       await Auth.signIn(
         emailAddress,
