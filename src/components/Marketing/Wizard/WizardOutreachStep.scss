@@ -75,6 +75,10 @@
         }
         &.completed-blue-fill {
           background-color: $primary;
+          cursor: default;
+          &:hover {
+            opacity: 1;
+          }
           &::after,
           &::before {
             border-color: white;

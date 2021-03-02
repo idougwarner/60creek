@@ -58,15 +58,9 @@ export const Login = () => {
       const user = await Auth.signIn(email, password);
       patchUserInfo(user.username);
     } catch (err) {
-      if (err.code === "UserNotFoundException") {
-        setLoginError(
-          "Please verify your username and password and then retry"
-        );
-      } else {
-        setLoginError("User login error");
-      }
-      setLoading(false);
+      setLoginError("Please verify your username and password and then retry");
     }
+    setLoading(false);
   };
   useEffect(() => {
     const f = async () => {

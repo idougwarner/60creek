@@ -1,10 +1,8 @@
 import { API, graphqlOperation } from "aws-amplify";
 import React, { useEffect, useState } from "react";
-import { Button, Form } from "react-bootstrap";
+import { Button, Dropdown, DropdownButton, Form } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
-import Select from "react-select";
-import { customSelectStyles } from "../../../assets/styles/select-style";
 import { listProspectsCounts } from "../../../graphql/custom-queries";
 import { QUERY_LIMIT } from "../../../helpers/constants";
 import { APP_URLS } from "../../../helpers/routers";
@@ -67,13 +65,29 @@ const WizardDetailsStep = () => {
           <InfoTooltip description="Select a prospect list that would be the target of a new campaign" />
         </Form.Label>
         {list && list.length > 0 ? (
-          <Select
-            placeholder="Select Prospect List"
-            options={list.map((item) => ({ label: item.name, value: item.id }))}
-            value={selectedList}
-            styles={customSelectStyles("40px", selectedList ? true : false)}
-            onChange={(value) => changeProspectList(value)}
-          />
+          <DropdownButton
+            variant="outline-primary"
+            className={
+              "custom-dropdown " + (selectedList ? "completed" : "uncompleted")
+            }
+            title={selectedList ? selectedList.label : "Select Prospect List"}
+          >
+            {list.map((item, idx) => (
+              <Dropdown.Item
+                key={idx}
+                className={
+                  selectedList && item.id === selectedList.value
+                    ? "active "
+                    : ""
+                }
+                onClick={() =>
+                  changeProspectList({ label: item.name, value: item.id })
+                }
+              >
+                {item.name}
+              </Dropdown.Item>
+            ))}
+          </DropdownButton>
         ) : (
           <NavLink to={APP_URLS.PROSPECTS} className="d-block">
             No Prospect Lists found. Create one now!

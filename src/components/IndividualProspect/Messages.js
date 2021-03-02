@@ -1,8 +1,14 @@
 import React, { useState } from "react";
-import { Button, Dropdown, DropdownButton, FormControl } from "react-bootstrap";
+import {
+  Button,
+  Dropdown,
+  DropdownButton,
+  FormControl,
+  InputGroup,
+} from "react-bootstrap";
 import "./Messages.scss";
 
-const Messages = () => {
+const Messages = ({ showSearchList = false }) => {
   const [messages /*setMessages*/] = useState([
     {
       time: new Date(2020, 11, 15, 12, 19),
@@ -18,6 +24,7 @@ const Messages = () => {
       sender: "user",
     },
   ]);
+  const [strFilter, setStrFilter] = useState("");
   return (
     <>
       <div className="d-flex justify-content-between">
@@ -44,6 +51,22 @@ const Messages = () => {
           </Dropdown.Item>
         </DropdownButton>
       </div>
+      {showSearchList && (
+        <div className="d-flex mb-3">
+          <InputGroup className="search-input">
+            <InputGroup.Prepend>
+              <img src="/assets/icons/search.svg" alt="search" />
+            </InputGroup.Prepend>
+            <FormControl
+              id=""
+              placeholder="Search List ..."
+              value={strFilter}
+              style={{ maxWidth: 300 }}
+              onChange={(e) => setStrFilter(e.target.value)}
+            />
+          </InputGroup>
+        </div>
+      )}
       <div className="messages-container">
         {messages.map((item, idx) => (
           <div

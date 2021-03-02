@@ -66,7 +66,13 @@ const Signup3 = ({
           id="subscription-agreement"
           type="checkbox"
           checked={subscriptionAgreementValue}
-          onClick={(event) => event.preventDefault()}
+          onChange={(e) => {
+            if (!subscriptionAgreementValue) {
+              setModalIsOpen(true);
+              setIsPrivacy(false);
+            }
+            setSubscriptionAgreementValue(e.target.checked);
+          }}
           label="I agree to the "
         />
         <span className="agree-item" onClick={showSubscriptionAgreementModal}>
@@ -79,7 +85,13 @@ const Signup3 = ({
           id="privacy-policy"
           type="checkbox"
           checked={privacyPolicyValue}
-          onClick={(event) => event.preventDefault()}
+          onChange={(e) => {
+            if (!privacyPolicyValue) {
+              setModalIsOpen(true);
+              setIsPrivacy(true);
+            }
+            setPrivacyPolicyValue(e.target.checked);
+          }}
           label="I agree to the "
         />
         <span className="agree-item" onClick={showPrivacyModal}>
@@ -152,13 +164,7 @@ const Signup3 = ({
         <MorePips pipsConfig={pipsConfig} />
       </div>
       <Modal show={modalIsOpen} onHide={() => setModalIsOpen(false)} size="lg">
-        <Modal.Header>
-          <img
-            src="/assets/icons/close.svg"
-            className="modal-close-btn"
-            alt="close"
-            onClick={() => setModalIsOpen(false)}
-          />
+        <Modal.Header closeButton>
           <Modal.Title>
             {isPrivacy ? "Privacy Policy" : "Subscription Agreement"}
           </Modal.Title>

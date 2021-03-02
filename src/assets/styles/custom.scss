@@ -200,7 +200,69 @@ a {
     }
   }
 }
+.custom-dropdown {
+  width: 100%;
+  margin-bottom: 24px;
+  .dropdown-toggle {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+  }
 
+  &.completed {
+    .dropdown-toggle {
+      color: $text;
+      background-color: #f5f7fa;
+      border: 1px solid #245372;
+    }
+  }
+  &.uncompleted {
+    .dropdown-toggle {
+      color: $label;
+    }
+  }
+  .dropdown-menu {
+    padding: 8px 0;
+    margin-top: 8px !important;
+    width: 100%;
+    border: 1px solid #bde2fb;
+    min-width: unset;
+    max-height: 600px;
+    overflow: auto;
+    .dropdown-item {
+      padding: 8px 16px;
+      border-top: 1px solid #eaf2f8;
+      &:first-child {
+        border-top: none;
+      }
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 16px;
+      line-height: 24px;
+      letter-spacing: 0.5px;
+      color: rgba(19, 22, 36, 0.6);
+      cursor: pointer;
+      &:active {
+        background-color: white;
+      }
+      &.active {
+        font-weight: 600;
+        color: $primary;
+        background-color: white;
+        &::after {
+          content: "";
+          width: 16px;
+          height: 12px;
+          background-repeat: no-repeat;
+          background-image: url(../icons/check-blue.svg);
+          background-position: center;
+        }
+      }
+    }
+  }
+}
 .btn {
   border-radius: $border-radius;
   font-weight: 600;
@@ -405,7 +467,7 @@ a {
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 10;
+    z-index: 3;
     & + .form-control {
       border-top-left-radius: 10px;
       border-bottom-left-radius: 10px;
@@ -666,6 +728,35 @@ a {
       border: none;
       background: #f0f4f7;
       border-radius: $border-radius;
+    }
+  }
+  &.underline-tab {
+    .nav-link {
+      font-weight: 600;
+      font-size: 16px;
+      line-height: 24px;
+      letter-spacing: 0.15px;
+      text-transform: uppercase;
+      color: $label;
+      padding: 0;
+      margin-right: 40px;
+      border: none;
+      border-bottom: 2px solid transparent;
+      &:last-child {
+        margin-right: 0;
+      }
+      &.active {
+        background-color: transparent;
+        border-radius: 0;
+        color: $text;
+        border: none;
+        border-bottom: 2px solid $primary;
+      }
+      &:hover {
+        color: $text;
+        background-color: transparent;
+        cursor: pointer;
+      }
     }
   }
 }

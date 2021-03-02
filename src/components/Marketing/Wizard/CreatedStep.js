@@ -1,5 +1,6 @@
 import React from "react";
 import { useSelector } from "react-redux";
+import usdCurrencyFormat from "../../../helpers/currencyFormat";
 import "./CreatedStep.scss";
 import { SUBSTEP_COMPLETED, _Substeps } from "./WizardConstants";
 
@@ -23,10 +24,13 @@ const CreatedStep = () => {
                   <div className="item-title">{item.label}</div>
                   <div className="text-right">
                     <div className="price">
-                      ${info.outreach[item.step].prospects * item.price}
+                      {usdCurrencyFormat(
+                        info.outreach[item.step].prospects * item.price
+                      )}
                     </div>
                     <div className="counts">
-                      (${item.price}x{info.outreach[item.step].prospects})
+                      ({usdCurrencyFormat(item.price)}x
+                      {info.outreach[item.step].prospects})
                     </div>
                   </div>
                 </div>
@@ -37,14 +41,18 @@ const CreatedStep = () => {
               <hr />
               <div className="item-summary">
                 <div className="item-title">Discount</div>
-                <div className="total-price">${info.checkout.discount}</div>
+                <div className="total-price">
+                  {usdCurrencyFormat(info.checkout.discount)}
+                </div>
               </div>
             </>
           )}
           <hr />
           <div className="item-summary">
             <div className="item-title">Total</div>
-            <div className="total-price">${info.checkout.total}</div>
+            <div className="total-price">
+              {usdCurrencyFormat(info.checkout.total)}
+            </div>
           </div>
           <hr />
           <div className="item-summary mb-4">

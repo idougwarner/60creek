@@ -1,4 +1,4 @@
-// import { API, graphqlOperation } from "aws-amplify";
+import { API, graphqlOperation } from "aws-amplify";
 import React, { useEffect, useState } from "react";
 import {
   Button,
@@ -9,16 +9,16 @@ import {
   Modal,
   Spinner,
 } from "react-bootstrap";
-import { useSelector } from "react-redux";
-// import { updateUser } from "../../graphql/mutations";
+import { useDispatch, useSelector } from "react-redux";
+import { changeEmail } from "../../graphql/mutations";
 import { validateEmail } from "../../helpers/validations";
-// import { ACTIONS } from "../../redux/actionTypes";
+import { ACTIONS } from "../../redux/actionTypes";
 
 const EditEmailModal = ({ show, close }) => {
   const [email, setEmail] = useState("");
   const [emailErrMsg, setEmailErrMsg] = useState("");
   const [loading, setLoading] = useState(false);
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const userInfo = useSelector((state) => state.userStore);
   useEffect(() => {
     if (userInfo) {
@@ -28,22 +28,28 @@ const EditEmailModal = ({ show, close }) => {
   const updateEmail = async () => {
     setLoading(true);
     try {
-      // let user = {
-      //   ...userInfo,
-      //   email: email,
-      // };
-      // delete user.createdAt;
-      // delete user.updatedAt;
-      // const rt = await API.graphql(
-      //   graphqlOperation(updateUser, {
-      //     input: user,
-      //   })
-      // );
-      // dispatch({
-      //   type: ACTIONS.SET_USER,
-      //   user: rt.data.updateUser,
-      // });
-      // close();
+      let user = {
+        cognitoUserName: userInfo.cognitoUserName,
+        userId: userInfo.id,
+        email: email,
+      };
+      const rt = await API.graphql(
+        graphqlOperation(changeEmail, {
+          input: user,
+        })
+      );
+      if (rt.data.changeEmail.data) {
+        dispatch({
+          type: ACTIONS.SET_USER,
+          user: {
+            ...userInfo,
+            email: email,
+          },
+        });
+        close();
+      } else {
+        setEmailErrMsg(rt.data.changeEmail.error.message);
+      }
     } catch (err) {}
     setLoading(false);
   };

@@ -35,18 +35,27 @@ export const _Days = [
   31,
 ];
 export const _Months = [
-  "Jan",
-  "Feb",
-  "Mar",
-  "Apr",
-  "May",
-  "Jun",
-  "Jul",
-  "Aug",
-  "Sep",
-  "Oct",
-  "Nov",
-  "Dec",
+  { label: "Jan", value: 1 },
+  { label: "Feb", value: 2 },
+  { label: "Mar", value: 3 },
+  { label: "Apr", value: 4 },
+  { label: "May", value: 5 },
+  { label: "Jun", value: 6 },
+  { label: "Jul", value: 7 },
+  { label: "Aug", value: 8 },
+  { label: "Sep", value: 9 },
+  { label: "Oct", value: 10 },
+  { label: "Nov", value: 11 },
+  { label: "Dec", value: 12 },
+];
+export const _LongMonths = [
+  { label: "Jan", value: 1 },
+  { label: "Mar", value: 3 },
+  { label: "May", value: 5 },
+  { label: "Jul", value: 7 },
+  { label: "Aug", value: 8 },
+  { label: "Oct", value: 10 },
+  { label: "Dec", value: 12 },
 ];
 export const _Years = [
   2021,
@@ -109,19 +118,19 @@ export const _Substeps = [
       "Upload an mp3/mp4 file of the voicemail recording that you would like to send.",
     items: "",
   },
-  // {
-  //   step: "postcard",
-  //   label: "Automated Post Card",
-  //   price: _Prices.postcard,
-  //   other:
-  //     "Upload an mp3/mp4 file of the voicemail recording that you would like to send.",
-  //   items: "4x6 ",
-  // },
-  // {
-  //   step: "socialPost",
-  //   label: "Automated Facebook/Instagram Post",
-  //   price: 0.5,
-  //   other: "",
-  //   items: "",
-  // },
+  {
+    step: "postcard",
+    label: "Automated Post Card",
+    price: _Prices.postcard,
+    other:
+      "Upload an mp3/mp4 file of the voicemail recording that you would like to send.",
+    items: "4x6 ",
+  },
+  {
+    step: "socialPost",
+    label: "Automated Facebook/Instagram Post",
+    price: 0.5,
+    other: "",
+    items: "",
+  },
 ];

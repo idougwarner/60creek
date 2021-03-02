@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { DropdownButton } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
 import MarketingCampaignsCard from "../../components/Marketing/MarketingCampaignsCard";
 import MarketingInteractionRateCard from "../../components/Marketing/MarketingInteractionRateCard";
@@ -22,13 +21,13 @@ const Marketing = () => {
         </div>
       </div>
       <div className="d-flex mb-4">
-        <DropdownButton
+        {/* <DropdownButton
           title="Campaign Name"
           variant="outline-primary"
           className="mr-3"
         >
           <div class="px-3">Campaigns</div>
-        </DropdownButton>
+        </DropdownButton> */}
         <NavLink className="btn btn-primary" to={APP_URLS.CREATE_CAMPAIGN}>
           NEW CAMPAIGN
         </NavLink>

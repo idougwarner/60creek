@@ -6,7 +6,7 @@ const ConfirmModal = ({ show, close }) => {
     <>
       <Modal show={show} onHide={() => close({ data: false })} size="md">
         <Modal.Header>
-          <ModalTitle>Confirmation</ModalTitle>
+          <ModalTitle>Cancel Upload?</ModalTitle>
         </Modal.Header>
         <Modal.Body>
           <div className="step-3 mb-3">
