@@ -1,10 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { Button, Form } from "react-bootstrap";
+import { Button, Dropdown, DropdownButton, Form } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import Select from "react-select";
-import { customSelectStyles } from "../../../assets/styles/select-style";
 import { CREATE_CAMPAIGN_ACTIONS } from "../../../redux/actionTypes";
-import { _Days, _HOURS, _Minutes, _Months, _Years } from "./WizardConstants";
+import {
+  _Days,
+  _HOURS,
+  _LongMonths,
+  _Minutes,
+  _Months,
+  _Years,
+} from "./WizardConstants";
 import "./TimelineStep.scss";
 
 const TimelineStep = () => {
@@ -52,41 +57,69 @@ const TimelineStep = () => {
       <Form.Group>
         <Form.Label className="required">Date to Start Campaign</Form.Label>
         <div className="row">
-          <div className="col-4">
-            <Select
-              placeholder="Day"
-              options={_Days.map((item) => ({
-                label: item,
-                value: item,
-              }))}
-              value={day}
-              styles={customSelectStyles("40px", day ? true : false)}
-              onChange={(value) => setDay(value)}
-            />
+          <div className="col-4 ">
+            <DropdownButton
+              variant="outline-primary"
+              className={
+                "custom-dropdown " + (day ? "completed" : "uncompleted")
+              }
+              title={day ? day.label : "Day"}
+            >
+              {_Days.map((item, idx) => (
+                <Dropdown.Item
+                  key={idx}
+                  className={day && item === day.value ? "active " : ""}
+                  onClick={() => {
+                    setDay({ label: item, value: item });
+                    setMonth(null);
+                  }}
+                >
+                  {item}
+                </Dropdown.Item>
+              ))}
+            </DropdownButton>
+          </div>
+          <div className="col-4 px-1">
+            <DropdownButton
+              variant="outline-primary"
+              className={
+                "custom-dropdown " + (month ? "completed" : "uncompleted")
+              }
+              title={month ? month.label : "Month"}
+            >
+              {(day && day.value === 31 ? _LongMonths : _Months).map(
+                (item, idx) => (
+                  <Dropdown.Item
+                    key={idx}
+                    className={
+                      month && item.value === month.value ? "active " : ""
+                    }
+                    onClick={() => setMonth(item)}
+                  >
+                    {item.label}
+                  </Dropdown.Item>
+                )
+              )}
+            </DropdownButton>
           </div>
           <div className="col-4">
-            <Select
-              placeholder="Month"
-              options={_Months.map((item, idx) => ({
-                label: item,
-                value: idx + 1,
-              }))}
-              value={month}
-              styles={customSelectStyles("40px", month ? true : false)}
-              onChange={(value) => setMonth(value)}
-            />
-          </div>
-          <div className="col-4">
-            <Select
-              placeholder="Year"
-              options={_Years.map((item) => ({
-                label: item,
-                value: item,
-              }))}
-              value={year}
-              styles={customSelectStyles("40px", year ? true : false)}
-              onChange={(value) => setYear(value)}
-            />
+            <DropdownButton
+              variant="outline-primary"
+              className={
+                "custom-dropdown " + (year ? "completed" : "uncompleted")
+              }
+              title={year ? year.label : "Year"}
+            >
+              {_Years.map((item, idx) => (
+                <Dropdown.Item
+                  key={idx}
+                  className={year && item === year.value ? "active " : ""}
+                  onClick={() => setYear({ label: item, value: item })}
+                >
+                  {item}
+                </Dropdown.Item>
+              ))}
+            </DropdownButton>
           </div>
         </div>
       </Form.Group>
@@ -94,37 +127,63 @@ const TimelineStep = () => {
         <Form.Label className="required">Time to Start Campaign</Form.Label>
         <div className="row">
           <div className="col-4">
-            <Select
-              placeholder="Hour"
-              options={_HOURS.map((item) => ({
-                label: item,
-                value: item,
-              }))}
-              value={hour}
-              styles={customSelectStyles("40px", hour ? true : false)}
-              onChange={(value) => setHour(value)}
-            />
+            <DropdownButton
+              variant="outline-primary"
+              className={
+                "custom-dropdown " + (hour ? "completed" : "uncompleted")
+              }
+              title={hour ? hour.label : "Hour"}
+            >
+              {_HOURS.map((item, idx) => (
+                <Dropdown.Item
+                  key={idx}
+                  className={hour && item === hour.value ? "active " : ""}
+                  onClick={() => setHour({ label: item, value: item })}
+                >
+                  {item}
+                </Dropdown.Item>
+              ))}
+            </DropdownButton>
+          </div>
+          <div className="col-4 px-1">
+            <DropdownButton
+              variant="outline-primary"
+              className={
+                "custom-dropdown " + (minute ? "completed" : "uncompleted")
+              }
+              title={minute ? minute.label : "Minute"}
+            >
+              {_Minutes.map((item, idx) => (
+                <Dropdown.Item
+                  key={idx}
+                  className={
+                    minute && item.value === minute.value ? "active " : ""
+                  }
+                  onClick={() => setMinute(item)}
+                >
+                  {item.label}
+                </Dropdown.Item>
+              ))}
+            </DropdownButton>
           </div>
           <div className="col-4">
-            <Select
-              placeholder="Minute"
-              options={_Minutes}
-              value={minute}
-              styles={customSelectStyles("40px", minute ? true : false)}
-              onChange={(value) => setMinute(value)}
-            />
-          </div>
-          <div className="col-4">
-            <Select
-              placeholder="AM"
-              options={[
-                { label: "AM", value: "AM" },
-                { label: "PM", value: "PM" },
-              ]}
-              value={am}
-              styles={customSelectStyles("40px", am ? true : false)}
-              onChange={(value) => setAm(value)}
-            />
+            <DropdownButton
+              variant="outline-primary"
+              className={
+                "custom-dropdown " + (am ? "completed" : "uncompleted")
+              }
+              title={am ? am.label : "AM"}
+            >
+              {["AM", "PM"].map((item, idx) => (
+                <Dropdown.Item
+                  key={idx}
+                  className={am && item === am.value ? "active " : ""}
+                  onClick={() => setAm({ label: item, value: item })}
+                >
+                  {item}
+                </Dropdown.Item>
+              ))}
+            </DropdownButton>
           </div>
         </div>
 
@@ -143,7 +202,7 @@ const TimelineStep = () => {
           id="consent"
           type="checkbox"
           label="I have consent to text, email, and/or call my targets"
-          onChange={() => setConsent(true)}
+          onChange={(e) => setConsent(e.target.checked)}
         />
       </Form.Group>
 

@@ -16,6 +16,7 @@ import {
   validatePromoCode,
   sendCampaignConfirmEmail,
 } from "../../../graphql/mutations";
+import usdCurrencyFormat from "../../../helpers/currencyFormat";
 import { messageConvert } from "../../../helpers/messageConvert";
 import { APP_URLS } from "../../../helpers/routers";
 import { CREATE_CAMPAIGN_ACTIONS } from "../../../redux/actionTypes";
@@ -81,7 +82,7 @@ const CheckOutForm = ({ stripe, elements }) => {
   useEffect(() => {
     if (outreach) {
       let sum = 0;
-      _Substeps.forEach((item, idx) => {
+      _Substeps.forEach((item) => {
         if (outreach[item.step].status === SUBSTEP_COMPLETED) {
           sum += outreach[item.step].prospects * item.price;
         }
@@ -267,9 +268,15 @@ const CheckOutForm = ({ stripe, elements }) => {
           });
         }
 
+        const createdCampaign = await API.graphql(
+          graphqlOperation(createMarketingCampaign, {
+            input: data,
+          })
+        );
         const emailData = {
           email: user.email,
           name: user.firstName + " " + user.lastName,
+          campaignId: createdCampaign.data.createMarketingCampaign.id,
           emailData: {
             prospectList: campaignInfo.details.targetList.label,
             startDate:
@@ -296,11 +303,6 @@ const CheckOutForm = ({ stripe, elements }) => {
           graphqlOperation(sendCampaignConfirmEmail, { input: emailData })
         );
         if (emailInfo.data.sendCampaignConfirmEmail.data) {
-          await API.graphql(
-            graphqlOperation(createMarketingCampaign, {
-              input: data,
-            })
-          );
           dispatch({
             type: CREATE_CAMPAIGN_ACTIONS.UPDATE_CHECKOUT,
             data: {
@@ -312,6 +314,10 @@ const CheckOutForm = ({ stripe, elements }) => {
             },
           });
           gotoStep(4);
+        } else {
+          setErrorMsg(
+            messageConvert(emailInfo.data.sendCampaignConfirmEmail.data.message)
+          );
         }
       }
     } catch (err) {
@@ -335,7 +341,9 @@ const CheckOutForm = ({ stripe, elements }) => {
                   <div className="automated-type">{item.label}</div>
                   <div className="counts">{outreach[item.step].prospects}</div>
                   <div className="price">
-                    ${outreach[item.step].prospects * item.price}
+                    {usdCurrencyFormat(
+                      outreach[item.step].prospects * item.price
+                    )}
                   </div>
                 </div>
               )
@@ -345,23 +353,27 @@ const CheckOutForm = ({ stripe, elements }) => {
             <hr />
             <div className="total-summary justify-content-between">
               <div className="automated-type">Discount</div>
-              <div className="price font-weight-bold">${discountPrice}</div>
+              <div className="price font-weight-bold">
+                {usdCurrencyFormat(discountPrice)}
+              </div>
             </div>
           </>
         )}
         <hr />
         <div className="total-summary justify-content-between">
           <div className="automated-type">Total</div>
-          <div className="price font-weight-bold">${total}</div>
+          <div className="price font-weight-bold">
+            {usdCurrencyFormat(total)}
+          </div>
         </div>
       </Form.Group>
       <Form.Group>
-        <Form.Label className="required">Coupon</Form.Label>
+        <Form.Label className="required">Discount</Form.Label>
         <div className="d-flex">
           <Form.Control
             className={coupon ? "completed" : ""}
             value={coupon}
-            placeholder="Enter Coupon Code"
+            placeholder="Enter Discount Code"
             onChange={(e) => {
               setErrorMsg("");
               setDiscountPrice(0);

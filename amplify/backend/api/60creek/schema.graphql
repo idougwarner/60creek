@@ -100,6 +100,20 @@ type Mutation {
   ): RequestPasswordResetResult @function(name: "requestPasswordReset-${env}")
   resetPassword(input: ResetPasswordInput): ResetPasswordResult
     @function(name: "resetPassword-${env}")
+
+  changeEmail(input: ChangeEmailInput): ChangeEmailResult
+    @function(name: "changeEmail-${env}")
+}
+
+input ChangeEmailInput {
+  userId: String
+  email: String
+  cognitoUserName: String
+}
+
+type ChangeEmailResult {
+  data: String
+  error: ErrorResponse
 }
 input ResetPasswordInput {
   token: String
@@ -137,6 +151,7 @@ input SendCampaignConfirmEmailInput {
   emailData: EmailData
   email: String
   name: String
+  campaignId: String
 }
 type SendCampaignConfirmEmailResult {
   data: String

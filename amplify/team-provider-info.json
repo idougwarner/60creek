@@ -50,7 +50,7 @@
         },
         "sendCampaignConfirmEmail": {
           "deploymentBucketName": "amplify-60creek-dev-94456-deployment",
-          "s3Key": "amplify-builds/sendCampaignConfirmEmail-6942777532526b4b5779-build.zip"
+          "s3Key": "amplify-builds/sendCampaignConfirmEmail-4373334e664e69375776-build.zip"
         },
         "resetPassword": {
           "deploymentBucketName": "amplify-60creek-dev-94456-deployment",
@@ -59,6 +59,10 @@
         "requestPasswordReset": {
           "deploymentBucketName": "amplify-60creek-dev-94456-deployment",
           "s3Key": "amplify-builds/requestPasswordReset-41516e444464394b4141-build.zip"
+        },
+        "changeEmail": {
+          "deploymentBucketName": "amplify-60creek-dev-94456-deployment",
+          "s3Key": "amplify-builds/changeEmail-53426269496a685a396e-build.zip"
         }
       },
       "hosting": {

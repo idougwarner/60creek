@@ -688,6 +688,16 @@ export const resetPassword = /* GraphQL */ `
     }
   }
 `;
+export const changeEmail = /* GraphQL */ `
+  mutation ChangeEmail($input: ChangeEmailInput) {
+    changeEmail(input: $input) {
+      data
+      error {
+        message
+      }
+    }
+  }
+`;
 export const createUser = /* GraphQL */ `
   mutation CreateUser(
     $input: CreateUserInput!

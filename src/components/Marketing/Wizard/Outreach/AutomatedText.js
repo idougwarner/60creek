@@ -59,7 +59,7 @@ const AutomatedText = () => {
         <Form.Control
           as="textarea"
           rows={10}
-          placeholder="Please enter your Text Content here. Plain Text only"
+          placeholder="Please enter your Text Content here. Plain Text only."
           value={text}
           className={text ? "completed" : ""}
           style={{ padding: 16 }}

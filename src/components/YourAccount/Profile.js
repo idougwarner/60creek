@@ -31,15 +31,13 @@ const Profile = () => {
 
   const dispatch = useDispatch();
 
-  const updateProfile = async () => {
+  const updateProfile = async (checked) => {
     setLoading(true);
     try {
       let user = {
-        ...userInfo,
-        receiveEmail: receiveEmail,
+        id: userInfo.id,
+        receiveEmail: checked,
       };
-      delete user.createdAt;
-      delete user.updatedAt;
       const rt = await API.graphql(
         graphqlOperation(updateUser, {
           input: user,
@@ -149,7 +147,18 @@ const Profile = () => {
             </FormGroup>
           </div>
         </div>
-        <h5 className="mb-3">Notification Preferences</h5>
+        <h5 className="mb-3 d-flex align-items-center">
+          Notification Preferences{" "}
+          {loading && (
+            <Spinner
+              size="sm"
+              as="span"
+              style={{ marginLeft: 10 }}
+              animation="border"
+              role="status"
+            />
+          )}
+        </h5>
         <div className="row">
           <div className="col-12 col-md-6">
             <div className="d-flex align-items-center">
@@ -162,30 +171,12 @@ const Profile = () => {
                 type="checkbox"
                 className="ml-5"
                 checked={receiveEmail}
-                onChange={(event) => setReceiveEmail(event.target.checked)}
+                onChange={(event) => {
+                  setReceiveEmail(event.target.checked);
+                  updateProfile(event.target.checked);
+                }}
                 label=""
               />
-            </div>
-          </div>
-          <div className="col-12 col-md-6">
-            <div className="d-flex justify-content-end ">
-              <Button
-                variant="outline-primary"
-                className="ml-auto"
-                size="lg"
-                disabled={loading}
-                onClick={updateProfile}
-              >
-                {loading && (
-                  <Spinner
-                    size="sm"
-                    style={{ marginRight: 10 }}
-                    animation="border"
-                    role="status"
-                  />
-                )}
-                Save
-              </Button>
             </div>
           </div>
         </div>

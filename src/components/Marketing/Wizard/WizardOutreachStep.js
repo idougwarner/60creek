@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
+import usdCurrencyFormat from "../../../helpers/currencyFormat";
 import { CREATE_CAMPAIGN_ACTIONS } from "../../../redux/actionTypes";
 import InfoTooltip from "../../controls/InfoTooltip";
 import { SUBSTEP_COMPLETED, _Prices, _Substeps } from "./WizardConstants";
@@ -38,11 +39,7 @@ const WizardOutreachStep = () => {
   const getClassName = (step) => {
     const status = outreach[step].status;
     if (step === currentStep) {
-      if (status === SUBSTEP_COMPLETED) {
-        return "close-outlined-red";
-      } else {
-        return "close-outlined";
-      }
+      return "close-outlined";
     } else {
       if (status === SUBSTEP_COMPLETED) {
         return "completed-blue-fill";
@@ -72,12 +69,12 @@ const WizardOutreachStep = () => {
               <div className="d-flex justify-content-between align-items-center w-100 pr-3">
                 <div className="substep-price">
                   {outreach[item.step].status === SUBSTEP_COMPLETED
-                    ? `$${
+                    ? `${usdCurrencyFormat(
                         _Prices[item.step] * outreach[item.step].prospects
-                      } ($${_Prices[item.step]}/prospect x ${
+                      )} (${usdCurrencyFormat(_Prices[item.step])}/prospect x ${
                         outreach[item.step].prospects
                       })`
-                    : `$${_Prices[item.step]}/prospect`}
+                    : `${usdCurrencyFormat(_Prices[item.step])}/prospect`}
                 </div>
                 {getClassName(item.step) === "completed-blue-fill" && (
                   <div
