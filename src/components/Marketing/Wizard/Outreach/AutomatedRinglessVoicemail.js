@@ -106,7 +106,7 @@ const AutomatedRinglessVoicemail = () => {
       <Form.Group>
         <Form.Label className="required">
           Voicemail File{" "}
-          <InfoTooltip description="Upload an mp3/mp4 file of the voicemail recording that you would like to send" />
+          <InfoTooltip description="An Automated Ringless Voicemail sent to your prospects" />
         </Form.Label>
         <Form.Text className="text-muted mb-2 d-flex align-items-center">
           {file ? file.substr(37) : "No file selected"}

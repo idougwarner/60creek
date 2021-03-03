@@ -47,7 +47,10 @@ exports.handler = async (event) => {
   const { userId, email, cognitoUserName } = event.arguments.input;
   try {
     const params = {
-      UserAttributes: [{ Name: "email", Value: email }],
+      UserAttributes: [
+        { Name: "email", Value: email },
+        { Name: "email_verified", Value: "true" },
+      ],
       Username: cognitoUserName,
       UserPoolId: cognitoPoolId,
     };

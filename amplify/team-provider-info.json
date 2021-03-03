@@ -62,7 +62,7 @@
         },
         "changeEmail": {
           "deploymentBucketName": "amplify-60creek-dev-94456-deployment",
-          "s3Key": "amplify-builds/changeEmail-79565159355142656f4c-build.zip"
+          "s3Key": "amplify-builds/changeEmail-53426269496a685a396e-build.zip"
         }
       },
       "hosting": {
