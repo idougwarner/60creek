@@ -26,32 +26,32 @@ const EditEmailModal = ({ show, close }) => {
     }
   }, [userInfo]);
   const updateEmail = async () => {
-    setLoading(true);
-    try {
-      let user = {
-        cognitoUserName: userInfo.cognitoUserName,
-        userId: userInfo.id,
-        email: email,
-      };
-      const rt = await API.graphql(
-        graphqlOperation(changeEmail, {
-          input: user,
-        })
-      );
-      if (rt.data.changeEmail.data) {
-        dispatch({
-          type: ACTIONS.SET_USER,
-          user: {
-            ...userInfo,
-            email: email,
-          },
-        });
-        close();
-      } else {
-        setEmailErrMsg(rt.data.changeEmail.error.message);
-      }
-    } catch (err) {}
-    setLoading(false);
+    // setLoading(true);
+    // try {
+    //   let user = {
+    //     cognitoUserName: userInfo.cognitoUserName,
+    //     userId: userInfo.id,
+    //     email: email,
+    //   };
+    //   const rt = await API.graphql(
+    //     graphqlOperation(changeEmail, {
+    //       input: user,
+    //     })
+    //   );
+    //   if (rt.data.changeEmail.data) {
+    //     dispatch({
+    //       type: ACTIONS.SET_USER,
+    //       user: {
+    //         ...userInfo,
+    //         email: email,
+    //       },
+    //     });
+    //     close();
+    //   } else {
+    //     setEmailErrMsg(rt.data.changeEmail.error.message);
+    //   }
+    // } catch (err) {}
+    // setLoading(false);
   };
   return (
     <>

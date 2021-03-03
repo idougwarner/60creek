@@ -124,7 +124,7 @@
         },
         "sendCampaignConfirmEmail": {
           "deploymentBucketName": "amplify-60creek-test-224707-deployment",
-          "s3Key": "amplify-builds/sendCampaignConfirmEmail-6942777532526b4b5779-build.zip"
+          "s3Key": "amplify-builds/sendCampaignConfirmEmail-4373334e664e69375776-build.zip"
         },
         "requestPasswordReset": {
           "deploymentBucketName": "amplify-60creek-test-224707-deployment",
