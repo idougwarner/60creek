@@ -11,12 +11,22 @@ const datafinderKeyPromise = ssm
 exports.handler = async (event) => {
   try {
     const datafinderKey = await datafinderKeyPromise;
-    const { email } = event.arguments.input;
+    const {
+      firstName,
+      lastName,
+      email,
+      phone,
+      address,
+    } = event.arguments.input;
     let rt = await axios.get("https://api.datafinder.com/v2/qdf.php", {
       params: {
         service: "lifeint",
         k2: datafinderKey.Parameter.Value,
-        d_email: email,
+        d_email: email ? email : null,
+        d_phone: phone ? phone : null,
+        d_fulladdr: address ? address : null,
+        d_first: firstName ? firstName : null,
+        d_last: lastName ? lastName : null,
       },
     });
     let dt = null;

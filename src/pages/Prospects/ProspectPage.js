@@ -37,12 +37,19 @@ const ProspectPage = () => {
           );
           if (rt.data.getProspect) {
             let item = rt.data.getProspect;
+            setData(item);
             if (item.prospectList.enhance && !item.fetched) {
               item["fetched"] = true;
               {
                 const consumerInfo = await API.graphql(
                   graphqlOperation(getConsumerContactInfo, {
-                    input: { email: item.email },
+                    input: {
+                      firstName: item.firstName,
+                      lastName: item.lastName,
+                      email: item.email,
+                      phone: item.phone,
+                      address: item.address,
+                    },
                   })
                 );
                 if (consumerInfo?.data?.getConsumerContactInfo?.data) {
@@ -59,7 +66,13 @@ const ProspectPage = () => {
               {
                 const demogrInfo = await API.graphql(
                   graphqlOperation(getDemographicInfo, {
-                    input: { email: item.email },
+                    input: {
+                      firstName: item.firstName,
+                      lastName: item.lastName,
+                      email: item.email,
+                      phone: item.phone,
+                      address: item.address,
+                    },
                   })
                 );
                 if (demogrInfo?.data?.getDemographicInfo?.data) {
@@ -73,7 +86,13 @@ const ProspectPage = () => {
               {
                 const lifestyleInfo = await API.graphql(
                   graphqlOperation(getLifestyleInfo, {
-                    input: { email: item.email },
+                    input: {
+                      firstName: item.firstName,
+                      lastName: item.lastName,
+                      email: item.email,
+                      phone: item.phone,
+                      address: item.address,
+                    },
                   })
                 );
                 if (lifestyleInfo?.data?.getLifestyleInfo?.data) {
@@ -84,8 +103,6 @@ const ProspectPage = () => {
                 }
               }
               updateData(item);
-              setData(item);
-            } else {
               setData(item);
             }
           }
@@ -142,103 +159,110 @@ const ProspectPage = () => {
         />
         BACK TO PROSPECT LIST
       </NavLink>
-      {loading && (
-        <div className="d-flex align-items-center justify-content-center p-5">
-          <Spinner size="lg" animation="border" role="status">
-            <span className="sr-only">Loading...</span>
-          </Spinner>
-        </div>
-      )}
-      {data && !loading && (
-        <div className="d-flex flex-wrap">
-          <div className="prospect-card">
-            <div className="card p-4">
-              <div className="d-flex justify-content-between">
-                <h4>{data.firstName + " " + data.lastName}</h4>
-                <Dropdown>
-                  <Dropdown.Toggle
-                    className="interested"
-                    variant="link"
-                    id="dropdown-basic"
-                  >
-                    <span>{interested}</span>
-                  </Dropdown.Toggle>
-
-                  <Dropdown.Menu className="interested-menu">
-                    <Dropdown.Item
-                      className={
-                        interested === INTERESTE_STATUS.UNKNOWN ? "active" : ""
-                      }
-                      onClick={() => changeInterested(INTERESTE_STATUS.UNKNOWN)}
-                    >
-                      {INTERESTE_STATUS.UNKNOWN}
-                    </Dropdown.Item>
-                    <Dropdown.Item
-                      className={
-                        interested === INTERESTE_STATUS.INTERESTED
-                          ? "active"
-                          : ""
-                      }
-                      onClick={() =>
-                        changeInterested(INTERESTE_STATUS.INTERESTED)
-                      }
-                    >
-                      {INTERESTE_STATUS.INTERESTED}
-                    </Dropdown.Item>
-                    <Dropdown.Item
-                      className={
-                        interested === INTERESTE_STATUS.NOT_INTERESTED
-                          ? "active"
-                          : ""
-                      }
-                      onClick={() =>
-                        changeInterested(INTERESTE_STATUS.NOT_INTERESTED)
-                      }
-                    >
-                      {INTERESTE_STATUS.NOT_INTERESTED}
-                    </Dropdown.Item>
-                  </Dropdown.Menu>
-                </Dropdown>
+      <div className="d-flex flex-wrap">
+        <div className="prospect-card">
+          <div className="card p-4">
+            {loading && (
+              <div className="d-flex align-items-center justify-content-center p-5">
+                <Spinner size="lg" animation="border" role="status">
+                  <span className="sr-only">Loading...</span>
+                </Spinner>
               </div>
-              <div className="mb-4">
-                <div className="summary-item">
-                  Prospect List <span>{data.prospectList.name}</span>
-                </div>
-                <div className="summary-item">
-                  Marketing Attempts <span>{2}</span>
-                </div>
-                <div className="summary-item">
-                  Last Attempt{" "}
-                  <span>{new Date(data.updatedAt).toLocaleDateString()}</span>
-                </div>
-              </div>
+            )}
+            {data && (
+              <>
+                <div className="d-flex justify-content-between">
+                  <h4>{data.firstName + " " + data.lastName}</h4>
+                  <Dropdown>
+                    <Dropdown.Toggle
+                      className="interested"
+                      variant="link"
+                      id="dropdown-basic"
+                    >
+                      <span>{interested}</span>
+                    </Dropdown.Toggle>
 
-              <Tabs defaultActiveKey="list" id="uncontrolled-tab-example">
-                <Tab eventKey="list" title="LIST">
-                  <ProspectListTab
-                    data={data}
-                    changeData={(event) => updateData(event)}
-                  />
-                </Tab>
-                <Tab eventKey="details" title="DETAILS">
-                  <ProspectDetailsTab data={data} />
-                </Tab>
-                <Tab eventKey="demographics" title="DEMOGRG.">
-                  <ProspectDemographicTab data={data} />
-                </Tab>
-                <Tab eventKey="home" title="HOME">
-                  <ProspectHomeTab data={data} />
-                </Tab>
-              </Tabs>
-            </div>
-          </div>
-          <div className="message-card">
-            <div className="card p-4 position-relative">
-              <ComingSoon />
-              <Messages />
-            </div>
+                    <Dropdown.Menu className="interested-menu">
+                      <Dropdown.Item
+                        className={
+                          interested === INTERESTE_STATUS.UNKNOWN
+                            ? "active"
+                            : ""
+                        }
+                        onClick={() =>
+                          changeInterested(INTERESTE_STATUS.UNKNOWN)
+                        }
+                      >
+                        {INTERESTE_STATUS.UNKNOWN}
+                      </Dropdown.Item>
+                      <Dropdown.Item
+                        className={
+                          interested === INTERESTE_STATUS.INTERESTED
+                            ? "active"
+                            : ""
+                        }
+                        onClick={() =>
+                          changeInterested(INTERESTE_STATUS.INTERESTED)
+                        }
+                      >
+                        {INTERESTE_STATUS.INTERESTED}
+                      </Dropdown.Item>
+                      <Dropdown.Item
+                        className={
+                          interested === INTERESTE_STATUS.NOT_INTERESTED
+                            ? "active"
+                            : ""
+                        }
+                        onClick={() =>
+                          changeInterested(INTERESTE_STATUS.NOT_INTERESTED)
+                        }
+                      >
+                        {INTERESTE_STATUS.NOT_INTERESTED}
+                      </Dropdown.Item>
+                    </Dropdown.Menu>
+                  </Dropdown>
+                </div>
+                <div className="mb-4">
+                  <div className="summary-item">
+                    Prospect List <span>{data.prospectList.name}</span>
+                  </div>
+                  <div className="summary-item">
+                    Marketing Attempts <span>{2}</span>
+                  </div>
+                  <div className="summary-item">
+                    Last Attempt{" "}
+                    <span>{new Date(data.updatedAt).toLocaleDateString()}</span>
+                  </div>
+                </div>
+
+                <Tabs defaultActiveKey="list" id="uncontrolled-tab-example">
+                  <Tab eventKey="list" title="LIST">
+                    <ProspectListTab
+                      data={data}
+                      changeData={(event) => updateData(event)}
+                    />
+                  </Tab>
+                  <Tab eventKey="details" title="DETAILS">
+                    <ProspectDetailsTab data={data} />
+                  </Tab>
+                  <Tab eventKey="demographics" title="DEMOGRG.">
+                    <ProspectDemographicTab data={data} />
+                  </Tab>
+                  <Tab eventKey="home" title="HOME">
+                    <ProspectHomeTab data={data} />
+                  </Tab>
+                </Tabs>
+              </>
+            )}
           </div>
         </div>
+        <div className="message-card">
+          <div className="card p-4 position-relative">
+            <ComingSoon />
+            <Messages />
+          </div>
+        </div>
+      </div>
       )}
     </>
   );

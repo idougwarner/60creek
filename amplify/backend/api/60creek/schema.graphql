@@ -182,7 +182,11 @@ input CheckoutInput {
 }
 
 input GetConsumerContactInfoInput {
+  firstName: String
+  lastName: String
   email: String
+  phone: String
+  address: String
 }
 type CheckoutResult {
   data: CheckoutInfo
@@ -275,6 +279,7 @@ type ConsumerContactInfo {
   zip: String
   phone: String
   email: String
+  facebook: String
 }
 
 type Recurring {

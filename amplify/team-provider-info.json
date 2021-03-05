@@ -38,15 +38,15 @@
         },
         "getConsumerContactInfo": {
           "deploymentBucketName": "amplify-60creek-dev-94456-deployment",
-          "s3Key": "amplify-builds/getConsumerContactInfo-6d795a336948626f7172-build.zip"
+          "s3Key": "amplify-builds/getConsumerContactInfo-6b323551536f4d71486e-build.zip"
         },
         "getDemographicInfo": {
           "deploymentBucketName": "amplify-60creek-dev-94456-deployment",
-          "s3Key": "amplify-builds/getDemographicInfo-3978536d4a6c78523170-build.zip"
+          "s3Key": "amplify-builds/getDemographicInfo-4a444e4a6e3266454552-build.zip"
         },
         "getLifestyleInfo": {
           "deploymentBucketName": "amplify-60creek-dev-94456-deployment",
-          "s3Key": "amplify-builds/getLifestyleInfo-74476d7258644a41467a-build.zip"
+          "s3Key": "amplify-builds/getLifestyleInfo-74333167624451795977-build.zip"
         },
         "sendCampaignConfirmEmail": {
           "deploymentBucketName": "amplify-60creek-dev-94456-deployment",

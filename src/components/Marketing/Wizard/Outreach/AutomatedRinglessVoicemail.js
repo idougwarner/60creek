@@ -95,7 +95,6 @@ const AutomatedRinglessVoicemail = () => {
         </Form.Label>
         <Form.Control
           type="number"
-          max={defaultProspects}
           min={1}
           placeholder="Defaults to number of prospects in list"
           value={prospects}

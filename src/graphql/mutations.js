@@ -581,6 +581,7 @@ export const getConsumerContactInfo = /* GraphQL */ `
         zip
         phone
         email
+        facebook
       }
       error {
         message

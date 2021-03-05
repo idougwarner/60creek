@@ -148,7 +148,7 @@ const ProspectListTab = ({ data, changeData }) => {
         <div className="d-flex">
           <FormControl
             type="text"
-            placeholder="Enter Company"
+            placeholder="Enter Email"
             value={email}
             readOnly={!emailEditable}
             className="mr-3"
@@ -171,7 +171,7 @@ const ProspectListTab = ({ data, changeData }) => {
         <div className="d-flex">
           <FormControl
             type="text"
-            placeholder="Enter phone"
+            placeholder="Enter Phone"
             value={phone}
             className="mr-3"
             readOnly={!phoneEditable}

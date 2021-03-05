@@ -45,7 +45,6 @@ const AutomatedText = () => {
         <Form.Label className="required">Active Prospects to Text</Form.Label>
         <Form.Control
           type="number"
-          max={defaultProspects}
           min={1}
           placeholder="Defaults to number of prospects in list"
           value={prospects}

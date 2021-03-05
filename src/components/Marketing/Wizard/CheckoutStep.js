@@ -142,9 +142,6 @@ const CheckOutForm = ({ stripe, elements }) => {
       if (rt.data.validatePromoCode.data) {
         setApplyingCoupon("APPLIED");
         setCouponInfo(rt.data.validatePromoCode.data);
-        setTimeout(() => {
-          setApplyingCoupon("APPLY");
-        }, 7000);
       } else if (rt.data.validatePromoCode.error) {
         setCouponInfo(null);
         setErrorMsg(messageConvert(rt.data.validatePromoCode.error.message));
