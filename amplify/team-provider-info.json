@@ -38,7 +38,7 @@
         },
         "getConsumerContactInfo": {
           "deploymentBucketName": "amplify-60creek-dev-94456-deployment",
-          "s3Key": "amplify-builds/getConsumerContactInfo-6b323551536f4d71486e-build.zip"
+          "s3Key": "amplify-builds/getConsumerContactInfo-7a3165662b4341434155-build.zip"
         },
         "getDemographicInfo": {
           "deploymentBucketName": "amplify-60creek-dev-94456-deployment",

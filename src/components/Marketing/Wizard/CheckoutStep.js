@@ -368,7 +368,7 @@ const CheckOutForm = ({ stripe, elements }) => {
         <Form.Label className="required">Discount</Form.Label>
         <div className="d-flex">
           <Form.Control
-            className={coupon ? "completed" : ""}
+            className={(coupon ? "completed" : "") + " flex-grow-1"}
             value={coupon}
             placeholder="Enter Discount Code"
             onChange={(e) => {

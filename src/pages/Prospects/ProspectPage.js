@@ -19,6 +19,7 @@ import {
 } from "../../graphql/mutations";
 import { ToastContainer, toast } from "react-toastify";
 import ComingSoon from "../../components/layout/ComingSoon";
+import { formatPhoneNumber } from "../../helpers/utils";
 
 const ProspectPage = () => {
   const [data, setData] = useState(null);
@@ -47,7 +48,7 @@ const ProspectPage = () => {
                       firstName: item.firstName,
                       lastName: item.lastName,
                       email: item.email,
-                      phone: item.phone,
+                      phone: item.phone.replace(/\D/g, ""),
                       address: item.address,
                     },
                   })
@@ -59,7 +60,15 @@ const ProspectPage = () => {
                   delete fetchedData.email;
                   item = {
                     ...item,
-                    ...fetchedData,
+                    firstName: fetchedData.firstName || item.firstName,
+                    lastName: fetchedData.lastName || item.lastName,
+                    address1: fetchedData.address1 || item.address1,
+                    city: fetchedData.city || item.city,
+                    state: fetchedData.state || item.state,
+                    zip: fetchedData.zip || item.zip,
+                    phone: formatPhoneNumber(fetchedData.phone || item.phone),
+                    email: fetchedData.email || item.email,
+                    facebook: fetchedData.facebook || item.facebook,
                   };
                 }
               }
@@ -70,7 +79,7 @@ const ProspectPage = () => {
                       firstName: item.firstName,
                       lastName: item.lastName,
                       email: item.email,
-                      phone: item.phone,
+                      phone: item.phone.replace(/\D/g, ""),
                       address: item.address,
                     },
                   })
@@ -90,7 +99,7 @@ const ProspectPage = () => {
                       firstName: item.firstName,
                       lastName: item.lastName,
                       email: item.email,
-                      phone: item.phone,
+                      phone: item.phone.replace(/\D/g, ""),
                       address: item.address,
                     },
                   })
@@ -263,7 +272,6 @@ const ProspectPage = () => {
           </div>
         </div>
       </div>
-      )}
     </>
   );
 };
