@@ -22,10 +22,10 @@ const ConfirmModal = ({ show, close }) => {
                 className="text-muted"
                 onClick={() => close({ data: false })}
               >
-                CANCEL
+                BACK TO EDIT
               </Button>
               <Button variant="light" onClick={() => close({ data: true })}>
-                CLOSE
+                CANCEL UPLOAD
               </Button>
             </div>
           </div>

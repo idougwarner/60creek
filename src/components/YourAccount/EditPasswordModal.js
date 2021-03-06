@@ -62,7 +62,7 @@ const EditPasswordModal = ({ show, close }) => {
             <FormLabel className="required">Current Password</FormLabel>
             <FormControl
               type={!displayPassword ? "password" : "text"}
-              placeholder="Enter Password"
+              placeholder="Enter Current Password"
               className={curPassword ? "completed" : ""}
               value={curPassword}
               onChange={(e) => setCurPassword(e.target.value)}
@@ -80,7 +80,7 @@ const EditPasswordModal = ({ show, close }) => {
             <FormLabel className="required">New Password</FormLabel>
             <FormControl
               type={!displayPassword ? "password" : "text"}
-              placeholder="Enter Password"
+              placeholder="Enter New Password"
               className={password && passwordStrength > 1 ? "completed" : ""}
               value={password}
               onChange={(e) => setPassword(e.target.value)}

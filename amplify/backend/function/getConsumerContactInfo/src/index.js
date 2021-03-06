@@ -11,16 +11,33 @@ const datafinderKeyPromise = ssm
 exports.handler = async (event) => {
   try {
     const datafinderKey = await datafinderKeyPromise;
-    const { email } = event.arguments.input;
-    let rt = await axios.get("https://api.datafinder.com/v2/qdf.php", {
-      params: {
-        service: "phone",
-        k2: datafinderKey.Parameter.Value,
-        d_email: email,
-      },
-    });
+    const { firstName, lastName, email, phone } = event.arguments.input;
+    let rt;
+
+    if (email && !phone) {
+      rt = await axios.get("https://api.datafinder.com/v2/qdf.php", {
+        params: {
+          service: "phone",
+          k2: datafinderKey.Parameter.Value,
+          d_email: email,
+          d_first: firstName ? firstName : null,
+          d_last: lastName ? lastName : null,
+        },
+      });
+    } else if (email || phone) {
+      rt = await axios.get("https://api.datafinder.com/v2/qdf.php", {
+        params: {
+          service: "email",
+          k2: datafinderKey.Parameter.Value,
+          d_phone: phone,
+          d_first: firstName ? firstName : null,
+          d_last: lastName ? lastName : null,
+        },
+      });
+    }
+
     let dt = null;
-    if (rt.data && rt.data.datafinder["num-results"] > 0) {
+    if (rt && rt.data && rt.data.datafinder["num-results"] > 0) {
       const fetchedData = rt.data.datafinder.results[0];
       dt = {
         firstName:
@@ -31,9 +48,24 @@ exports.handler = async (event) => {
         city: fetchedData.City,
         state: fetchedData.State,
         zip: fetchedData.Zip,
-        phone: fetchedData.Phone,
-        email: fetchedData.Email,
+        phone: fetchedData.Phone || phone,
+        email: fetchedData.Email || email,
       };
+    }
+
+    let rtSocial = await axios.get("https://api.datafinder.com/v2/qdf.php", {
+      params: {
+        service: "social",
+        k2: datafinderKey.Parameter.Value,
+        d_email: email ? email : null,
+        d_first: firstName ? firstName : null,
+        d_last: lastName ? lastName : null,
+      },
+    });
+    if (rtSocial.data && rtSocial.data.datafinder["num-results"] > 0) {
+      const fetchedData = rtSocial.data.datafinder.results[0];
+      dt = dt || {};
+      dt.facebook = fetchedData.FBURL;
     }
 
     return { data: dt, error: null };

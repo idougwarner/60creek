@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Form } from "react-bootstrap";
+import { Button, Form, FormControl } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { CREATE_CAMPAIGN_ACTIONS } from "../../../../redux/actionTypes";
 import { SUBSTEP_COMPLETED } from "../WizardConstants";
@@ -45,13 +45,16 @@ const AutomatedText = () => {
         <Form.Label className="required">Active Prospects to Text</Form.Label>
         <Form.Control
           type="number"
-          max={defaultProspects}
           min={1}
           placeholder="Defaults to number of prospects in list"
           value={prospects}
           className={prospects ? "completed" : ""}
           onChange={(e) => setProspects(e.target.value)}
+          isInvalid={prospects > defaultProspects}
         />
+        <FormControl.Feedback type="invalid">
+          It should not be greater than the number of prospects
+        </FormControl.Feedback>
       </Form.Group>
 
       <Form.Group>
@@ -73,7 +76,7 @@ const AutomatedText = () => {
         <Button
           variant="outline-primary"
           size="lg"
-          disabled={!prospects || !text}
+          disabled={!prospects || !text || prospects > defaultProspects}
           onClick={addAutomatedText}
         >
           {textInfo.status === SUBSTEP_COMPLETED

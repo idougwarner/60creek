@@ -29,16 +29,16 @@ const STEP1 = 0;
 const STEP2 = 1;
 const STEP3 = 2;
 const tableFields = [
-  { fieldName: "firstName", required: false },
-  { fieldName: "lastName", required: true },
-  { fieldName: "company", required: true },
-  { fieldName: "address1", required: false },
-  { fieldName: "city", required: false },
-  { fieldName: "state", required: false },
-  { fieldName: "zip", required: false },
-  { fieldName: "phone", required: false },
-  { fieldName: "email", required: false },
-  { fieldName: "facebook", required: false },
+  { fieldName: "firstName", required: false, width: "93px" },
+  { fieldName: "lastName", required: true, width: "100px" },
+  { fieldName: "company", required: true, width: "140px" },
+  { fieldName: "address1", required: false, width: "180px" },
+  { fieldName: "city", required: false, width: "110px" },
+  { fieldName: "state", required: false, width: "95px" },
+  { fieldName: "zip", required: false, width: "80px" },
+  { fieldName: "phone", required: false, width: "160px" },
+  { fieldName: "email", required: false, width: "auto" },
+  { fieldName: "facebook", required: false, width: "140px" },
 ];
 const NewProspectListModal = ({
   show,
@@ -308,23 +308,28 @@ const NewProspectListModal = ({
       // (selectedField.fieldName !== fieldName || idx !== selectedField.idx) &&
       editing
     ) {
-      if (
-        selectedField.idx === idx &&
-        selectedField.fieldName === fieldName &&
-        fieldName === "state"
-      ) {
+      if (selectedField.idx === idx && selectedField.fieldName === fieldName) {
       } else {
         let newList = [...prospectList];
         if (selectedField.idx !== -1 && selectedField.fieldName !== "") {
           newList[selectedField.idx][selectedField.fieldName] = editField;
         }
         setProspectList(newList);
-        setSelectedField({
-          idx: -1,
-          fieldName: "",
-        });
-        setEditField("");
-        setEditing(false);
+        if (newList[idx][fieldName] === "") {
+          setSelectedField({
+            idx: idx,
+            fieldName: fieldName,
+          });
+          setEditField("");
+          setEditing(true);
+        } else {
+          setSelectedField({
+            idx: -1,
+            fieldName: "",
+          });
+          setEditField("");
+          setEditing(false);
+        }
       }
     } else {
       setSelectedField({
@@ -644,7 +649,10 @@ const NewProspectListModal = ({
             </Form.Group>
             <Form.Group>
               <Form.Label className="required">Upload Prospect List</Form.Label>
-              <Form.Text className="text-muted mb-2 d-flex align-items-center">
+              <Form.Text
+                className="text-muted mb-2 d-flex flex-wrap align-items-center"
+                style={{ overflowWrap: "anywhere" }}
+              >
                 {fileName ? fileName : "No file selected"}
                 {fileName && (
                   <Button
@@ -764,6 +772,7 @@ const NewProspectListModal = ({
                         <td
                           key={id}
                           onClick={() => toggleEditing(idx, item.fieldName)}
+                          style={{ width: item.width }}
                         >
                           {fieldComponent(idx, item.fieldName, item.required)}
                         </td>
