@@ -150,7 +150,6 @@ exports.handler = async (event) => {
       return { data: null, error: { message: "User does not exist." } };
     }
   } catch (err) {
-    console.log(err);
     return { data: null, error: { message: new Error(err).message } };
   }
 };

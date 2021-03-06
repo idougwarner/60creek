@@ -84,7 +84,6 @@ exports.handler = async (event) => {
       error: null,
     };
   } catch (err) {
-    console.log(err);
     return { data: null, error: { message: new Error(err).message } };
   }
 };
