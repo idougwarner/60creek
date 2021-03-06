@@ -13,18 +13,8 @@ exports.handler = async (event) => {
     const datafinderKey = await datafinderKeyPromise;
     const { firstName, lastName, email, phone } = event.arguments.input;
     let rt;
-    if (phone) {
-      rt = await axios.get("https://api.datafinder.com/v2/qdf.php", {
-        params: {
-          service: "email",
-          k2: datafinderKey.Parameter.Value,
-          d_phone: phone,
-          d_first: firstName ? firstName : null,
-          d_last: lastName ? lastName : null,
-        },
-      });
-      console.log(rt);
-    } else if (email) {
+
+    if (email && !phone) {
       rt = await axios.get("https://api.datafinder.com/v2/qdf.php", {
         params: {
           service: "phone",
@@ -34,12 +24,21 @@ exports.handler = async (event) => {
           d_last: lastName ? lastName : null,
         },
       });
-      console.log(rt);
+    } else if (email || phone) {
+      rt = await axios.get("https://api.datafinder.com/v2/qdf.php", {
+        params: {
+          service: "email",
+          k2: datafinderKey.Parameter.Value,
+          d_phone: phone,
+          d_first: firstName ? firstName : null,
+          d_last: lastName ? lastName : null,
+        },
+      });
     }
+
     let dt = null;
     if (rt && rt.data && rt.data.datafinder["num-results"] > 0) {
       const fetchedData = rt.data.datafinder.results[0];
-      console.log(fetchedData);
       dt = {
         firstName:
           fetchedData.FirstName +
@@ -53,6 +52,7 @@ exports.handler = async (event) => {
         email: fetchedData.Email || email,
       };
     }
+
     let rtSocial = await axios.get("https://api.datafinder.com/v2/qdf.php", {
       params: {
         service: "social",
@@ -64,11 +64,10 @@ exports.handler = async (event) => {
     });
     if (rtSocial.data && rtSocial.data.datafinder["num-results"] > 0) {
       const fetchedData = rtSocial.data.datafinder.results[0];
-      dt = {
-        ...dt,
-        facebook: fetchedData.FBURL,
-      };
+      dt = dt || {};
+      dt.facebook = fetchedData.FBURL;
     }
+
     return { data: dt, error: null };
   } catch (err) {
     return { data: null, error: { message: new Error(err).message } };
