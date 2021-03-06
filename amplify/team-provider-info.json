@@ -112,15 +112,15 @@
         },
         "getConsumerContactInfo": {
           "deploymentBucketName": "amplify-60creek-test-224707-deployment",
-          "s3Key": "amplify-builds/getConsumerContactInfo-6d795a336948626f7172-build.zip"
+          "s3Key": "amplify-builds/getConsumerContactInfo-5a7464344d6375623963-build.zip"
         },
         "getDemographicInfo": {
           "deploymentBucketName": "amplify-60creek-test-224707-deployment",
-          "s3Key": "amplify-builds/getDemographicInfo-3978536d4a6c78523170-build.zip"
+          "s3Key": "amplify-builds/getDemographicInfo-4a444e4a6e3266454552-build.zip"
         },
         "getLifestyleInfo": {
           "deploymentBucketName": "amplify-60creek-test-224707-deployment",
-          "s3Key": "amplify-builds/getLifestyleInfo-74476d7258644a41467a-build.zip"
+          "s3Key": "amplify-builds/getLifestyleInfo-74333167624451795977-build.zip"
         },
         "sendCampaignConfirmEmail": {
           "deploymentBucketName": "amplify-60creek-test-224707-deployment",
@@ -133,6 +133,10 @@
         "resetPassword": {
           "deploymentBucketName": "amplify-60creek-test-224707-deployment",
           "s3Key": "amplify-builds/resetPassword-346d396579554f6c5044-build.zip"
+        },
+        "changeEmail": {
+          "deploymentBucketName": "amplify-60creek-test-224707-deployment",
+          "s3Key": "amplify-builds/changeEmail-53426269496a685a396e-build.zip"
         }
       },
       "hosting": {
