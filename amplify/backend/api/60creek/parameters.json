@@ -1,5 +1,6 @@
 {
   "AppSyncApiName": "60creek",
   "DynamoDBBillingMode": "PAY_PER_REQUEST",
-  "DynamoDBEnableServerSideEncryption": false
+  "DynamoDBEnableServerSideEncryption": false,
+  "APIKeyExpirationEpoch": 1640908800
 }

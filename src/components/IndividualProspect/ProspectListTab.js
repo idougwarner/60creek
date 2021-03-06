@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Button, FormControl, FormGroup, FormLabel } from "react-bootstrap";
+import { validateEmail } from "../../helpers/validations";
+import InputMask from "react-input-mask";
 
 var g_data = null;
 const ProspectListTab = ({ data, changeData }) => {
@@ -71,6 +73,13 @@ const ProspectListTab = ({ data, changeData }) => {
         });
       }
     }
+  };
+
+  const isValidPhone = () => {
+    if (phone.indexOf("_") < 0) {
+      return true;
+    }
+    return false;
   };
   return (
     <>
@@ -146,14 +155,19 @@ const ProspectListTab = ({ data, changeData }) => {
       <FormGroup controlId="email">
         <FormLabel>Email</FormLabel>
         <div className="d-flex">
-          <FormControl
-            type="text"
-            placeholder="Enter Email"
-            value={email}
-            readOnly={!emailEditable}
-            className="mr-3"
-            onChange={(e) => setEmail(e.target.value)}
-          />
+          <div className="flex-grow-1 mr-3">
+            <FormControl
+              type="text"
+              placeholder="Enter Email"
+              value={email}
+              readOnly={!emailEditable}
+              onChange={(e) => setEmail(e.target.value)}
+              isInvalid={!validateEmail(email) && email}
+            />
+            <FormControl.Feedback type="invalid">
+              Invalid Email Address
+            </FormControl.Feedback>
+          </div>
           <Button
             variant="outline-primary"
             className="save-btn"
@@ -161,6 +175,7 @@ const ProspectListTab = ({ data, changeData }) => {
               change(emailEditable);
               setEmailEditable(!emailEditable);
             }}
+            disabled={!validateEmail(email) && email}
           >
             {emailEditable ? "Save" : "Edit"}
           </Button>
@@ -169,14 +184,27 @@ const ProspectListTab = ({ data, changeData }) => {
       <FormGroup controlId="phone">
         <FormLabel>Phone</FormLabel>
         <div className="d-flex">
-          <FormControl
-            type="text"
-            placeholder="Enter Phone"
-            value={phone}
-            className="mr-3"
-            readOnly={!phoneEditable}
-            onChange={(e) => setPhone(e.target.value)}
-          />
+          <div className="flex-grow-1 mr-3">
+            <InputMask
+              mask="(999) 999 - 9999"
+              value={phone}
+              type="tel"
+              placeholder="Enter Phone"
+              readOnly={!phoneEditable}
+              onChange={(e) => setPhone(e.target.value)}
+            >
+              {(inputProps) => (
+                <FormControl
+                  {...inputProps}
+                  isInvalid={phone && !isValidPhone()}
+                />
+              )}
+            </InputMask>
+
+            <FormControl.Feedback type="invalid">
+              Invalid Email Address
+            </FormControl.Feedback>
+          </div>
           <Button
             variant="outline-primary"
             className="save-btn"
@@ -184,6 +212,7 @@ const ProspectListTab = ({ data, changeData }) => {
               change(phoneEditable);
               setPhoneEditable(!phoneEditable);
             }}
+            disabled={phone && !isValidPhone()}
           >
             {phoneEditable ? "Save" : "Edit"}
           </Button>
