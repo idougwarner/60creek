@@ -6,6 +6,7 @@ import {
   _Days,
   _HOURS,
   _LongMonths,
+  _MidMonths,
   _Minutes,
   _Months,
   _Years,
@@ -87,19 +88,22 @@ const TimelineStep = () => {
               }
               title={month ? month.label : "Month"}
             >
-              {(day && day.value === 31 ? _LongMonths : _Months).map(
-                (item, idx) => (
-                  <Dropdown.Item
-                    key={idx}
-                    className={
-                      month && item.value === month.value ? "active " : ""
-                    }
-                    onClick={() => setMonth(item)}
-                  >
-                    {item.label}
-                  </Dropdown.Item>
-                )
-              )}
+              {(day && day.value === 31
+                ? _LongMonths
+                : day && day.value === 30
+                ? _MidMonths
+                : _Months
+              ).map((item, idx) => (
+                <Dropdown.Item
+                  key={idx}
+                  className={
+                    month && item.value === month.value ? "active " : ""
+                  }
+                  onClick={() => setMonth(item)}
+                >
+                  {item.label}
+                </Dropdown.Item>
+              ))}
             </DropdownButton>
           </div>
           <div className="col-4">
@@ -110,7 +114,10 @@ const TimelineStep = () => {
               }
               title={year ? year.label : "Year"}
             >
-              {_Years.map((item, idx) => (
+              {(day && day.value === 29 && month && month.value === 2
+                ? _Years.filter((item) => item % 4 === 0)
+                : _Years
+              ).map((item, idx) => (
                 <Dropdown.Item
                   key={idx}
                   className={year && item === year.value ? "active " : ""}

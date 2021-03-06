@@ -365,7 +365,7 @@ const CheckOutForm = ({ stripe, elements }) => {
         </div>
       </Form.Group>
       <Form.Group>
-        <Form.Label className="required">Discount</Form.Label>
+        <Form.Label>Discount</Form.Label>
         <div className="d-flex">
           <Form.Control
             className={(coupon ? "completed" : "") + " flex-grow-1"}
