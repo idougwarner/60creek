@@ -48,6 +48,19 @@ export const _Months = [
   { label: "Nov", value: 11 },
   { label: "Dec", value: 12 },
 ];
+export const _MidMonths = [
+  { label: "Jan", value: 1 },
+  { label: "Mar", value: 3 },
+  { label: "Apr", value: 4 },
+  { label: "May", value: 5 },
+  { label: "Jun", value: 6 },
+  { label: "Jul", value: 7 },
+  { label: "Aug", value: 8 },
+  { label: "Sep", value: 9 },
+  { label: "Oct", value: 10 },
+  { label: "Nov", value: 11 },
+  { label: "Dec", value: 12 },
+];
 export const _LongMonths = [
   { label: "Jan", value: 1 },
   { label: "Mar", value: 3 },
@@ -68,6 +81,11 @@ export const _Years = [
   2028,
   2029,
   2030,
+  2031,
+  2032,
+  2033,
+  2034,
+  2035,
 ];
 
 export const _HOURS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
