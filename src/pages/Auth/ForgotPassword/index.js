@@ -20,26 +20,26 @@ const ForgotPassword = () => {
   const [resetError, setResetError] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const resetPassword = async () => {
-    // setSubmitting(true);
-    // setResetError("");
-    // try {
-    //   const rt = await API.graphql(
-    //     graphqlOperation(requestPasswordReset, {
-    //       input: {
-    //         email: email,
-    //         link: `${window.location.protocol}//${window.location.host}/reset-password`,
-    //       },
-    //     })
-    //   );
-    //   if (rt.data.requestPasswordReset.error) {
-    //     setResetError(rt.data.requestPasswordReset.error.message);
-    //   } else {
-    //     history.push(APP_URLS.RESET_LINK_SENT);
-    //   }
-    // } catch (err) {
-    //   setResetError("Please verify your email and try again");
-    // }
-    // setSubmitting(false);
+    setSubmitting(true);
+    setResetError("");
+    try {
+      const rt = await API.graphql(
+        graphqlOperation(requestPasswordReset, {
+          input: {
+            email: email,
+            link: `${window.location.protocol}//${window.location.host}/reset-password`,
+          },
+        })
+      );
+      if (rt.data.requestPasswordReset.error) {
+        setResetError(rt.data.requestPasswordReset.error.message);
+      } else {
+        history.push(APP_URLS.RESET_LINK_SENT);
+      }
+    } catch (err) {
+      setResetError("Please verify your email and try again");
+    }
+    setSubmitting(false);
   };
   return (
     <>
