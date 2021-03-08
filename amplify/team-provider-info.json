@@ -12,9 +12,6 @@
       "AmplifyAppId": "d2uhia5y233ztu"
     },
     "categories": {
-      "auth": {
-        "60creek8853cd69": {}
-      },
       "function": {
         "createStripeSubscription": {
           "deploymentBucketName": "amplify-60creek-dev-94456-deployment",
@@ -70,6 +67,9 @@
           "appId": "d2uhia5y233ztu",
           "type": "manual"
         }
+      },
+      "auth": {
+        "60creekdc0a6d2b": {}
       }
     }
   },
@@ -87,7 +87,8 @@
     },
     "categories": {
       "auth": {
-        "60creek8853cd69": {}
+        "60creekdc0a6d2b": {},
+        "60creek47505837": {}
       },
       "function": {
         "createStripeSubscription": {

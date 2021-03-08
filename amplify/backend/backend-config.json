@@ -1,6 +1,12 @@
 {
   "auth": {
-    "60creek8853cd69": {
+    "60creekdc0a6d2b": {
+      "service": "Cognito",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [],
+      "customAuth": false
+    },
+    "60creek47505837": {
       "service": "Cognito",
       "providerPlugin": "awscloudformation",
       "dependsOn": [],
