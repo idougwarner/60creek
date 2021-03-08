@@ -160,9 +160,6 @@
       "AmplifyAppId": "d1tlz8x1bcyn7s"
     },
     "categories": {
-      "auth": {
-        "60creek8853cd69": {}
-      },
       "function": {
         "createStripeSubscription": {
           "deploymentBucketName": "amplify-60creek-prod-203320-deployment",
@@ -218,6 +215,9 @@
           "appId": "d1tlz8x1bcyn7s",
           "type": "manual"
         }
+      },
+      "auth": {
+        "60creekde5ff758": {}
       }
     }
   }

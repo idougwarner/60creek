@@ -1,8 +1,8 @@
 {
-    "identityPoolName": "60creek8853cd69_identitypool_8853cd69",
-    "allowUnauthenticatedIdentities": true,
-    "resourceNameTruncated": "60cree8853cd69",
-    "userPoolName": "60creek8853cd69_userpool_8853cd69",
+    "identityPoolName": "60creekde5ff758_identitypool_de5ff758",
+    "allowUnauthenticatedIdentities": false,
+    "resourceNameTruncated": "60creede5ff758",
+    "userPoolName": "60creekde5ff758_userpool_de5ff758",
     "autoVerifiedAttributes": [
         "email"
     ],
@@ -20,7 +20,7 @@
     "requiredAttributes": [
         "email"
     ],
-    "userpoolClientGenerateSecret": true,
+    "userpoolClientGenerateSecret": false,
     "userpoolClientRefreshTokenValidity": 30,
     "userpoolClientWriteAttributes": [
         "email"
@@ -28,10 +28,10 @@
     "userpoolClientReadAttributes": [
         "email"
     ],
-    "userpoolClientLambdaRole": "60cree8853cd69_userpoolclient_lambda_role",
+    "userpoolClientLambdaRole": "60creede5ff758_userpoolclient_lambda_role",
     "userpoolClientSetAttributes": false,
-    "sharedId": "8853cd69",
-    "resourceName": "60creek8853cd69",
+    "sharedId": "de5ff758",
+    "resourceName": "60creekde5ff758",
     "authSelections": "identityPoolAndUserPool",
     "authRoleArn": {
         "Fn::GetAtt": [
@@ -49,7 +49,9 @@
     "usernameAttributes": [
         "email"
     ],
-    "userPoolGroupList": [],
+    "userPoolGroupList": [
+        "60creek"
+    ],
     "serviceName": "Cognito",
     "dependsOn": []
 }
