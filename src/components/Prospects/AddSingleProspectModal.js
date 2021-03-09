@@ -348,7 +348,13 @@ const AddSingleProspectModal = ({ show, close }) => {
             <>
               <Button
                 variant="primary"
-                disabled={!phone || !email || !status || loading}
+                disabled={
+                  !phone ||
+                  !email ||
+                  !validateEmail(email) ||
+                  !status ||
+                  loading
+                }
                 onClick={() => next()}
               >
                 Next

@@ -20,6 +20,7 @@ const initState = {
       status: "",
       prospects: 0,
       text: "",
+      phone: "",
     },
     ringlessVoicemail: {
       status: "",
