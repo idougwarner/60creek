@@ -11,9 +11,13 @@ const data = [
 const MarketingInteractionRateCard = () => {
   return (
     <>
-      <div className="card p-5 mb-5">
+      <div className="card p-0 mb-5">
         <ComingSoon />
-        <h5 className="mb-4">Interaction Rate</h5>
+        <img
+          src="/assets/images/marketing-interation-rate-tmp.png"
+          alt="tmp-img"
+        />
+        {/* <h5 className="mb-4">Interaction Rate</h5>
         <Table responsive="xl" className="data-table">
           <thead>
             <tr>
@@ -36,7 +40,7 @@ const MarketingInteractionRateCard = () => {
               </tr>
             ))}
           </tbody>
-        </Table>
+        </Table> */}
       </div>
     </>
   );
