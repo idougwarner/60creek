@@ -3,16 +3,16 @@
 
 const awsmobile = {
     "aws_project_region": "us-west-2",
-    "aws_cognito_identity_pool_id": "us-west-2:9641bd8a-3b39-4d32-b3a7-22ab049362ec",
+    "aws_cognito_identity_pool_id": "us-west-2:09bca23f-5b98-4596-9049-ee0532ec15bb",
     "aws_cognito_region": "us-west-2",
-    "aws_user_pools_id": "us-west-2_uVcM61jzl",
-    "aws_user_pools_web_client_id": "3ggj0qptc92po242qigsbgeofn",
+    "aws_user_pools_id": "us-west-2_t05eHfWjm",
+    "aws_user_pools_web_client_id": "2jnr9jc12cq6u0h6bl89iphl8r",
     "oauth": {},
-    "aws_appsync_graphqlEndpoint": "https://ybfwvz3pxjcejkvltr2nyxqcba.appsync-api.us-west-2.amazonaws.com/graphql",
+    "aws_appsync_graphqlEndpoint": "https://huu3urupanctzci4aabme6alu4.appsync-api.us-west-2.amazonaws.com/graphql",
     "aws_appsync_region": "us-west-2",
     "aws_appsync_authenticationType": "API_KEY",
-    "aws_appsync_apiKey": "da2-e2atxfomcrgrtimydpmmsnaaiq",
-    "aws_user_files_s3_bucket": "60creek-storage01840-stage",
+    "aws_appsync_apiKey": "da2-ggzuh5rqorgkdbzjt5qlstuz3y",
+    "aws_user_files_s3_bucket": "60creek-storage203320-prod",
     "aws_user_files_s3_bucket_region": "us-west-2"
 };
 
