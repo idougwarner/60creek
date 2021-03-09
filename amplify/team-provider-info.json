@@ -13,7 +13,7 @@
     },
     "categories": {
       "auth": {
-        "60creek8853cd69": {}
+        "60creekdc0a6d2b": {}
       },
       "function": {
         "createStripeSubscription": {
@@ -50,7 +50,7 @@
         },
         "sendCampaignConfirmEmail": {
           "deploymentBucketName": "amplify-60creek-dev-94456-deployment",
-          "s3Key": "amplify-builds/sendCampaignConfirmEmail-4373334e664e69375776-build.zip"
+          "s3Key": "amplify-builds/sendCampaignConfirmEmail-54594c466f5067694b70-build.zip"
         },
         "resetPassword": {
           "deploymentBucketName": "amplify-60creek-dev-94456-deployment",
@@ -87,7 +87,7 @@
     },
     "categories": {
       "auth": {
-        "60creek8853cd69": {}
+        "60creek47505837": {}
       },
       "function": {
         "createStripeSubscription": {
@@ -124,7 +124,7 @@
         },
         "sendCampaignConfirmEmail": {
           "deploymentBucketName": "amplify-60creek-test-224707-deployment",
-          "s3Key": "amplify-builds/sendCampaignConfirmEmail-4373334e664e69375776-build.zip"
+          "s3Key": "amplify-builds/sendCampaignConfirmEmail-54594c466f5067694b70-build.zip"
         },
         "requestPasswordReset": {
           "deploymentBucketName": "amplify-60creek-test-224707-deployment",
@@ -195,7 +195,7 @@
         },
         "sendCampaignConfirmEmail": {
           "deploymentBucketName": "amplify-60creek-prod-203320-deployment",
-          "s3Key": "amplify-builds/sendCampaignConfirmEmail-5a637972566c754d375a-build.zip"
+          "s3Key": "amplify-builds/sendCampaignConfirmEmail-2b4c42783651444d7a57-build.zip"
         },
         "requestPasswordReset": {
           "deploymentBucketName": "amplify-60creek-prod-203320-deployment",

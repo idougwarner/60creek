@@ -315,7 +315,7 @@ const CheckOutForm = ({
         {!loading && <div className="item-value">${total}</div>}
       </div>
       <Form.Group>
-        <Form.Label className="required">Discount</Form.Label>
+        <Form.Label>Discount</Form.Label>
         <div className="d-flex">
           <Form.Control
             className={discountCode ? "completed" : ""}
