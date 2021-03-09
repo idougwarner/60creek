@@ -58,31 +58,31 @@ exports.handler = async (event) => {
         "custom_header_1:custom_value_1|custom_header_2:custom_value_2",
     },
   };
-  let sendSmtpAdminEmail = new SibApiV3Sdk.SendSmtpEmail(); // SendSmtpEmail | Values to send a transactional email
-  sendSmtpAdminEmail = {
-    to: [
-      {
-        email: getEnvValue(envVariables.Parameters, adminEmailPath),
-        name: "60 Creek",
-      },
-    ],
-    templateId: parseInt(
-      getEnvValue(templateIds.Parameters, adminConfirmTemplateIdPath)
-    ),
-    params: {
-      dateTime: new Date().toLocaleString(),
-      userEmail: event.arguments.input.email,
-      campaignId: event.arguments.input.campaignId,
-    },
-    headers: {
-      "X-Mailin-custom":
-        "custom_header_1:custom_value_1|custom_header_2:custom_value_2",
-    },
-  };
+  // let sendSmtpAdminEmail = new SibApiV3Sdk.SendSmtpEmail(); // SendSmtpEmail | Values to send a transactional email
+  // sendSmtpAdminEmail = {
+  //   to: [
+  //     {
+  //       email: getEnvValue(envVariables.Parameters, adminEmailPath),
+  //       name: "60 Creek",
+  //     },
+  //   ],
+  //   templateId: parseInt(
+  //     getEnvValue(templateIds.Parameters, adminConfirmTemplateIdPath)
+  //   ),
+  //   params: {
+  //     dateTime: new Date().toLocaleString(),
+  //     userEmail: event.arguments.input.email,
+  //     campaignId: event.arguments.input.campaignId,
+  //   },
+  //   headers: {
+  //     "X-Mailin-custom":
+  //       "custom_header_1:custom_value_1|custom_header_2:custom_value_2",
+  //   },
+  // };
 
   try {
     await apiInstance.sendTransacEmail(sendSmtpEmail);
-    await apiInstance.sendTransacEmail(sendSmtpAdminEmail);
+    // await apiInstance.sendTransacEmail(sendSmtpAdminEmail);
     return {
       data: "A campaign confirmation email has been sent successfully!",
       error: null,
