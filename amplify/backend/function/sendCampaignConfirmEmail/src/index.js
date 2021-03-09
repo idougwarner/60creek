@@ -44,6 +44,10 @@ exports.handler = async (event) => {
         email: event.arguments.input.email,
         name: event.arguments.input.name,
       },
+      {
+        email: getEnvValue(envVariables.Parameters, adminEmailPath),
+        name: "60 Creek",
+      },
     ],
     templateId: parseInt(
       getEnvValue(templateIds.Parameters, campaignConfirmTemplateIdPath)

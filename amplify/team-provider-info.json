@@ -12,6 +12,9 @@
       "AmplifyAppId": "d2uhia5y233ztu"
     },
     "categories": {
+      "auth": {
+        "60creekdc0a6d2b": {}
+      },
       "function": {
         "createStripeSubscription": {
           "deploymentBucketName": "amplify-60creek-dev-94456-deployment",
@@ -47,7 +50,7 @@
         },
         "sendCampaignConfirmEmail": {
           "deploymentBucketName": "amplify-60creek-dev-94456-deployment",
-          "s3Key": "amplify-builds/sendCampaignConfirmEmail-4373334e664e69375776-build.zip"
+          "s3Key": "amplify-builds/sendCampaignConfirmEmail-54594c466f5067694b70-build.zip"
         },
         "resetPassword": {
           "deploymentBucketName": "amplify-60creek-dev-94456-deployment",
@@ -67,9 +70,6 @@
           "appId": "d2uhia5y233ztu",
           "type": "manual"
         }
-      },
-      "auth": {
-        "60creekdc0a6d2b": {}
       }
     }
   },

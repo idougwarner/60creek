@@ -10,9 +10,10 @@ const data = [
 const MarketingCampaignsCard = () => {
   return (
     <>
-      <div className="card p-5 mb-5">
+      <div className="card p-0 mb-5">
+        <img src="/assets/images/marketing-campaigns-tmp.png" alt="tmp-img" />
         <ComingSoon />
-        <h5 className="mb-4">Campaigns</h5>
+        {/* <h5 className="mb-4">Campaigns</h5>
         <Tabs defaultActiveKey="current" className="underline-tab">
           <Tab eventKey="current" title="Current">
             <Table responsive="xl" className="data-table">
@@ -37,7 +38,7 @@ const MarketingCampaignsCard = () => {
             </Table>
           </Tab>
           <Tab eventKey="upcoming" title="Upcoming"></Tab>
-        </Tabs>
+        </Tabs> */}
       </div>
     </>
   );
