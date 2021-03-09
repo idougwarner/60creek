@@ -214,6 +214,7 @@ const CheckOutForm = ({ stripe, elements }) => {
           data["automatedText"] = {
             prospects: outreach.text.prospects,
             text: outreach.text.text,
+            phone: outreach.text.phone,
           };
           items.push({
             title: "Automated Text",

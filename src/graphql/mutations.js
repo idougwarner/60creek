@@ -1195,6 +1195,7 @@ export const createMarketingCampaign = /* GraphQL */ `
       automatedText {
         prospects
         text
+        phone
       }
       automatedRinglessVoiceMail {
         prospects

@@ -451,6 +451,7 @@ type EmailType {
 type TextType {
   prospects: Int
   text: String
+  phone: String
 }
 type RinglessVoicemailType {
   prospects: Int
