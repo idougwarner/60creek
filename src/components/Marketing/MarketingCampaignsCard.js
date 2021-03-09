@@ -2,18 +2,17 @@ import React from "react";
 import { Tab, Table, Tabs } from "react-bootstrap";
 import ComingSoon from "../layout/ComingSoon";
 const data = [
-  { campaign: "Lorem ipsu", prospects: 127, responses: 64, date: "10/25" },
-  { campaign: "Lorem ipsu", prospects: 127, responses: 64, date: "10/25" },
-  { campaign: "Lorem ipsu", prospects: 127, responses: 64, date: "10/25" },
-  { campaign: "Lorem ipsu", prospects: 127, responses: 64, date: "10/25" },
+  { campaign: "Campaign 1", prospects: 2000, responses: 900, date: "10/25" },
+  { campaign: "Holiday Camp", prospects: 2000, responses: 900, date: "11/25" },
+  { campaign: "Campaign 2", prospects: 2000, responses: 900, date: "12/29" },
+  { campaign: "Campaign 3", prospects: 2000, responses: 900, date: "01/25" },
 ];
 const MarketingCampaignsCard = () => {
   return (
     <>
-      <div className="card p-0 mb-5">
-        <img src="/assets/images/marketing-campaigns-tmp.png" alt="tmp-img" />
+      <div className="card p-5 mb-5">
         <ComingSoon />
-        {/* <h5 className="mb-4">Campaigns</h5>
+        <h5 className="mb-4">Campaigns</h5>
         <Tabs defaultActiveKey="current" className="underline-tab">
           <Tab eventKey="current" title="Current">
             <Table responsive="xl" className="data-table">
@@ -38,7 +37,7 @@ const MarketingCampaignsCard = () => {
             </Table>
           </Tab>
           <Tab eventKey="upcoming" title="Upcoming"></Tab>
-        </Tabs> */}
+        </Tabs>
       </div>
     </>
   );

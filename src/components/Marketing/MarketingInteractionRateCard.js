@@ -3,21 +3,18 @@ import { Table } from "react-bootstrap";
 import InfoTooltip from "../controls/InfoTooltip";
 import ComingSoon from "../layout/ComingSoon";
 const data = [
-  { campaign: "Lorem ipsu", prospects: 127, responses: 64, date: "10/25" },
-  { campaign: "Lorem ipsu", prospects: 127, responses: 64, date: "10/25" },
-  { campaign: "Lorem ipsu", prospects: 127, responses: 64, date: "10/25" },
-  { campaign: "Lorem ipsu", prospects: 127, responses: 64, date: "10/25" },
+  { campaign: "Email", prospects: 2000, opened: 1000, responses: "300" },
+  { campaign: "Text", prospects: 2000, opened: 700, responses: "300" },
+  { campaign: "Voicemail", prospects: 2000, opened: 1500, responses: "N/A" },
+  { campaign: "Facebook", prospects: 2000, opened: 1000, responses: "N/A" },
+  { campaign: "Postcard", prospects: 2000, opened: "N/A", responses: "N/A" },
 ];
 const MarketingInteractionRateCard = () => {
   return (
     <>
-      <div className="card p-0 mb-5">
+      <div className="card p-5 mb-5">
         <ComingSoon />
-        <img
-          src="/assets/images/marketing-interation-rate-tmp.png"
-          alt="tmp-img"
-        />
-        {/* <h5 className="mb-4">Interaction Rate</h5>
+        <h5 className="mb-4">Interaction Rate</h5>
         <Table responsive="xl" className="data-table">
           <thead>
             <tr>
@@ -35,12 +32,12 @@ const MarketingInteractionRateCard = () => {
               <tr key={idx} className="clickable">
                 <td>{item.campaign}</td>
                 <td>{item.prospects}</td>
+                <td>{item.opened}</td>
                 <td>{item.responses}</td>
-                <td>{item.date}</td>
               </tr>
             ))}
           </tbody>
-        </Table> */}
+        </Table>
       </div>
     </>
   );

@@ -175,7 +175,7 @@ const ProspectListTab = ({ data, changeData }) => {
               change(emailEditable);
               setEmailEditable(!emailEditable);
             }}
-            disabled={!validateEmail(email) && email}
+            disabled={!validateEmail(email) && email && emailEditable}
           >
             {emailEditable ? "Save" : "Edit"}
           </Button>
