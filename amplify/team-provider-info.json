@@ -113,7 +113,7 @@
         },
         "sendCampaignConfirmEmail": {
           "deploymentBucketName": "amplify-60creek-stage-01840-deployment",
-          "s3Key": "amplify-builds/sendCampaignConfirmEmail-6d4d582b565372697150-build.zip"
+          "s3Key": "amplify-builds/sendCampaignConfirmEmail-4a62646f575346746446-build.zip"
         },
         "requestPasswordReset": {
           "deploymentBucketName": "amplify-60creek-stage-01840-deployment",
@@ -129,7 +129,7 @@
         },
         "prospectsTableTrigger": {
           "deploymentBucketName": "amplify-60creek-stage-01840-deployment",
-          "s3Key": "amplify-builds/prospectsTableTrigger-4e6b34674f6c6c776b68-build.zip"
+          "s3Key": "amplify-builds/prospectsTableTrigger-5a2b42422f6a4565676c-build.zip"
         }
       },
       "hosting": {
