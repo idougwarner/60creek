@@ -458,6 +458,7 @@ export const onCreateMarketingCampaign = /* GraphQL */ `
       automatedText {
         prospects
         text
+        phone
       }
       automatedRinglessVoiceMail {
         prospects
@@ -515,6 +516,7 @@ export const onUpdateMarketingCampaign = /* GraphQL */ `
       automatedText {
         prospects
         text
+        phone
       }
       automatedRinglessVoiceMail {
         prospects
@@ -572,6 +574,7 @@ export const onDeleteMarketingCampaign = /* GraphQL */ `
       automatedText {
         prospects
         text
+        phone
       }
       automatedRinglessVoiceMail {
         prospects

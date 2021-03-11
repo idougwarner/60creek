@@ -24,6 +24,14 @@ export const DBConfig = {
         { name: "email", keypath: "email", options: { unique: false } },
         { name: "facebook", keypath: "facebook", options: { unique: false } },
         { name: "status", keypath: "status", options: { unique: false } },
+        { name: "enhance", keypath: "enhance", options: { unique: false } },
+        { name: "fetched", keypath: "fetched", options: { unique: false } },
+        {
+          name: "demographic",
+          keypath: "demographic",
+          options: { unique: false },
+        },
+        { name: "lifestyle", keypath: "lifestyle", options: { unique: false } },
       ],
     },
     {

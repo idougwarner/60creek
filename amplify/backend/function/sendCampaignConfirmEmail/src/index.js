@@ -1,6 +1,7 @@
 const SibApiV3Sdk = require("sib-api-v3-sdk");
 const defaultClient = SibApiV3Sdk.ApiClient.instance;
 const AWS = require("aws-sdk");
+const jsoncsv = require("react-papaparse");
 const ssm = new AWS.SSM();
 
 const sibApiV3KeyPath = `/sixtycreek-${process.env.ENV}/sib-api-v3-key`;
@@ -44,6 +45,25 @@ exports.handler = async (event) => {
         email: event.arguments.input.email,
         name: event.arguments.input.name,
       },
+    ],
+    templateId: parseInt(
+      getEnvValue(templateIds.Parameters, campaignConfirmTemplateIdPath)
+    ),
+    params: event.arguments.input.emailData,
+    headers: {
+      "X-Mailin-custom":
+        "custom_header_1:custom_value_1|custom_header_2:custom_value_2",
+    },
+  };
+  let sendSmtpAdminEmail = new SibApiV3Sdk.SendSmtpEmail(); // SendSmtpEmail | Values to send a transactional email
+  let emailAttachement = new SibApiV3Sdk.SendSmtpEmailAttachment();
+
+  const data = jsoncsv.jsonToCSV(event.arguments.input.prospects);
+  const buff = new Buffer.from(data);
+  emailAttachement.content = buff.toString("base64");
+  emailAttachement.name = event.arguments.input.emailData.prospectList + ".csv";
+  sendSmtpAdminEmail = {
+    to: [
       {
         email: getEnvValue(envVariables.Parameters, adminEmailPath),
         name: "60 Creek",
@@ -57,32 +77,12 @@ exports.handler = async (event) => {
       "X-Mailin-custom":
         "custom_header_1:custom_value_1|custom_header_2:custom_value_2",
     },
+    attachment: [emailAttachement],
   };
-  // let sendSmtpAdminEmail = new SibApiV3Sdk.SendSmtpEmail(); // SendSmtpEmail | Values to send a transactional email
-  // sendSmtpAdminEmail = {
-  //   to: [
-  //     {
-  //       email: getEnvValue(envVariables.Parameters, adminEmailPath),
-  //       name: "60 Creek",
-  //     },
-  //   ],
-  //   templateId: parseInt(
-  //     getEnvValue(templateIds.Parameters, adminConfirmTemplateIdPath)
-  //   ),
-  //   params: {
-  //     dateTime: new Date().toLocaleString(),
-  //     userEmail: event.arguments.input.email,
-  //     campaignId: event.arguments.input.campaignId,
-  //   },
-  //   headers: {
-  //     "X-Mailin-custom":
-  //       "custom_header_1:custom_value_1|custom_header_2:custom_value_2",
-  //   },
-  // };
 
   try {
     await apiInstance.sendTransacEmail(sendSmtpEmail);
-    // await apiInstance.sendTransacEmail(sendSmtpAdminEmail);
+    await apiInstance.sendTransacEmail(sendSmtpAdminEmail);
     return {
       data: "A campaign confirmation email has been sent successfully!",
       error: null,

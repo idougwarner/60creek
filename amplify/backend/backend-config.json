@@ -21,6 +21,12 @@
       "providerPlugin": "awscloudformation",
       "dependsOn": [],
       "customAuth": false
+    },
+    "60creek516a2892": {
+      "service": "Cognito",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [],
+      "customAuth": false
     }
   },
   "api": {
@@ -67,21 +73,6 @@
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
     },
-    "getConsumerContactInfo": {
-      "build": true,
-      "providerPlugin": "awscloudformation",
-      "service": "Lambda"
-    },
-    "getDemographicInfo": {
-      "build": true,
-      "providerPlugin": "awscloudformation",
-      "service": "Lambda"
-    },
-    "getLifestyleInfo": {
-      "build": true,
-      "providerPlugin": "awscloudformation",
-      "service": "Lambda"
-    },
     "sendCampaignConfirmEmail": {
       "build": true,
       "providerPlugin": "awscloudformation",
@@ -101,6 +92,21 @@
       "build": true,
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
+    },
+    "prospectsTableTrigger": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda",
+      "dependsOn": [
+        {
+          "category": "api",
+          "resourceName": "60creek",
+          "attributes": [
+            "GraphQLAPIIdOutput",
+            "GraphQLAPIEndpointOutput"
+          ]
+        }
+      ]
     }
   },
   "hosting": {
@@ -115,5 +121,6 @@
       "service": "S3",
       "providerPlugin": "awscloudformation"
     }
-  }
+  },
+  "analytics": {}
 }

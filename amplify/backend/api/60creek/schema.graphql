@@ -82,15 +82,6 @@ type Mutation {
     @function(name: "validatePromoCode-${env}")
   checkout(input: CheckoutInput): CheckoutResult
     @function(name: "checkout-${env}")
-  getConsumerContactInfo(
-    input: GetConsumerContactInfoInput
-  ): GetConsumerContactInfoResult
-    @function(name: "getConsumerContactInfo-${env}")
-  getDemographicInfo(
-    input: GetConsumerContactInfoInput
-  ): GetDemographicInfoResult @function(name: "getDemographicInfo-${env}")
-  getLifestyleInfo(input: GetConsumerContactInfoInput): GetLifestyleInfoResult
-    @function(name: "getLifestyleInfo-${env}")
   sendCampaignConfirmEmail(
     input: SendCampaignConfirmEmailInput
   ): SendCampaignConfirmEmailResult
@@ -147,11 +138,25 @@ input EmailData {
   total: String
   link: String
 }
+input ProspectsData {
+  firstName: String
+  lastName: String
+  address1: String
+  city: String
+  state: String
+  zip: String
+  company: String
+  phone: String
+  email: String
+  facebook: String
+  status: String
+}
 input SendCampaignConfirmEmailInput {
   emailData: EmailData
   email: String
   name: String
   campaignId: String
+  prospects: [ProspectsData]
 }
 type SendCampaignConfirmEmailResult {
   data: String
@@ -162,13 +167,6 @@ input CheckoutInput {
   amount: Float
   token: String
   description: String
-}
-input GetConsumerContactInfoInput {
-  firstName: String
-  lastName: String
-  email: String
-  phone: String
-  address: String
 }
 type CheckoutResult {
   data: CheckoutInfo
@@ -238,29 +236,6 @@ type DemographicInfo {
   gender: String
   socialPresence: String
   presenceOfChildren: String
-}
-type GetConsumerContactInfoResult {
-  data: ConsumerContactInfo
-  error: ErrorResponse
-}
-type GetDemographicInfoResult {
-  data: DemographicInfo
-  error: ErrorResponse
-}
-type GetLifestyleInfoResult {
-  data: LifestyleInfo
-  error: ErrorResponse
-}
-type ConsumerContactInfo {
-  firstName: String
-  lastName: String
-  address1: String
-  city: String
-  state: String
-  zip: String
-  phone: String
-  email: String
-  facebook: String
 }
 type Recurring {
   aggregate_usage: String
@@ -359,6 +334,11 @@ type Prospect
     name: "prospectsByUserId"
     fields: ["userId", "prospectListId"]
     queryField: "prospectsByUserId"
+  )
+  @key(
+    name: "prospectsByProspectListId"
+    fields: ["prospectListId"]
+    queryField: "prospectsByProspectListId"
   )
   @auth(rules: [{ allow: public, provider: apiKey }]) {
   id: ID!

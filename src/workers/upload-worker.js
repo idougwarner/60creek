@@ -67,6 +67,14 @@ export const startUploadProspects = async (
             email: storedProspects[i].email,
             facebook: storedProspects[i].facebook,
             status: storedProspects[i].status || "Interested",
+            enhance: storedProspects[i].enhance,
+            fetched: storedProspects[i].fetched,
+            demographic: storedProspects[i].demographic
+              ? JSON.parse(storedProspects[i].demographic)
+              : null,
+            lifestyle: storedProspects[i].lifestyle
+              ? JSON.parse(storedProspects[i].lifestyle)
+              : null,
           },
         })
       );
