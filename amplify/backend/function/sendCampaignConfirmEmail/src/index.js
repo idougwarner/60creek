@@ -30,7 +30,6 @@ const getEnvValue = (values, key) => {
   }
   return "";
 };
-
 exports.handler = async (event) => {
   const apiKey = defaultClient.authentications["api-key"];
   const envVariables = await envPromise;
