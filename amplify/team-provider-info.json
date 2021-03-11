@@ -69,7 +69,8 @@
         }
       },
       "auth": {
-        "60creekde5ff758": {}
+        "60creekde5ff758": {},
+        "userPoolGroups": {}
       }
     }
   },
