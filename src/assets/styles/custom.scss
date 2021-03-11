@@ -468,7 +468,7 @@ a {
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 3;
+    z-index: 5;
     & + .form-control {
       border-top-left-radius: 10px;
       border-bottom-left-radius: 10px;
