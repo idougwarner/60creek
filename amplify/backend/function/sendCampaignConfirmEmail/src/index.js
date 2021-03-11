@@ -30,15 +30,6 @@ const getEnvValue = (values, key) => {
   }
   return "";
 };
-const blobToBase64 = (blob) => {
-  const reader = new FileReader();
-  reader.readAsDataURL(blob);
-  return new Promise((resolve) => {
-    reader.onloadend = () => {
-      resolve(reader.result);
-    };
-  });
-};
 exports.handler = async (event) => {
   const apiKey = defaultClient.authentications["api-key"];
   const envVariables = await envPromise;
@@ -52,10 +43,6 @@ exports.handler = async (event) => {
       {
         email: event.arguments.input.email,
         name: event.arguments.input.name,
-      },
-      {
-        email: getEnvValue(envVariables.Parameters, adminEmailPath),
-        name: "60 Creek",
       },
     ],
     templateId: parseInt(
@@ -82,13 +69,9 @@ exports.handler = async (event) => {
       },
     ],
     templateId: parseInt(
-      getEnvValue(templateIds.Parameters, adminConfirmTemplateIdPath)
+      getEnvValue(templateIds.Parameters, campaignConfirmTemplateIdPath)
     ),
-    params: {
-      dateTime: new Date().toLocaleString(),
-      userEmail: event.arguments.input.email,
-      campaignId: event.arguments.input.campaignId,
-    },
+    params: event.arguments.input.emailData,
     headers: {
       "X-Mailin-custom":
         "custom_header_1:custom_value_1|custom_header_2:custom_value_2",
