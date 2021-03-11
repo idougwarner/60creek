@@ -1,0 +1,38 @@
+name: '[stage] Deploy'
+
+on:
+  push:
+    branches:
+      - staging
+
+jobs:
+  deploy:
+    name: Deploy 60Creek
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.16.x
+
+      - name: Install Amplify CLI
+        run: |
+          npm install @aws-amplify/cli -g
+          npm ci
+      - name: Configure amplify
+        run: |
+          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY }}
+          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws configure set default.region us-west-2
+          amplify init --amplify "{\"envName\":\"prod\"}" --providers "{\"awscloudformation\": {\"useProfile\":true, \"profileName\":\"default\"}}" --yes
+          amplify status
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Deploy
+        env:
+          REACT_APP_STRIPE_PUBLIC_KEY: ${{ secrets.TEST_STRIPE_PUBLIC_KEY }}
+        run: amplify publish
