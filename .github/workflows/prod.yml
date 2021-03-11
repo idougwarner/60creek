@@ -3,11 +3,11 @@ name: '[prod] Deploy'
 on:
   push:
     branches:
-      - prod
+      - master
 
 jobs:
   deploy:
-    name: Deploy HomeCaptain Hub
+    name: Deploy 60Creek
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -34,8 +34,7 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
-      - name: Build
-        run: npm run build:prod
-
       - name: Deploy
+        env:
+          REACT_APP_STRIPE_PUBLIC_KEY: ${{ secrets.PROD_STRIPE_PUBLIC_KEY }}
         run: amplify publish
