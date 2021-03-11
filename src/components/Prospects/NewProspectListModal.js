@@ -247,6 +247,18 @@ const NewProspectListModal = ({
             setLoadingEnhanceData(false);
             return;
           }
+          let newProspects = [...prospectList];
+          for (let i = 0; i < newProspects.length; i++) {
+            let item = newProspects[i];
+            item["enhance"] = true;
+            newProspects[i] = item;
+          }
+          await prospectsDb.clear();
+          for (let i = 0; i < newProspects.length; i++) {
+            const item = newProspects[i];
+            await prospectsDb.add(item);
+          }
+          setProspectList(newProspects);
           next();
         } catch (err) {}
         setLoadingEnhanceData(false);
@@ -264,10 +276,6 @@ const NewProspectListModal = ({
         prospectId: selectedList?.value || "",
         enhance: enhance,
       });
-      // await prospectUploadStepDb.clear();
-      // await prospectUploadStepDb.add({
-      //   step: STEP2,
-      // });
 
       await prospectsDb.clear();
       for (let i = 0; i < prospectList.length; i++) {

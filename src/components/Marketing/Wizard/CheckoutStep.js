@@ -16,6 +16,8 @@ import {
   validatePromoCode,
   sendCampaignConfirmEmail,
 } from "../../../graphql/mutations";
+import { prospectsByProspectListId } from "../../../graphql/queries";
+import { QUERY_LIMIT } from "../../../helpers/constants";
 import usdCurrencyFormat from "../../../helpers/currencyFormat";
 import { messageConvert } from "../../../helpers/messageConvert";
 import { APP_URLS } from "../../../helpers/routers";
@@ -271,6 +273,12 @@ const CheckOutForm = ({ stripe, elements }) => {
             input: data,
           })
         );
+        const prospectsInfo = await API.graphql(
+          graphqlOperation(prospectsByProspectListId, {
+            prospectListId: campaignInfo.details.targetList.value,
+            limit: QUERY_LIMIT,
+          })
+        );
         const emailData = {
           email: user.email,
           name: user.firstName + " " + user.lastName,
@@ -296,6 +304,21 @@ const CheckOutForm = ({ stripe, elements }) => {
             link: `${window.location.protocol}//${window.location.host}${APP_URLS.MARKETING}`,
             items: items,
           },
+          prospects: (
+            prospectsInfo?.data?.prospectsByProspectListId?.items || []
+          ).map((item) => ({
+            firstName: item.firstName,
+            lastName: item.lastName,
+            address1: item.address1,
+            city: item.city,
+            state: item.state,
+            zip: item.zip,
+            company: item.company,
+            phone: item.phone,
+            email: item.email,
+            facebook: item.facebook,
+            status: item.status,
+          })),
         };
         const emailInfo = await API.graphql(
           graphqlOperation(sendCampaignConfirmEmail, { input: emailData })
