@@ -171,7 +171,8 @@ const CheckOutForm = ({ stripe, elements }) => {
           input: {
             email: user.email,
             token: token.id,
-            amount: total,
+            // amount: total,
+            amount: 0,
             description: "Create Campaign",
           },
         })
