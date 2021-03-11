@@ -21,12 +21,6 @@
       "providerPlugin": "awscloudformation",
       "dependsOn": [],
       "customAuth": false
-    },
-    "60creek516a2892": {
-      "service": "Cognito",
-      "providerPlugin": "awscloudformation",
-      "dependsOn": [],
-      "customAuth": false
     }
   },
   "api": {
