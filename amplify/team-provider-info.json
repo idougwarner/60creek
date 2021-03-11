@@ -51,7 +51,7 @@
         },
         "prospectsTableTrigger": {
           "deploymentBucketName": "amplify-60creek-prod-203320-deployment",
-          "s3Key": "amplify-builds/prospectsTableTrigger-5a2b42422f6a4565676c-build.zip"
+          "s3Key": "amplify-builds/prospectsTableTrigger-4e314563365a666d484c-build.zip"
         }
       },
       "hosting": {
