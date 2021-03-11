@@ -11,15 +11,9 @@ import ProspectDetailsTab from "../../components/IndividualProspect/ProspectDeta
 import ProspectDemographicTab from "../../components/IndividualProspect/ProspectDemographicTab";
 import ProspectHomeTab from "../../components/IndividualProspect/ProspectHomeTab";
 import { INTERESTE_STATUS } from "../../components/Prospects/FilterDropdown";
-import {
-  getConsumerContactInfo,
-  getDemographicInfo,
-  getLifestyleInfo,
-  updateProspect,
-} from "../../graphql/mutations";
+import { updateProspect } from "../../graphql/mutations";
 import { ToastContainer, toast } from "react-toastify";
 import ComingSoon from "../../components/layout/ComingSoon";
-import { formatPhoneNumber } from "../../helpers/utils";
 
 const ProspectPage = () => {
   const [data, setData] = useState(null);
@@ -39,81 +33,6 @@ const ProspectPage = () => {
           if (rt.data.getProspect) {
             let item = rt.data.getProspect;
             setData(item);
-            if (item.prospectList.enhance && !item.fetched) {
-              item["fetched"] = true;
-              {
-                const consumerInfo = await API.graphql(
-                  graphqlOperation(getConsumerContactInfo, {
-                    input: {
-                      firstName: item.firstName,
-                      lastName: item.lastName,
-                      email: item.email,
-                      phone: item.phone.replace(/\D/g, ""),
-                      address: item.address,
-                    },
-                  })
-                );
-                if (consumerInfo?.data?.getConsumerContactInfo?.data) {
-                  item["enhance"] = true;
-                  let fetchedData =
-                    consumerInfo.data.getConsumerContactInfo.data;
-                  delete fetchedData.email;
-                  item = {
-                    ...item,
-                    firstName: fetchedData.firstName || item.firstName,
-                    lastName: fetchedData.lastName || item.lastName,
-                    address1: fetchedData.address1 || item.address1,
-                    city: fetchedData.city || item.city,
-                    state: fetchedData.state || item.state,
-                    zip: fetchedData.zip || item.zip,
-                    phone: formatPhoneNumber(fetchedData.phone || item.phone),
-                    email: fetchedData.email || item.email,
-                    facebook: fetchedData.facebook || item.facebook,
-                  };
-                }
-              }
-              {
-                const demogrInfo = await API.graphql(
-                  graphqlOperation(getDemographicInfo, {
-                    input: {
-                      firstName: item.firstName,
-                      lastName: item.lastName,
-                      email: item.email,
-                      phone: item.phone.replace(/\D/g, ""),
-                      address: item.address,
-                    },
-                  })
-                );
-                if (demogrInfo?.data?.getDemographicInfo?.data) {
-                  item = {
-                    ...item,
-                    demographic: demogrInfo.data.getDemographicInfo.data,
-                  };
-                }
-              }
-
-              {
-                const lifestyleInfo = await API.graphql(
-                  graphqlOperation(getLifestyleInfo, {
-                    input: {
-                      firstName: item.firstName,
-                      lastName: item.lastName,
-                      email: item.email,
-                      phone: item.phone.replace(/\D/g, ""),
-                      address: item.address,
-                    },
-                  })
-                );
-                if (lifestyleInfo?.data?.getLifestyleInfo?.data) {
-                  item = {
-                    ...item,
-                    lifestyle: lifestyleInfo.data.getLifestyleInfo.data,
-                  };
-                }
-              }
-              updateData(item);
-              setData(item);
-            }
           }
         } catch (err) {}
         setLoading(false);

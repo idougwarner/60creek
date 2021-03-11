@@ -161,10 +161,6 @@
       "AmplifyAppId": "d2xdfv13yonrbo"
     },
     "categories": {
-      "auth": {
-        "userPoolGroups": {},
-        "60creekde5ff758": {}
-      },
       "function": {
         "createStripeSubscription": {
           "deploymentBucketName": "amplify-60creek-develop-13734-deployment",
@@ -186,21 +182,9 @@
           "deploymentBucketName": "amplify-60creek-develop-13734-deployment",
           "s3Key": "amplify-builds/checkout-5a64795a70546a534268-build.zip"
         },
-        "getConsumerContactInfo": {
-          "deploymentBucketName": "amplify-60creek-develop-13734-deployment",
-          "s3Key": "amplify-builds/getConsumerContactInfo-5a7464344d6375623963-build.zip"
-        },
-        "getDemographicInfo": {
-          "deploymentBucketName": "amplify-60creek-develop-13734-deployment",
-          "s3Key": "amplify-builds/getDemographicInfo-4a444e4a6e3266454552-build.zip"
-        },
-        "getLifestyleInfo": {
-          "deploymentBucketName": "amplify-60creek-develop-13734-deployment",
-          "s3Key": "amplify-builds/getLifestyleInfo-74333167624451795977-build.zip"
-        },
         "sendCampaignConfirmEmail": {
           "deploymentBucketName": "amplify-60creek-develop-13734-deployment",
-          "s3Key": "amplify-builds/sendCampaignConfirmEmail-636c3253725666746d69-build.zip"
+          "s3Key": "amplify-builds/sendCampaignConfirmEmail-6d4d582b565372697150-build.zip"
         },
         "requestPasswordReset": {
           "deploymentBucketName": "amplify-60creek-develop-13734-deployment",
@@ -213,6 +197,10 @@
         "changeEmail": {
           "deploymentBucketName": "amplify-60creek-develop-13734-deployment",
           "s3Key": "amplify-builds/changeEmail-53426269496a685a396e-build.zip"
+        },
+        "prospectsTableTrigger": {
+          "deploymentBucketName": "amplify-60creek-develop-13734-deployment",
+          "s3Key": "amplify-builds/prospectsTableTrigger-5a2b42422f6a4565676c-build.zip"
         }
       },
       "hosting": {
@@ -220,6 +208,9 @@
           "appId": "d2xdfv13yonrbo",
           "type": "manual"
         }
+      },
+      "auth": {
+        "60creek516a2892": {}
       }
     }
   }

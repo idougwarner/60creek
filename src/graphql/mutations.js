@@ -264,6 +264,7 @@ export const marketingCampaign = /* GraphQL */ `
       automatedText {
         prospects
         text
+        phone
       }
       automatedRinglessVoiceMail {
         prospects
@@ -466,6 +467,7 @@ export const deletedMarketingCampaign = /* GraphQL */ `
       automatedText {
         prospects
         text
+        phone
       }
       automatedRinglessVoiceMail {
         prospects
@@ -562,96 +564,6 @@ export const checkout = /* GraphQL */ `
         receiptUrl
         source
         status
-      }
-      error {
-        message
-      }
-    }
-  }
-`;
-export const getConsumerContactInfo = /* GraphQL */ `
-  mutation GetConsumerContactInfo($input: GetConsumerContactInfoInput) {
-    getConsumerContactInfo(input: $input) {
-      data {
-        firstName
-        lastName
-        address1
-        city
-        state
-        zip
-        phone
-        email
-        facebook
-      }
-      error {
-        message
-      }
-    }
-  }
-`;
-export const getDemographicInfo = /* GraphQL */ `
-  mutation GetDemographicInfo($input: GetConsumerContactInfoInput) {
-    getDemographicInfo(input: $input) {
-      data {
-        DOB
-        ageRange
-        ethnicCode
-        singleParent
-        seniorAdultInHousehold
-        youngAdultInHousehold
-        workingWoman
-        SOHOIndicator
-        businessOwner
-        language
-        religion
-        numberOfChildren
-        maritalStatusInHousehold
-        homeOwnerRenter
-        education
-        occupation
-        occupationDetail
-        gender
-        socialPresence
-        presenceOfChildren
-      }
-      error {
-        message
-      }
-    }
-  }
-`;
-export const getLifestyleInfo = /* GraphQL */ `
-  mutation GetLifestyleInfo($input: GetConsumerContactInfoInput) {
-    getLifestyleInfo(input: $input) {
-      data {
-        magazines
-        computerAndTechnology
-        dietingWeightLoss
-        exerciseHealthGrouping
-        doItYourselferHomeImprovement
-        jewelry
-        mailOrderBuyer
-        membershipClubs
-        travelGrouping
-        onlineEducation
-        sportsGrouping
-        sportsOutdoorsGrouping
-        investing
-        booksAndReading
-        politicalDonor
-        hobbiesAndCrafts
-        cosmetics
-        charitableDonations
-        artsAntiquesCollectibles
-        petOwner
-        cooking
-        autoPartsAccessories
-        healthBeautyWellness
-        parentingAndChildrensProducts
-        music
-        movie
-        selfImprovement
-        womensApparel
       }
       error {
         message
@@ -1256,6 +1168,7 @@ export const updateMarketingCampaign = /* GraphQL */ `
       automatedText {
         prospects
         text
+        phone
       }
       automatedRinglessVoiceMail {
         prospects
@@ -1316,6 +1229,7 @@ export const deleteMarketingCampaign = /* GraphQL */ `
       automatedText {
         prospects
         text
+        phone
       }
       automatedRinglessVoiceMail {
         prospects
