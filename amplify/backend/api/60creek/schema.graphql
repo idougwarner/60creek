@@ -427,6 +427,7 @@ type DateType {
 type EmailType {
   prospects: Int
   message: String
+  replyEmail: String
 }
 type TextType {
   prospects: Int
