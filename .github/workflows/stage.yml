@@ -33,6 +33,4 @@ jobs:
         run: npm install
 
       - name: Deploy
-        env:
-          REACT_APP_STRIPE_PUBLIC_KEY: ${{ secrets.TEST_STRIPE_PUBLIC_KEY }}
         run: amplify publish
