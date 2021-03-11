@@ -204,6 +204,7 @@ const CheckOutForm = ({ stripe, elements }) => {
           data["automatedEmail"] = {
             prospects: outreach.email.prospects,
             message: outreach.email.message,
+            replyEmail: outreach.email.replyEmail,
           };
           items.push({
             title: "Automated Email",

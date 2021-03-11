@@ -454,6 +454,7 @@ export const onCreateMarketingCampaign = /* GraphQL */ `
       automatedEmail {
         prospects
         message
+        replyEmail
       }
       automatedText {
         prospects
@@ -512,6 +513,7 @@ export const onUpdateMarketingCampaign = /* GraphQL */ `
       automatedEmail {
         prospects
         message
+        replyEmail
       }
       automatedText {
         prospects
@@ -570,6 +572,7 @@ export const onDeleteMarketingCampaign = /* GraphQL */ `
       automatedEmail {
         prospects
         message
+        replyEmail
       }
       automatedText {
         prospects
