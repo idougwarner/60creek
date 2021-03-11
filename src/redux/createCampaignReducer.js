@@ -15,6 +15,7 @@ const initState = {
       status: "",
       prospects: 0,
       message: "",
+      replyEmail: "",
     },
     text: {
       status: "",

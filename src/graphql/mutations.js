@@ -260,6 +260,7 @@ export const marketingCampaign = /* GraphQL */ `
       automatedEmail {
         prospects
         message
+        replyEmail
       }
       automatedText {
         prospects
@@ -463,6 +464,7 @@ export const deletedMarketingCampaign = /* GraphQL */ `
       automatedEmail {
         prospects
         message
+        replyEmail
       }
       automatedText {
         prospects
@@ -1103,6 +1105,7 @@ export const createMarketingCampaign = /* GraphQL */ `
       automatedEmail {
         prospects
         message
+        replyEmail
       }
       automatedText {
         prospects
@@ -1164,6 +1167,7 @@ export const updateMarketingCampaign = /* GraphQL */ `
       automatedEmail {
         prospects
         message
+        replyEmail
       }
       automatedText {
         prospects
@@ -1225,6 +1229,7 @@ export const deleteMarketingCampaign = /* GraphQL */ `
       automatedEmail {
         prospects
         message
+        replyEmail
       }
       automatedText {
         prospects

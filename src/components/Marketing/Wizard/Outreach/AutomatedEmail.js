@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Button, Form, FormControl } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
+import { validateEmail } from "../../../../helpers/validations";
 import { CREATE_CAMPAIGN_ACTIONS } from "../../../../redux/actionTypes";
 import RichEditor from "../../../controls/RichEditor";
 import { SUBSTEP_COMPLETED } from "../WizardConstants";
@@ -8,6 +9,7 @@ import { SUBSTEP_COMPLETED } from "../WizardConstants";
 const AutomatedEmail = () => {
   const [prospects, setProspects] = useState("");
   const [message, setMessage] = useState("");
+  const [replyEmail, setReplyEmail] = useState("");
 
   const dispatch = useDispatch();
   const defaultProspects = useSelector(
@@ -26,6 +28,7 @@ const AutomatedEmail = () => {
         status: SUBSTEP_COMPLETED,
         prospects: prospects,
         message: message,
+        replyEmail: replyEmail,
       },
     });
     dispatch({ type: CREATE_CAMPAIGN_ACTIONS.UPDATE_SUBSTEP, data: "" });
@@ -38,6 +41,7 @@ const AutomatedEmail = () => {
           : defaultProspects
       );
       setMessage(emailInfo.message);
+      setReplyEmail(emailInfo.replyEmail);
     }
   }, [emailInfo, defaultProspects]);
   return (
@@ -58,6 +62,21 @@ const AutomatedEmail = () => {
         </FormControl.Feedback>
       </Form.Group>
 
+      <Form.Group controlId="emailAddress">
+        <Form.Label>Reply to email address</Form.Label>
+        <Form.Control
+          type="email"
+          style={{ maxWidth: 320 }}
+          placeholder="Enter Email Address"
+          className={replyEmail && validateEmail(replyEmail) ? "completed" : ""}
+          value={replyEmail}
+          onChange={(e) => setReplyEmail(e.target.value)}
+          isInvalid={replyEmail && !validateEmail(replyEmail)}
+        />
+        <FormControl.Feedback type="invalid">
+          Invalid Email Address
+        </FormControl.Feedback>
+      </Form.Group>
       <Form.Group>
         <Form.Label className="required">Email Content</Form.Label>
         <RichEditor
@@ -73,7 +92,13 @@ const AutomatedEmail = () => {
         <Button
           variant="outline-primary"
           size="lg"
-          disabled={!prospects || !message || prospects > defaultProspects}
+          disabled={
+            !prospects ||
+            !message ||
+            !replyEmail ||
+            !validateEmail(replyEmail) ||
+            prospects > defaultProspects
+          }
           onClick={addAutomatedEmail}
         >
           {emailInfo.status === SUBSTEP_COMPLETED
