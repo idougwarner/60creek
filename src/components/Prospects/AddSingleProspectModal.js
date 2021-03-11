@@ -284,16 +284,38 @@ const AddSingleProspectModal = ({ show, close }) => {
                 <Form.Label className="required">Select Status</Form.Label>
                 <Select
                   options={[
-                    { label: "Interested", value: INTERESTE_STATUS.INTERESTED },
                     {
-                      label: "Negotiating",
+                      label: INTERESTE_STATUS.INTERESTED,
+                      value: INTERESTE_STATUS.INTERESTED,
+                    },
+                    {
+                      label: INTERESTE_STATUS.FOLLOW_UP,
+                      value: INTERESTE_STATUS.FOLLOW_UP,
+                    },
+                    {
+                      label: INTERESTE_STATUS.NEGOTIATING,
                       value: INTERESTE_STATUS.NEGOTIATING,
                     },
                     {
-                      label: "Do not Call",
-                      value: INTERESTE_STATUS.DO_NOT_CALL,
+                      label: INTERESTE_STATUS.CLOSED,
+                      value: INTERESTE_STATUS.CLOSED,
                     },
-                    { label: "Closed", value: INTERESTE_STATUS.CLOSED },
+                    {
+                      label: INTERESTE_STATUS.NURTURE,
+                      value: INTERESTE_STATUS.NURTURE,
+                    },
+                    {
+                      label: INTERESTE_STATUS.NO_RESPONSE,
+                      value: INTERESTE_STATUS.NO_RESPONSE,
+                    },
+                    {
+                      label: INTERESTE_STATUS.NOT_INTERESTED,
+                      value: INTERESTE_STATUS.NOT_INTERESTED,
+                    },
+                    {
+                      label: INTERESTE_STATUS.DO_NOT_CONTACT,
+                      value: INTERESTE_STATUS.DO_NOT_CONTACT,
+                    },
                   ]}
                   placeholder="Select Status"
                   value={status}

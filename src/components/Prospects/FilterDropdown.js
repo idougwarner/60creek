@@ -5,11 +5,14 @@ import "./FilterDropdown.scss";
 
 export const INTERESTE_STATUS = {
   ALL: "all",
-  INTERESTED: "Interested",
+  INTERESTED: "Interested/Engaged",
   NEGOTIATING: "Negotiating",
-  DO_NOT_CALL: "Do Not Call",
+  DO_NOT_CONTACT: "Do Not Call",
   CLOSED: "Closed",
+  FOLLOW_UP: "Follow Up",
   NOT_INTERESTED: "Not Interested",
+  NO_RESPONSE: "No Response",
+  NURTURE: "Nurture",
   UNKNOWN: "Unknown",
 };
 
