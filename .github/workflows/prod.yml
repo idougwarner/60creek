@@ -37,4 +37,4 @@ jobs:
       - name: Deploy
         env:
           REACT_APP_STRIPE_PUBLIC_KEY: ${{ secrets.PROD_STRIPE_PUBLIC_KEY }}
-        run: amplify publish
+        run: amplify publish --yes
