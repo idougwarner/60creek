@@ -178,7 +178,11 @@ const ProspectsPage = () => {
         if (item["email"].toLowerCase().indexOf(strFilter.toLowerCase()) >= 0) {
           return true;
         }
-        if (item["phone"].toLowerCase().indexOf(strFilter.toLowerCase()) >= 0) {
+        if (
+          item["phone"]
+            .replace(/[^0-9]/g, "")
+            .indexOf(strFilter.toLowerCase()) >= 0
+        ) {
           return true;
         }
         return false;
