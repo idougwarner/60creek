@@ -10,14 +10,17 @@ import Messages from "../../components/IndividualProspect/Messages";
 import ProspectDetailsTab from "../../components/IndividualProspect/ProspectDetailsTab";
 import ProspectDemographicTab from "../../components/IndividualProspect/ProspectDemographicTab";
 import ProspectHomeTab from "../../components/IndividualProspect/ProspectHomeTab";
-import { INTERESTE_STATUS } from "../../components/Prospects/FilterDropdown";
+import {
+  INTEREST_STATUS,
+  INTEREST_STATUSES,
+} from "../../components/Prospects/FilterDropdown";
 import { updateProspect } from "../../graphql/mutations";
 import { ToastContainer, toast } from "react-toastify";
 import ComingSoon from "../../components/layout/ComingSoon";
 
 const ProspectPage = () => {
   const [data, setData] = useState(null);
-  const [interested, setInterested] = useState(INTERESTE_STATUS.UNKNOWN);
+  const [interested, setInterested] = useState(INTEREST_STATUS.UNKNOWN);
   const [loading, setLoading] = useState(false);
 
   const { id } = useParams();
@@ -43,12 +46,10 @@ const ProspectPage = () => {
   }, [id]);
   useEffect(() => {
     if (data) {
-      if (data.status === INTERESTE_STATUS.INTERESTED) {
-        setInterested(INTERESTE_STATUS.INTERESTED);
-      } else if (data.status === INTERESTE_STATUS.NOT_INTERESTED) {
-        setInterested(INTERESTE_STATUS.NOT_INTERESTED);
+      if (INTEREST_STATUSES.includes(data.status)) {
+        setInterested(data.status);
       } else {
-        setInterested(INTERESTE_STATUS.UNKNOWN);
+        setInterested(INTEREST_STATUS.UNKNOWN);
       }
     }
   }, [data]);
@@ -111,42 +112,15 @@ const ProspectPage = () => {
                     </Dropdown.Toggle>
 
                     <Dropdown.Menu className="interested-menu">
-                      <Dropdown.Item
-                        className={
-                          interested === INTERESTE_STATUS.UNKNOWN
-                            ? "active"
-                            : ""
-                        }
-                        onClick={() =>
-                          changeInterested(INTERESTE_STATUS.UNKNOWN)
-                        }
-                      >
-                        {INTERESTE_STATUS.UNKNOWN}
-                      </Dropdown.Item>
-                      <Dropdown.Item
-                        className={
-                          interested === INTERESTE_STATUS.INTERESTED
-                            ? "active"
-                            : ""
-                        }
-                        onClick={() =>
-                          changeInterested(INTERESTE_STATUS.INTERESTED)
-                        }
-                      >
-                        {INTERESTE_STATUS.INTERESTED}
-                      </Dropdown.Item>
-                      <Dropdown.Item
-                        className={
-                          interested === INTERESTE_STATUS.NOT_INTERESTED
-                            ? "active"
-                            : ""
-                        }
-                        onClick={() =>
-                          changeInterested(INTERESTE_STATUS.NOT_INTERESTED)
-                        }
-                      >
-                        {INTERESTE_STATUS.NOT_INTERESTED}
-                      </Dropdown.Item>
+                      {INTEREST_STATUSES.map((item, idx) => (
+                        <Dropdown.Item
+                          key={idx}
+                          className={interested === item ? "active" : ""}
+                          onClick={() => changeInterested(item)}
+                        >
+                          {item}
+                        </Dropdown.Item>
+                      ))}
                     </Dropdown.Menu>
                   </Dropdown>
                 </div>

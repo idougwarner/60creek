@@ -3,7 +3,7 @@ import { DropdownButton, FormCheck } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import "./FilterDropdown.scss";
 
-export const INTERESTE_STATUS = {
+export const INTEREST_STATUS = {
   ALL: "all",
   INTERESTED: "Interested/Engaged",
   NEGOTIATING: "Negotiating",
@@ -16,11 +16,21 @@ export const INTERESTE_STATUS = {
   UNKNOWN: "Unknown",
 };
 
+export const INTEREST_STATUSES = [
+  INTEREST_STATUS.INTERESTED,
+  INTEREST_STATUS.NEGOTIATING,
+  INTEREST_STATUS.DO_NOT_CONTACT,
+  INTEREST_STATUS.CLOSED,
+  INTEREST_STATUS.FOLLOW_UP,
+  INTEREST_STATUS.NOT_INTERESTED,
+  INTEREST_STATUS.NO_RESPONSE,
+  INTEREST_STATUS.NURTURE,
+  INTEREST_STATUS.UNKNOWN,
+];
+
 const FilterDropdown = ({ changeFilterEvent }) => {
   const [filterList, setFilterList] = useState(["all"]);
-  const [all, setAll] = useState(true);
-  const [interested, setInterested] = useState(false);
-  const [notInterested, setNotInterested] = useState(false);
+  const [filterStatus, setFilterStatus] = useState(["all"]);
 
   const [filter, setFilter] = useState({
     list: [],
@@ -31,19 +41,21 @@ const FilterDropdown = ({ changeFilterEvent }) => {
     { label: "All Prospects", value: "all" },
   ]);
   const prospectList = useSelector((state) => state.prospectStore.prospectList);
-  const changeEvent = (type, checked) => {
-    if (type === INTERESTE_STATUS.ALL) {
-      setAll(checked);
-      if (checked) {
-        setInterested(false);
-        setNotInterested(false);
-      }
+  const changeEvent = (status) => {
+    if (status === INTEREST_STATUS.ALL) {
+      setFilterStatus(["all"]);
     } else {
-      setAll(false);
-      if (type === INTERESTE_STATUS.INTERESTED) {
-        setInterested(checked);
-      } else if (type === INTERESTE_STATUS.NEGOTIATING) {
-        setNotInterested(checked);
+      const newList = [...filterStatus.filter((item) => item !== "all")];
+      const i = filterStatus.indexOf(status);
+      if (i < 0) {
+        newList.push(status);
+      } else {
+        newList.splice(i, 1);
+      }
+      if (newList.length === 0) {
+        setFilterStatus(["all"]);
+      } else {
+        setFilterStatus(newList);
       }
     }
   };
@@ -76,19 +88,15 @@ const FilterDropdown = ({ changeFilterEvent }) => {
     }
   }, [prospectList]);
   useEffect(() => {
-    let status = [];
-    if (interested) {
-      status.push(INTERESTE_STATUS.INTERESTED);
-    }
-    if (notInterested) {
-      status.push(INTERESTE_STATUS.NEGOTIATING);
-    }
     setFilter({
       list:
         filterList.length === 0 || filterList[0] === "all" ? [] : filterList,
-      status: status,
+      status:
+        filterStatus.length === 0 || filterStatus[0] === "all"
+          ? []
+          : filterStatus,
     });
-  }, [filterList, interested, notInterested]);
+  }, [filterList, filterStatus]);
   useEffect(() => {
     changeFilterEvent(filter);
     // eslint-disable-next-line
@@ -152,32 +160,21 @@ const FilterDropdown = ({ changeFilterEvent }) => {
           id="all"
           label="All"
           className="mb-3"
-          checked={all}
-          onChange={(event) =>
-            changeEvent(INTERESTE_STATUS.ALL, event.target.checked)
-          }
+          checked={filterStatus.includes(INTEREST_STATUS.ALL)}
+          onChange={() => changeEvent(INTEREST_STATUS.ALL)}
         />
-        <FormCheck
-          custom
-          type="checkbox"
-          id="interested"
-          label="Interested"
-          className="mb-3"
-          checked={interested}
-          onChange={(event) =>
-            changeEvent(INTERESTE_STATUS.INTERESTED, event.target.checked)
-          }
-        />
-        <FormCheck
-          custom
-          type="checkbox"
-          id="notinterested"
-          label="Not Interested"
-          checked={notInterested}
-          onChange={(event) =>
-            changeEvent(INTERESTE_STATUS.NEGOTIATING, event.target.checked)
-          }
-        />
+        {INTEREST_STATUSES.map((item, idx) => (
+          <FormCheck
+            key={idx}
+            custom
+            type="checkbox"
+            id={"checkbox-intesete-status-" + idx}
+            label={item}
+            className="mb-3"
+            checked={filterStatus.includes(item)}
+            onChange={(event) => changeEvent(item, event.target.checked)}
+          />
+        ))}
       </DropdownButton>
     </>
   );

@@ -63,10 +63,9 @@ const AutomatedEmail = () => {
       </Form.Group>
 
       <Form.Group controlId="emailAddress">
-        <Form.Label>Reply to email address</Form.Label>
+        <Form.Label className="required">Reply to email address</Form.Label>
         <Form.Control
           type="email"
-          style={{ maxWidth: 320 }}
           placeholder="Email address you would like responses to go"
           className={replyEmail && validateEmail(replyEmail) ? "completed" : ""}
           value={replyEmail}
