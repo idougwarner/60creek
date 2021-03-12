@@ -37,11 +37,13 @@ const tableFields = [
   { title: "STATUS", field: "status", sortable: false },
   { title: "FIRST", field: "firstName", sortable: true },
   { title: "LAST", field: "lastName", sortable: true },
+  { title: "EMAIL", field: "email", sortable: true },
+  { title: "PHONE", field: "phone", sortable: true },
   { title: "COMPANY", field: "company", sortable: true },
-  { title: "STREET", field: "address1", sortable: true },
+  // { title: "STREET", field: "address1", sortable: true },
   { title: "CITY", field: "city", sortable: true },
   { title: "STATE", field: "state", sortable: true },
-  { title: "ZIP", field: "zip", sortable: true },
+  // { title: "ZIP", field: "zip", sortable: true },
   // { title: "CONTACT INFO", field: "contactInfo", sortable: false },
 ];
 
@@ -176,7 +178,11 @@ const ProspectsPage = () => {
         if (item["email"].toLowerCase().indexOf(strFilter.toLowerCase()) >= 0) {
           return true;
         }
-        if (item["phone"].toLowerCase().indexOf(strFilter.toLowerCase()) >= 0) {
+        if (
+          item["phone"]
+            .replace(/[^0-9]/g, "")
+            .indexOf(strFilter.toLowerCase()) >= 0
+        ) {
           return true;
         }
         return false;
@@ -351,7 +357,7 @@ const ProspectsPage = () => {
                   )}
                 </th>
               ))}
-              <th width="120">CONTACT INFO</th>
+              {/* <th width="120">CONTACT INFO</th> */}
             </tr>
           </thead>
           <tbody>
@@ -386,20 +392,6 @@ const ProspectsPage = () => {
                       {item[field.field]}
                     </td>
                   ))}
-                  <td>
-                    <div className="contact-info">
-                      <img
-                        src="/assets/icons/email.svg"
-                        className="link mr-3"
-                        alt="email"
-                      />
-                      <img
-                        src="/assets/icons/phone.svg"
-                        className="link"
-                        alt="phone"
-                      />
-                    </div>
-                  </td>
                 </tr>
               ))}
           </tbody>
