@@ -6,7 +6,7 @@ import Select from "react-select";
 import "./AddSingleProspectModal.scss";
 import { customSelectStyles } from "../../assets/styles/select-style";
 import { createProspect } from "../../graphql/mutations";
-import { INTERESTE_STATUS } from "./FilterDropdown";
+import { INTEREST_STATUS } from "./FilterDropdown";
 import { usStates } from "../../helpers/us-states";
 import InputMask from "react-input-mask";
 import { validateEmail, validateZip } from "../../helpers/validations";
@@ -285,36 +285,36 @@ const AddSingleProspectModal = ({ show, close }) => {
                 <Select
                   options={[
                     {
-                      label: INTERESTE_STATUS.INTERESTED,
-                      value: INTERESTE_STATUS.INTERESTED,
+                      label: INTEREST_STATUS.INTERESTED,
+                      value: INTEREST_STATUS.INTERESTED,
                     },
                     {
-                      label: INTERESTE_STATUS.FOLLOW_UP,
-                      value: INTERESTE_STATUS.FOLLOW_UP,
+                      label: INTEREST_STATUS.FOLLOW_UP,
+                      value: INTEREST_STATUS.FOLLOW_UP,
                     },
                     {
-                      label: INTERESTE_STATUS.NEGOTIATING,
-                      value: INTERESTE_STATUS.NEGOTIATING,
+                      label: INTEREST_STATUS.NEGOTIATING,
+                      value: INTEREST_STATUS.NEGOTIATING,
                     },
                     {
-                      label: INTERESTE_STATUS.CLOSED,
-                      value: INTERESTE_STATUS.CLOSED,
+                      label: INTEREST_STATUS.CLOSED,
+                      value: INTEREST_STATUS.CLOSED,
                     },
                     {
-                      label: INTERESTE_STATUS.NURTURE,
-                      value: INTERESTE_STATUS.NURTURE,
+                      label: INTEREST_STATUS.NURTURE,
+                      value: INTEREST_STATUS.NURTURE,
                     },
                     {
-                      label: INTERESTE_STATUS.NO_RESPONSE,
-                      value: INTERESTE_STATUS.NO_RESPONSE,
+                      label: INTEREST_STATUS.NO_RESPONSE,
+                      value: INTEREST_STATUS.NO_RESPONSE,
                     },
                     {
-                      label: INTERESTE_STATUS.NOT_INTERESTED,
-                      value: INTERESTE_STATUS.NOT_INTERESTED,
+                      label: INTEREST_STATUS.NOT_INTERESTED,
+                      value: INTEREST_STATUS.NOT_INTERESTED,
                     },
                     {
-                      label: INTERESTE_STATUS.DO_NOT_CONTACT,
-                      value: INTERESTE_STATUS.DO_NOT_CONTACT,
+                      label: INTEREST_STATUS.DO_NOT_CONTACT,
+                      value: INTEREST_STATUS.DO_NOT_CONTACT,
                     },
                   ]}
                   placeholder="Select Status"
