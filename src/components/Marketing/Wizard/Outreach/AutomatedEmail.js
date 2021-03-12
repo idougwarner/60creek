@@ -67,7 +67,7 @@ const AutomatedEmail = () => {
         <Form.Control
           type="email"
           style={{ maxWidth: 320 }}
-          placeholder="Enter Email Address"
+          placeholder="Email address you would like responses to go"
           className={replyEmail && validateEmail(replyEmail) ? "completed" : ""}
           value={replyEmail}
           onChange={(e) => setReplyEmail(e.target.value)}
