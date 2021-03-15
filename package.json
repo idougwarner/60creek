@@ -6,6 +6,8 @@
     "@ckeditor/ckeditor5-alignment": "^25.0.0",
     "@ckeditor/ckeditor5-build-classic": "^25.0.0",
     "@ckeditor/ckeditor5-react": "^3.0.1",
+    "@sentry/react": "^6.2.2",
+    "@sentry/tracing": "^6.2.2",
     "@stripe/react-stripe-js": "^1.2.0",
     "@stripe/stripe-js": "^1.11.0",
     "@testing-library/jest-dom": "^5.11.4",
