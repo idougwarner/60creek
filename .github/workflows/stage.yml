@@ -35,4 +35,5 @@ jobs:
       - name: Deploy
         env:
           REACT_APP_STRIPE_PUBLIC_KEY: ${{ secrets.TEST_STRIPE_PUBLIC_KEY }}
+          REACT_APP_SENTRY_DSN: ${{ secrets.TEST_SENTRY_DSN }}
         run: amplify publish --yes
