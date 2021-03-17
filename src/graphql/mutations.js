@@ -57,6 +57,11 @@ export const prospectList = /* GraphQL */ `
       userId
       name
       enhance
+      customerEmail
+      customerId
+      paymentMethodId
+      amount
+      uploadCompleted
       createdAt
       updatedAt
     }
@@ -113,6 +118,7 @@ export const prospect = /* GraphQL */ `
       notes
       interested
       enhance
+      enhanced
       fetched
       demographic {
         DOB
@@ -171,6 +177,11 @@ export const prospect = /* GraphQL */ `
         userId
         name
         enhance
+        customerEmail
+        customerId
+        paymentMethodId
+        amount
+        uploadCompleted
         createdAt
         updatedAt
       }
@@ -293,6 +304,11 @@ export const marketingCampaign = /* GraphQL */ `
         userId
         name
         enhance
+        customerEmail
+        customerId
+        paymentMethodId
+        amount
+        uploadCompleted
         createdAt
         updatedAt
       }
@@ -331,6 +347,11 @@ export const deletedProspectLists = /* GraphQL */ `
       userId
       name
       enhance
+      customerEmail
+      customerId
+      paymentMethodId
+      amount
+      uploadCompleted
       createdAt
       updatedAt
     }
@@ -357,6 +378,7 @@ export const deletedProspect = /* GraphQL */ `
       notes
       interested
       enhance
+      enhanced
       fetched
       demographic {
         DOB
@@ -415,6 +437,11 @@ export const deletedProspect = /* GraphQL */ `
         userId
         name
         enhance
+        customerEmail
+        customerId
+        paymentMethodId
+        amount
+        uploadCompleted
         createdAt
         updatedAt
       }
@@ -497,11 +524,29 @@ export const deletedMarketingCampaign = /* GraphQL */ `
         userId
         name
         enhance
+        customerEmail
+        customerId
+        paymentMethodId
+        amount
+        uploadCompleted
         createdAt
         updatedAt
       }
       createdAt
       updatedAt
+    }
+  }
+`;
+export const createStripeCustomer = /* GraphQL */ `
+  mutation CreateStripeCustomer($input: CreateStripeCustomerInput) {
+    createStripeCustomer(input: $input) {
+      data {
+        paymentMethodId
+        customerId
+      }
+      error {
+        message
+      }
     }
   }
 `;
@@ -715,6 +760,7 @@ export const createProspect = /* GraphQL */ `
       notes
       interested
       enhance
+      enhanced
       fetched
       demographic {
         DOB
@@ -773,6 +819,11 @@ export const createProspect = /* GraphQL */ `
         userId
         name
         enhance
+        customerEmail
+        customerId
+        paymentMethodId
+        amount
+        uploadCompleted
         createdAt
         updatedAt
       }
@@ -805,6 +856,7 @@ export const updateProspect = /* GraphQL */ `
       notes
       interested
       enhance
+      enhanced
       fetched
       demographic {
         DOB
@@ -863,6 +915,11 @@ export const updateProspect = /* GraphQL */ `
         userId
         name
         enhance
+        customerEmail
+        customerId
+        paymentMethodId
+        amount
+        uploadCompleted
         createdAt
         updatedAt
       }
@@ -895,6 +952,7 @@ export const deleteProspect = /* GraphQL */ `
       notes
       interested
       enhance
+      enhanced
       fetched
       demographic {
         DOB
@@ -953,6 +1011,11 @@ export const deleteProspect = /* GraphQL */ `
         userId
         name
         enhance
+        customerEmail
+        customerId
+        paymentMethodId
+        amount
+        uploadCompleted
         createdAt
         updatedAt
       }
@@ -971,6 +1034,11 @@ export const createProspectList = /* GraphQL */ `
       userId
       name
       enhance
+      customerEmail
+      customerId
+      paymentMethodId
+      amount
+      uploadCompleted
       createdAt
       updatedAt
     }
@@ -986,6 +1054,11 @@ export const updateProspectList = /* GraphQL */ `
       userId
       name
       enhance
+      customerEmail
+      customerId
+      paymentMethodId
+      amount
+      uploadCompleted
       createdAt
       updatedAt
     }
@@ -1001,6 +1074,11 @@ export const deleteProspectList = /* GraphQL */ `
       userId
       name
       enhance
+      customerEmail
+      customerId
+      paymentMethodId
+      amount
+      uploadCompleted
       createdAt
       updatedAt
     }
@@ -1138,6 +1216,11 @@ export const createMarketingCampaign = /* GraphQL */ `
         userId
         name
         enhance
+        customerEmail
+        customerId
+        paymentMethodId
+        amount
+        uploadCompleted
         createdAt
         updatedAt
       }
@@ -1200,6 +1283,11 @@ export const updateMarketingCampaign = /* GraphQL */ `
         userId
         name
         enhance
+        customerEmail
+        customerId
+        paymentMethodId
+        amount
+        uploadCompleted
         createdAt
         updatedAt
       }
@@ -1262,6 +1350,11 @@ export const deleteMarketingCampaign = /* GraphQL */ `
         userId
         name
         enhance
+        customerEmail
+        customerId
+        paymentMethodId
+        amount
+        uploadCompleted
         createdAt
         updatedAt
       }

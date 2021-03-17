@@ -10,13 +10,14 @@ import Messages from "../../components/IndividualProspect/Messages";
 import ProspectDetailsTab from "../../components/IndividualProspect/ProspectDetailsTab";
 import ProspectDemographicTab from "../../components/IndividualProspect/ProspectDemographicTab";
 import ProspectHomeTab from "../../components/IndividualProspect/ProspectHomeTab";
-import {
-  INTEREST_STATUS,
-  INTEREST_STATUSES,
-} from "../../components/Prospects/FilterDropdown";
+
 import { updateProspect } from "../../graphql/mutations";
 import { ToastContainer, toast } from "react-toastify";
 import ComingSoon from "../../components/layout/ComingSoon";
+import {
+  INTEREST_STATUS,
+  INTEREST_STATUSES,
+} from "../../helpers/interestStatus";
 
 const ProspectPage = () => {
   const [data, setData] = useState(null);

@@ -89,7 +89,12 @@ const Layout = ({ children }) => {
         await prospectListDb.clear();
         await prospectListDb.add({
           prospectName: data.data.prospectName,
-          prospectId: data.data.prospectListId,
+          prospectListId: data.data.prospectListId,
+          customerId: data.data.customerId,
+          amount: data.data.amount,
+          paymentMethodId: data.data.paymentMethodId,
+          customerEmail: data.data.customerEmail,
+          enhance: data.data.enhance,
         });
       } else if (data.data.type === "prospect") {
         await prospectsDb.deleteRecord(data.data.prospectId);

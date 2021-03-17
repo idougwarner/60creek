@@ -8,6 +8,11 @@ export const prospectList = /* GraphQL */ `
       userId
       name
       enhance
+      customerEmail
+      customerId
+      paymentMethodId
+      amount
+      uploadCompleted
       createdAt
       updatedAt
     }
@@ -34,6 +39,7 @@ export const prospect = /* GraphQL */ `
       notes
       interested
       enhance
+      enhanced
       fetched
       demographic {
         DOB
@@ -92,6 +98,11 @@ export const prospect = /* GraphQL */ `
         userId
         name
         enhance
+        customerEmail
+        customerId
+        paymentMethodId
+        amount
+        uploadCompleted
         createdAt
         updatedAt
       }
@@ -174,6 +185,11 @@ export const marketingCampaign = /* GraphQL */ `
         userId
         name
         enhance
+        customerEmail
+        customerId
+        paymentMethodId
+        amount
+        uploadCompleted
         createdAt
         updatedAt
       }
@@ -289,6 +305,7 @@ export const getProspect = /* GraphQL */ `
       notes
       interested
       enhance
+      enhanced
       fetched
       demographic {
         DOB
@@ -347,6 +364,11 @@ export const getProspect = /* GraphQL */ `
         userId
         name
         enhance
+        customerEmail
+        customerId
+        paymentMethodId
+        amount
+        uploadCompleted
         createdAt
         updatedAt
       }
@@ -381,6 +403,7 @@ export const listProspects = /* GraphQL */ `
         notes
         interested
         enhance
+        enhanced
         fetched
         demographic {
           DOB
@@ -439,6 +462,11 @@ export const listProspects = /* GraphQL */ `
           userId
           name
           enhance
+          customerEmail
+          customerId
+          paymentMethodId
+          amount
+          uploadCompleted
           createdAt
           updatedAt
         }
@@ -458,6 +486,11 @@ export const getProspectList = /* GraphQL */ `
       userId
       name
       enhance
+      customerEmail
+      customerId
+      paymentMethodId
+      amount
+      uploadCompleted
       createdAt
       updatedAt
     }
@@ -475,6 +508,11 @@ export const listProspectLists = /* GraphQL */ `
         userId
         name
         enhance
+        customerEmail
+        customerId
+        paymentMethodId
+        amount
+        uploadCompleted
         createdAt
         updatedAt
       }
@@ -586,6 +624,11 @@ export const getMarketingCampaign = /* GraphQL */ `
         userId
         name
         enhance
+        customerEmail
+        customerId
+        paymentMethodId
+        amount
+        uploadCompleted
         createdAt
         updatedAt
       }
@@ -654,6 +697,11 @@ export const listMarketingCampaigns = /* GraphQL */ `
           userId
           name
           enhance
+          customerEmail
+          customerId
+          paymentMethodId
+          amount
+          uploadCompleted
           createdAt
           updatedAt
         }
@@ -820,6 +868,7 @@ export const prospectsByUserId = /* GraphQL */ `
         notes
         interested
         enhance
+        enhanced
         fetched
         demographic {
           DOB
@@ -878,6 +927,11 @@ export const prospectsByUserId = /* GraphQL */ `
           userId
           name
           enhance
+          customerEmail
+          customerId
+          paymentMethodId
+          amount
+          uploadCompleted
           createdAt
           updatedAt
         }
@@ -924,6 +978,7 @@ export const prospectsByProspectListId = /* GraphQL */ `
         notes
         interested
         enhance
+        enhanced
         fetched
         demographic {
           DOB
@@ -982,6 +1037,11 @@ export const prospectsByProspectListId = /* GraphQL */ `
           userId
           name
           enhance
+          customerEmail
+          customerId
+          paymentMethodId
+          amount
+          uploadCompleted
           createdAt
           updatedAt
         }
@@ -1016,6 +1076,11 @@ export const prospectListsByUserId = /* GraphQL */ `
         userId
         name
         enhance
+        customerEmail
+        customerId
+        paymentMethodId
+        amount
+        uploadCompleted
         createdAt
         updatedAt
       }
@@ -1089,6 +1154,11 @@ export const campaignsByUserId = /* GraphQL */ `
           userId
           name
           enhance
+          customerEmail
+          customerId
+          paymentMethodId
+          amount
+          uploadCompleted
           createdAt
           updatedAt
         }

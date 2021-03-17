@@ -75,9 +75,14 @@ type Mutation {
   deletedProspect(id: ID!): Prospect
   deletedPaymentMethod(id: ID!): PaymentMethod
   deletedMarketingCampaign(id: ID!): MarketingCampaign
+
+  createStripeCustomer(input: CreateStripeCustomerInput): StripeCustomerResult
+    @function(name: "createStripeCustomer-${env}")
+
   createStripeSubscription(
     input: CreateStripeSubscriptionInput
   ): PaymentMethodResult @function(name: "createStripeSubscription-${env}")
+
   validatePromoCode(input: ValidatePromoCodeInput): ValidatePromoCodeResult
     @function(name: "validatePromoCode-${env}")
   checkout(input: CheckoutInput): CheckoutResult
@@ -286,6 +291,10 @@ type ValidatePromoCodeResult {
   data: CouponInfo
   error: ErrorResponse
 }
+input CreateStripeCustomerInput {
+  paymentMethodId: String
+  email: String
+}
 input CreateStripeSubscriptionInput {
   paymentMethodId: String
   email: String
@@ -360,6 +369,7 @@ type Prospect
   notes: String
   interested: String
   enhance: Boolean
+  enhanced: Boolean
   fetched: Boolean
   # Demographic data info
   demographic: DemographicInfo
@@ -379,6 +389,11 @@ type ProspectList
   userId: ID!
   name: String
   enhance: Boolean
+  customerEmail: String
+  customerId: String
+  paymentMethodId: String
+  amount: Float
+  uploadCompleted: Boolean
 }
 type ErrorResponse {
   message: String
@@ -394,6 +409,14 @@ type PaymentMethodData {
   subscriptionType: String
   discount: Int
   unitAmount: Int
+}
+type StripeCustomerData {
+  paymentMethodId: String
+  customerId: String
+}
+type StripeCustomerResult {
+  data: StripeCustomerData
+  error: ErrorResponse
 }
 type PaymentMethodResult {
   data: PaymentMethodData

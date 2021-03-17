@@ -59,23 +59,23 @@ export const getJsonFromFile = (file) => {
         "facebook",
         "status",
       ];
-      const dataField = dt[0]
-        .map((item) => {
-          const va = loadash.camelCase(item);
-          return va === "street" || va === "address" ? "address1" : va;
-        })
-        .filter((item) => validFields.indexOf(item) >= 0);
+      const dataField = dt[0].map((item) => {
+        const va = loadash.camelCase(item);
+        if (va === "name") return "firstName";
+        return va === "street" || va === "address" ? "address1" : va;
+      });
       let data = [];
       for (let i = 1; i < dt.length; i++) {
         let row = {},
           cnt = 0;
         for (let j = 0; j < dataField.length; j++) {
           if (j >= dt[i].length) break;
+          if (!validFields.includes(dataField[j])) continue;
           row[dataField[j]] = String(dt[i][j]).trim() || "";
           if (dataField[j] === "phone") {
             row[dataField[j]] = formatPhoneNumber(row[dataField[j]]) || "";
           }
-          if (dt[i][j]) {
+          if (row[dataField[j]]) {
             cnt++;
           }
         }

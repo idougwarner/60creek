@@ -15,14 +15,6 @@
     },
     "s3Key": {
       "Type": "String"
-    },
-    "api60creekGraphQLAPIIdOutput": {
-      "Type": "String",
-      "Default": "api60creekGraphQLAPIIdOutput"
-    },
-    "api60creekGraphQLAPIEndpointOutput": {
-      "Type": "String",
-      "Default": "api60creekGraphQLAPIEndpointOutput"
     }
   },
   "Conditions": {
@@ -55,12 +47,12 @@
         "FunctionName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "prospectsTableTrigger",
+            "createStripeCustomer",
             {
               "Fn::Join": [
                 "",
                 [
-                  "prospectsTableTrigger",
+                  "createStripeCustomer",
                   "-",
                   {
                     "Ref": "env"
@@ -97,12 +89,12 @@
         "RoleName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "60creekLambdaRolee248b606",
+            "60creekLambdaRole07877a42",
             {
               "Fn::Join": [
                 "",
                 [
-                  "60creekLambdaRolee248b606",
+                  "60creekLambdaRole07877a42",
                   "-",
                   {
                     "Ref": "env"
@@ -171,62 +163,6 @@
             }
           ]
         }
-      }
-    },
-    "LambdaTriggerPolicyProspect": {
-      "DependsOn": [
-        "LambdaExecutionRole"
-      ],
-      "Type": "AWS::IAM::Policy",
-      "Properties": {
-        "PolicyName": "amplify-lambda-execution-policy-Prospect",
-        "Roles": [
-          {
-            "Ref": "LambdaExecutionRole"
-          }
-        ],
-        "PolicyDocument": {
-          "Version": "2012-10-17",
-          "Statement": [
-            {
-              "Effect": "Allow",
-              "Action": [
-                "dynamodb:DescribeStream",
-                "dynamodb:GetRecords",
-                "dynamodb:GetShardIterator",
-                "dynamodb:ListStreams"
-              ],
-              "Resource": {
-                "Fn::ImportValue": {
-                  "Fn::Sub": "${api60creekGraphQLAPIIdOutput}:GetAtt:ProspectTable:StreamArn"
-                }
-              }
-            }
-          ]
-        }
-      }
-    },
-    "LambdaEventSourceMappingProspect": {
-      "Type": "AWS::Lambda::EventSourceMapping",
-      "DependsOn": [
-        "LambdaTriggerPolicyProspect",
-        "LambdaExecutionRole"
-      ],
-      "Properties": {
-        "BatchSize": 100,
-        "Enabled": true,
-        "EventSourceArn": {
-          "Fn::ImportValue": {
-            "Fn::Sub": "${api60creekGraphQLAPIIdOutput}:GetAtt:ProspectTable:StreamArn"
-          }
-        },
-        "FunctionName": {
-          "Fn::GetAtt": [
-            "LambdaFunction",
-            "Arn"
-          ]
-        },
-        "StartingPosition": "LATEST"
       }
     }
   },

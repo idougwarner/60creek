@@ -190,9 +190,13 @@
           "deploymentBucketName": "amplify-60creek-develop-13734-deployment",
           "s3Key": "amplify-builds/changeEmail-53426269496a685a396e-build.zip"
         },
-        "prospectsTableTrigger": {
+        "createStripeCustomer": {
           "deploymentBucketName": "amplify-60creek-develop-13734-deployment",
-          "s3Key": "amplify-builds/prospectsTableTrigger-5a2b42422f6a4565676c-build.zip"
+          "s3Key": "amplify-builds/createStripeCustomer-66376a712b796c4b5431-build.zip"
+        },
+        "prospectListTableTrigger": {
+          "deploymentBucketName": "amplify-60creek-develop-13734-deployment",
+          "s3Key": "amplify-builds/prospectListTableTrigger-386c52473746766e4962-build.zip"
         }
       },
       "hosting": {

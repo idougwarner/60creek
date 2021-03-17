@@ -6,11 +6,11 @@ import Select from "react-select";
 import "./AddSingleProspectModal.scss";
 import { customSelectStyles } from "../../assets/styles/select-style";
 import { createProspect } from "../../graphql/mutations";
-import { INTEREST_STATUS } from "./FilterDropdown";
 import { usStates } from "../../helpers/us-states";
 import InputMask from "react-input-mask";
 import { validateEmail, validateZip } from "../../helpers/validations";
 import { toast, ToastContainer } from "react-toastify";
+import { INTEREST_STATUSES } from "../../helpers/interestStatus";
 
 const STEP1 = 0;
 const STEP2 = 1;
@@ -283,40 +283,10 @@ const AddSingleProspectModal = ({ show, close }) => {
               <Form.Group>
                 <Form.Label className="required">Select Status</Form.Label>
                 <Select
-                  options={[
-                    {
-                      label: INTEREST_STATUS.INTERESTED,
-                      value: INTEREST_STATUS.INTERESTED,
-                    },
-                    {
-                      label: INTEREST_STATUS.FOLLOW_UP,
-                      value: INTEREST_STATUS.FOLLOW_UP,
-                    },
-                    {
-                      label: INTEREST_STATUS.NEGOTIATING,
-                      value: INTEREST_STATUS.NEGOTIATING,
-                    },
-                    {
-                      label: INTEREST_STATUS.CLOSED,
-                      value: INTEREST_STATUS.CLOSED,
-                    },
-                    {
-                      label: INTEREST_STATUS.NURTURE,
-                      value: INTEREST_STATUS.NURTURE,
-                    },
-                    {
-                      label: INTEREST_STATUS.NO_RESPONSE,
-                      value: INTEREST_STATUS.NO_RESPONSE,
-                    },
-                    {
-                      label: INTEREST_STATUS.NOT_INTERESTED,
-                      value: INTEREST_STATUS.NOT_INTERESTED,
-                    },
-                    {
-                      label: INTEREST_STATUS.DO_NOT_CONTACT,
-                      value: INTEREST_STATUS.DO_NOT_CONTACT,
-                    },
-                  ]}
+                  options={INTEREST_STATUSES.map((item) => ({
+                    label: item,
+                    value: item,
+                  }))}
                   placeholder="Select Status"
                   value={status}
                   className={status ? "completed" : ""}
