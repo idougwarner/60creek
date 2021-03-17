@@ -31,7 +31,7 @@ const createOptions = () => {
 const CheckOutForm = ({
   stripe,
   elements,
-  changeToken,
+  changePaymentMethod,
   itemCounts,
   generateToken,
   changeCardStatus,
@@ -71,33 +71,39 @@ const CheckOutForm = ({
     }
   }, [cardNumber, cardExpiry, cardCvc]);
 
-  const getToken = () => {
+  const getPaymentMethod = () => {
     return new Promise(async (resolver, reject) => {
       if (!stripe) {
-        changeToken(null);
+        changePaymentMethod(null);
         return;
       }
       setErrorMsg("");
 
       const cardElement = elements.getElement(CardNumberElement);
       try {
-        const { token } = await stripe.createToken(cardElement);
-        changeToken(token);
-        return resolver(token);
+        const pm = await stripe.createPaymentMethod({
+          type: "card",
+          card: cardElement,
+          billing_details: {
+            name: cardholderName,
+          },
+        });
+        changePaymentMethod(pm.paymentMethod.id);
+        return resolver(pm.paymentMethod.id);
       } catch (err) {
         if (typeof err.message === "string") {
           setErrorMsg(messageConvert(err.message));
         } else {
           setErrorMsg(messageConvert(new Error(err).message));
         }
-        changeToken(null);
+        changePaymentMethod(null);
         return reject(err);
       }
     });
   };
 
   useEffect(() => {
-    getToken();
+    getPaymentMethod();
     // eslint-disable-next-line
   }, [generateToken]);
 
@@ -108,7 +114,7 @@ const CheckOutForm = ({
       changeCardStatus(false);
     }
 
-    changeToken(null);
+    changePaymentMethod(null);
     // eslint-disable-next-line
   }, [cardStatus, cardholderName]);
 
@@ -171,7 +177,7 @@ const CheckOutForm = ({
 
 const InjectedCheckoutForm = ({
   changeCardStatus,
-  changeToken,
+  changePaymentMethod,
   itemCounts,
   generateToken,
 }) => {
@@ -184,7 +190,7 @@ const InjectedCheckoutForm = ({
             generateToken={generateToken}
             stripe={stripe}
             itemCounts={itemCounts}
-            changeToken={changeToken}
+            changePaymentMethod={changePaymentMethod}
             changeCardStatus={changeCardStatus}
           />
         );
@@ -194,7 +200,7 @@ const InjectedCheckoutForm = ({
 };
 
 const CheckoutForm = ({
-  changeToken,
+  changePaymentMethod,
   itemCounts,
   generateToken,
   changeCardStatus,
@@ -205,7 +211,7 @@ const CheckoutForm = ({
         <InjectedCheckoutForm
           generateToken={generateToken}
           itemCounts={itemCounts}
-          changeToken={changeToken}
+          changePaymentMethod={changePaymentMethod}
           changeCardStatus={changeCardStatus}
         />
       </Elements>

@@ -44,13 +44,33 @@ export const DBConfig = {
           options: { unique: false },
         },
         {
-          name: "prospectId",
-          keypath: "prospectId",
+          name: "prospectListId",
+          keypath: "prospectListId",
           options: { unique: false },
         },
         {
           name: "enhance",
           keypath: "enhance",
+          options: { unique: false },
+        },
+        {
+          name: "customerId",
+          keypath: "customerId",
+          options: { unique: false },
+        },
+        {
+          name: "paymentMethodId",
+          keypath: "paymentMethodId",
+          options: { unique: false },
+        },
+        {
+          name: "customerEmail",
+          keypath: "customerEmail",
+          options: { unique: false },
+        },
+        {
+          name: "amount",
+          keypath: "amount",
           options: { unique: false },
         },
       ],

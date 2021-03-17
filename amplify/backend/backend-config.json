@@ -87,7 +87,12 @@
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
     },
-    "prospectsTableTrigger": {
+    "createStripeCustomer": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "prospectListTableTrigger": {
       "build": true,
       "providerPlugin": "awscloudformation",
       "service": "Lambda",
