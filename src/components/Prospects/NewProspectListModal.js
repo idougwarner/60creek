@@ -5,7 +5,7 @@ import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import { getJsonFromFile } from "../../helpers/CSVFileHelper";
 import { API, graphqlOperation } from "aws-amplify";
-import { checkout } from "../../graphql/mutations";
+import { createStripeCustomer } from "../../graphql/mutations";
 import { useDispatch, useSelector } from "react-redux";
 import ConfirmModal from "./ConfirmModal";
 import Select from "react-select";
@@ -60,12 +60,13 @@ const NewProspectListModal = ({
   const [completed, setCompleted] = useState(false);
   const [totalNumber, setTotalNumber] = useState("");
   const [fileData, setFileData] = useState([]);
+  const [fileErrMsg, setFileErrMsg] = useState("");
 
   const [tmpState, setTmpState] = useState(null);
 
   const [editField, setEditField] = useState("");
   const [editing, setEditing] = useState(false);
-  const [token, setToken] = useState(null);
+  const [paymentMethod, setPaymentMethod] = useState(null);
   const [generateToken, setGenerateToken] = useState(false);
   const [cardStatus, setCardStatus] = useState(false);
 
@@ -210,10 +211,15 @@ const NewProspectListModal = ({
     event.preventDefault();
     if (event.target.files.length > 0) {
       setLoading(true);
+      setFileErrMsg("");
       try {
         const fData = await getJsonFromFile(event.target.files[0]);
-        setFileData(fData);
-        setFileName(event.target.files[0].name);
+        if (fData.length > 0) {
+          setFileData(fData);
+          setFileName(event.target.files[0].name);
+        } else {
+          setFileErrMsg("Your CSV file is not supported. Please download the template to see the supported CSV file.");
+        }
         event.target.value = null;
       } catch (err) {
       } finally {
@@ -228,22 +234,23 @@ const NewProspectListModal = ({
 
   useEffect(() => {
     const f = async () => {
-      if (!token) return;
+      if (!paymentMethod) return;
       if (enhance) {
         setLoadingEnhanceData(true);
         setErrMsg("");
         try {
           const rt = await API.graphql(
-            graphqlOperation(checkout, {
+            graphqlOperation(createStripeCustomer, {
               input: {
                 email: user.email,
-                token: token.id,
-                amount: prospectList.length,
+                paymentMethodId: paymentMethod,
               },
             })
           );
-          if (rt.data.checkout.error) {
-            setErrMsg(messageConvert(rt.data.checkout.error.message));
+          if (rt.data.createStripeCustomer.error) {
+            setErrMsg(
+              messageConvert(rt.data.createStripeCustomer.error.message)
+            );
             setLoadingEnhanceData(false);
             return;
           }
@@ -258,6 +265,16 @@ const NewProspectListModal = ({
             const item = newProspects[i];
             await prospectsDb.add(item);
           }
+          await prospectListDb.clear();
+          await prospectListDb.add({
+            prospectName: listName,
+            prospectListId: selectedList?.value || "",
+            enhance: enhance,
+            customerEmail: user.email,
+            customerId: rt.data.createStripeCustomer.data.customerId,
+            paymentMethodId: rt.data.createStripeCustomer.data.paymentMethodId,
+            amount: prospectList.length,
+          });
           setProspectList(newProspects);
           next();
         } catch (err) {}
@@ -266,14 +283,14 @@ const NewProspectListModal = ({
     };
     f();
     // eslint-disable-next-line
-  }, [token]);
+  }, [paymentMethod]);
 
   const gotoSecondStep = async () => {
     try {
       await prospectListDb.clear();
       await prospectListDb.add({
         prospectName: listName,
-        prospectId: selectedList?.value || "",
+        prospectListId: selectedList?.value || "",
         enhance: enhance,
       });
 
@@ -284,6 +301,7 @@ const NewProspectListModal = ({
       }
     } catch (err) {}
     if (enhance) {
+      setLoadingEnhanceData(true);
       setGenerateToken(!generateToken);
     } else {
       next();
@@ -301,7 +319,7 @@ const NewProspectListModal = ({
       await prospectsDb.add(item);
     }
     pushData();
-    next();
+    setStep(STEP3);
   };
   const updateField = (value) => {
     let newList = [...prospectList];
@@ -661,7 +679,11 @@ const NewProspectListModal = ({
                 className="text-muted mb-2 d-flex flex-wrap align-items-center"
                 style={{ overflowWrap: "anywhere" }}
               >
-                {fileName ? fileName : "No file selected"}
+                {fileErrMsg
+                  ? fileErrMsg
+                  : fileName
+                  ? fileName
+                  : "No file selected"}
                 {fileName && (
                   <Button
                     variant="link"
@@ -723,7 +745,7 @@ const NewProspectListModal = ({
               <CheckoutForm
                 itemCounts={prospectList.length}
                 generateToken={generateToken}
-                changeToken={(event) => setToken(event)}
+                changePaymentMethod={(event) => setPaymentMethod(event)}
                 changeCardStatus={(event) => setCardStatus(event)}
               />
             )}

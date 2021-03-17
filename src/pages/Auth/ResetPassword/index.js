@@ -60,15 +60,12 @@ const ResetPassword = () => {
           },
         })
       );
-      console.log(rt);
       if (rt.data.resetPassword.error) {
         setErrMsg(rt.data.resetPassword.error.message);
       } else {
         history.replace(APP_URLS.COMPLETED_RESET_PASSWORD);
       }
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (err) {}
     setResetting(false);
   };
 
