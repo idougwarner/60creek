@@ -330,7 +330,6 @@ exports.handler = async (event) => {
         });
       }
     }
-
     return "Successfully processed DynamoDB record";
   } catch (err) {
     return new Error(err).message;
