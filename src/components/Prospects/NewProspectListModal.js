@@ -164,6 +164,7 @@ const NewProspectListModal = ({
   useEffect(() => {
     if (
       !loading &&
+      !fileErrMsg &&
       (existingList ? selectedList : listName) &&
       prospectList.length > 0 &&
       (enhance ? cardStatus : true)
@@ -174,6 +175,7 @@ const NewProspectListModal = ({
     }
   }, [
     loading,
+    fileErrMsg,
     listName,
     selectedList,
     prospectList,
@@ -212,13 +214,17 @@ const NewProspectListModal = ({
     if (event.target.files.length > 0) {
       setLoading(true);
       setFileErrMsg("");
+      setFileName("");
+      setFileData([]);
       try {
         const fData = await getJsonFromFile(event.target.files[0]);
         if (fData.length > 0) {
           setFileData(fData);
           setFileName(event.target.files[0].name);
         } else {
-          setFileErrMsg("Your CSV file is not supported. Please download the template to see the supported CSV file.");
+          setFileErrMsg(
+            "Your CSV file is not supported. Please download the template to see the supported CSV file."
+          );
         }
         event.target.value = null;
       } catch (err) {
