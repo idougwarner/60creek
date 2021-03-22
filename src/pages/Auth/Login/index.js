@@ -45,7 +45,7 @@ export const Login = () => {
         if (params.returnUrl) {
           history.replace(params.returnUrl);
         } else {
-          history.replace(APP_URLS.DASHBOARD);
+          history.replace(APP_URLS.PROSPECTS);
         }
       }
     } catch (err) {}

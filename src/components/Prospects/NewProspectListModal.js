@@ -859,6 +859,7 @@ const NewProspectListModal = ({
       )}
       {step === STEP2 && (
         <ConfirmModal
+          prospectsCount={prospectList.length}
           show={showCloseConfirm}
           close={async (rt) => {
             if (rt.data) {

@@ -120,6 +120,7 @@ const Layout = ({ children }) => {
           percentage: 100,
         });
       }, 3000);
+      console.log("upload completed -----------------------");
     } else if (data.type === UPLOAD_STATUS.ERROR) {
       dispatch({
         type: ACTIONS.ERROR_UPLOADE_WORKER,

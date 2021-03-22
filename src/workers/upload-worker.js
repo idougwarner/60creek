@@ -142,6 +142,7 @@ export const startUploadProspects = async (
           },
         })
       );
+      console.log("finished -------");
     }
   } catch (err) {
     postMessage({ type: UPLOAD_STATUS.ERROR, error: err });

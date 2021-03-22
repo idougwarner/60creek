@@ -99,6 +99,21 @@ type Mutation {
 
   changeEmail(input: ChangeEmailInput): ChangeEmailResult
     @function(name: "changeEmail-${env}")
+
+  fetchEnhanceData(input: FetchEnhanceDataInput): String
+    @function(name: "fetchEnhanceData-${env}")
+}
+
+input FetchEnhanceDataInput {
+  prospectId: String
+  firstName: String
+  lastName: String
+  email: String
+  phone: String
+  city: String
+  state: String
+  zip: String
+  address1: String
 }
 
 input ChangeEmailInput {
