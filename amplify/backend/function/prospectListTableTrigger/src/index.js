@@ -8,16 +8,10 @@ const axios = require("axios");
 const graphqlEndpointPath = `/sixtycreek-${process.env.ENV}/graphql-endpoint`;
 const appsyncApiKeyPath = `/sixtycreek-${process.env.ENV}/appsync-api-key`;
 const stripeSecretKeyPath = `/sixtycreek-${process.env.ENV}/stripe-secret-key`;
-const datafinderKeyPath = `/sixtycreek-${process.env.ENV}/datafinder-key`;
 
 const envPromise = ssm
   .getParameters({
-    Names: [
-      graphqlEndpointPath,
-      appsyncApiKeyPath,
-      stripeSecretKeyPath,
-      datafinderKeyPath,
-    ],
+    Names: [graphqlEndpointPath, appsyncApiKeyPath, stripeSecretKeyPath],
     WithDecryption: true,
   })
   .promise();
@@ -62,14 +56,9 @@ const prospectsByProspectListId = gql`
   }
 `;
 
-const updateProspect = gql`
-  mutation UpdateProspect(
-    $input: UpdateProspectInput!
-    $condition: ModelProspectConditionInput
-  ) {
-    updateProspect(input: $input, condition: $condition) {
-      id
-    }
+const fetchEnhanceData = gql`
+  mutation FetchEnhanceData($input: FetchEnhanceDataInput) {
+    fetchEnhanceData(input: $input)
   }
 `;
 
@@ -88,16 +77,22 @@ exports.handler = async (event) => {
     const graphqlEndpoint = getEnvValue(params, graphqlEndpointPath);
     const appsyncApiKey = getEnvValue(params, appsyncApiKeyPath);
     const stripeSecretKey = getEnvValue(params, stripeSecretKeyPath);
-    const datafinderKey = getEnvValue(params, datafinderKeyPath);
 
     const stripe = require("stripe")(stripeSecretKey);
     //eslint-disable-line
+    console.log(
+      "=============  event start =============== >  ",
+      event.Records.length
+    );
     for (let i = 0; i < event.Records.length; i++) {
       const record = event.Records[i];
       if (
         record.eventName === "MODIFY" &&
-        record.dynamodb.NewImage.uploadCompleted.BOOL
+        record.dynamodb.NewImage.uploadCompleted.BOOL &&
+        !record.dynamodb.OldImage.uploadCompleted.BOOL
       ) {
+        console.log("new image ======> ", record.dynamodb.NewImage);
+        console.log("old image ======> ", record.dynamodb.OldImage);
         const prospectListId = record.dynamodb.NewImage.id.S;
         const customerId = record.dynamodb.NewImage.customerId.S;
         const customerEmail = record.dynamodb.NewImage.customerEmail.S;
@@ -125,7 +120,7 @@ exports.handler = async (event) => {
         const prospects = graphqlData.data.data.prospectsByProspectListId.items;
 
         if (prospects.length > 0) {
-          await stripe.paymentIntents.create({
+          const stripeCheckoutInfo = await stripe.paymentIntents.create({
             amount: parseInt(prospects.length * 100),
             currency: "usd",
             customer: customerId,
@@ -135,175 +130,40 @@ exports.handler = async (event) => {
             confirm: true,
             description: "Enhanced prospects uploaded",
           });
+          console.log(stripeCheckoutInfo);
         }
         for (let j = 0; j < prospects.length; j++) {
-          const prospectId = prospects[j].id;
-          const firstName = prospects[j].firstName;
-          const lastName = prospects[j].lastName;
-          const email = prospects[j].email;
-          const phone = prospects[j].phone;
+          const {
+            id,
+            firstName,
+            lastName,
+            email,
+            phone,
+            city,
+            state,
+            zip,
+            address1,
+          } = prospects[j];
 
-          let dt = {};
-
-          {
-            let rt;
-
-            if (email && !phone) {
-              rt = await axios.get("https://api.datafinder.com/v2/qdf.php", {
-                params: {
-                  service: "phone",
-                  k2: datafinderKey,
-                  d_email: email,
-                  d_first: firstName ? firstName : null,
-                  d_last: lastName ? lastName : null,
-                },
-              });
-            } else if (email || phone) {
-              rt = await axios.get("https://api.datafinder.com/v2/qdf.php", {
-                params: {
-                  service: "email",
-                  k2: datafinderKey,
-                  d_phone: phone,
-                  d_first: firstName ? firstName : null,
-                  d_last: lastName ? lastName : null,
-                },
-              });
-            }
-
-            if (rt && rt.data && rt.data.datafinder["num-results"] > 0) {
-              const fetchedData = rt.data.datafinder.results[0];
-              dt = {
-                firstName:
-                  fetchedData.FirstName +
-                    (fetchedData.MiddleName
-                      ? " " + fetchedData.MiddleName
-                      : "") || firstName,
-                lastName: fetchedData.LastName || lastName,
-                address1: fetchedData.Address,
-                city: fetchedData.City,
-                state: fetchedData.State,
-                zip: fetchedData.Zip,
-                phone: fetchedData.Phone || phone,
-                email: fetchedData.Email || email,
-              };
-            }
-
-            let rtSocial = await axios.get(
-              "https://api.datafinder.com/v2/qdf.php",
-              {
-                params: {
-                  service: "social",
-                  k2: datafinderKey,
-                  d_email: email ? email : null,
-                  d_first: firstName ? firstName : null,
-                  d_last: lastName ? lastName : null,
-                },
-              }
-            );
-            if (rtSocial.data && rtSocial.data.datafinder["num-results"] > 0) {
-              const fetchedData = rtSocial.data.datafinder.results[0];
-              dt.facebook = fetchedData.FBURL;
-            }
-          }
-          {
-            let rt = await axios.get("https://api.datafinder.com/v2/qdf.php", {
-              params: {
-                service: "demograph",
-                k2: datafinderKey,
-                d_email: email ? email : null,
-                d_phone: phone ? phone : null,
-                d_first: firstName ? firstName : null,
-                d_last: lastName ? lastName : null,
-              },
-            });
-            if (rt.data && rt.data.datafinder["num-results"] > 0) {
-              const fetchedData = rt.data.datafinder.results[0];
-              dt.demographic = {
-                DOB: fetchedData.DOB,
-                ageRange: fetchedData.AgeRange,
-                ethnicCode: fetchedData.EthnicCode,
-                singleParent: fetchedData.SingleParent,
-                seniorAdultInHousehold: fetchedData.SeniorAdultInHousehold,
-                youngAdultInHousehold: fetchedData.YoungAdultInHousehold,
-                workingWoman: fetchedData.WorkingWoman,
-                SOHOIndicator: fetchedData.SOHOIndicator,
-                businessOwner: fetchedData.BusinessOwner,
-                language: fetchedData.Language,
-                religion: fetchedData.Religion,
-                numberOfChildren: fetchedData.NumberOfChildren,
-                maritalStatusInHousehold: fetchedData.MaritalStatusInHousehold,
-                homeOwnerRenter: fetchedData.HomeOwnerRenter,
-                education: fetchedData.Education,
-                occupation: fetchedData.Occupation,
-                occupationDetail: fetchedData.OccupationDetail,
-                gender: fetchedData.Gender,
-                socialPresence: fetchedData.SocialPresence,
-                presenceOfChildren: fetchedData.PresenceOfChildren,
-              };
-            }
-          }
-          {
-            let rt = await axios.get("https://api.datafinder.com/v2/qdf.php", {
-              params: {
-                service: "lifeint",
-                k2: datafinderKey,
-                d_email: email ? email : null,
-                d_phone: phone ? phone : null,
-                d_first: firstName ? firstName : null,
-                d_last: lastName ? lastName : null,
-              },
-            });
-            if (rt.data && rt.data.datafinder["num-results"] > 0) {
-              const fetchedData = rt.data.datafinder.results[0];
-              dt.lifestyle = {
-                magazines: fetchedData.Magazines,
-                computerAndTechnology: fetchedData.ComputerAndTechnology,
-                dietingWeightLoss: fetchedData.DietingWeightLoss,
-                exerciseHealthGrouping: fetchedData.ExerciseHealthGrouping,
-                doItYourselferHomeImprovement:
-                  fetchedData.DoItYourselferHomeImprovement,
-                jewelry: fetchedData.Jewelry,
-                mailOrderBuyer: fetchedData.MailOrderBuyer,
-                membershipClubs: fetchedData.MembershipClubs,
-                travelGrouping: fetchedData.TravelGrouping,
-                onlineEducation: fetchedData.OnlineEducation,
-                sportsGrouping: fetchedData.SportsGrouping,
-                sportsOutdoorsGrouping: fetchedData.SportsOutdoorsGrouping,
-                investing: fetchedData.Investing,
-                booksAndReading: fetchedData.BooksAndReading,
-                politicalDonor: fetchedData.PoliticalDonor,
-                hobbiesAndCrafts: fetchedData.HobbiesAndCrafts,
-                cosmetics: fetchedData.Cosmetics,
-                charitableDonations: fetchedData.CharitableDonations,
-                artsAntiquesCollectibles: fetchedData.ArtsAntiquesCollectibles,
-                petOwner: fetchedData.PetOwner,
-                cooking: fetchedData.Cooking,
-                autoPartsAccessories: fetchedData.AutoPartsAccessories,
-                healthBeautyWellness: fetchedData.HealthBeautyWellness,
-                parentingAndChildrensProducts:
-                  fetchedData.ParentingAndChildrensProducts,
-                music: fetchedData.Music,
-                movie: fetchedData.Movie,
-                selfImprovement: fetchedData.SelfImprovement,
-                womensApparel: fetchedData.WomensApparel,
-              };
-            }
-          }
-
-          await axios({
+          axios({
             url: graphqlEndpoint,
             method: "post",
             headers: {
               "x-api-key": appsyncApiKey,
             },
             data: {
-              query: print(updateProspect),
+              query: print(fetchEnhanceData),
               variables: {
                 input: {
-                  id: prospectId,
-                  fetched: true,
-                  enhanced: Object.keys(dt).length > 0 ? true : false,
-                  ...dt,
+                  prospectId: id,
+                  firstName: firstName,
+                  lastName: lastName,
+                  email: email,
+                  phone: phone,
+                  city: city,
+                  state: state,
+                  zip: zip,
+                  address1: address1,
                 },
               },
             },
@@ -328,10 +188,12 @@ exports.handler = async (event) => {
             },
           },
         });
+        console.log("===============  upload completed ==============");
       }
     }
     return "Successfully processed DynamoDB record";
   } catch (err) {
+    console.log(err);
     return new Error(err).message;
   }
 };

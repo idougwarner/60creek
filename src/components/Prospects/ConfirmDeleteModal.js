@@ -1,20 +1,20 @@
 import React from "react";
 import { Button, Modal, ModalTitle } from "react-bootstrap";
 
-const ConfirmModal = ({ show, close }) => {
+const ConfirmDeleteModal = ({ show, close, prospectsCount = 0 }) => {
   return (
     <>
       <Modal show={show} onHide={() => close({ data: false })} size="md">
         <Modal.Header>
-          <ModalTitle>Cancel Upload?</ModalTitle>
+          <ModalTitle>Confirm Delete</ModalTitle>
         </Modal.Header>
         <Modal.Body className="px-3">
           <div className="step-3 mb-3">
             <div className="are-you-sure mb-2">
-              {`Are you sure you want to close this window`}
+              {`Are you sure you want to delete {${prospectsCount}} Prospects`}
             </div>
             <div className="text-muted text-center mb-4">
-              All Prospect List creation progress will be lost
+              This cannot be undone
             </div>
             <div className="d-flex justify-content-around">
               <Button
@@ -22,10 +22,10 @@ const ConfirmModal = ({ show, close }) => {
                 className="text-muted"
                 onClick={() => close({ data: false })}
               >
-                BACK TO EDIT
+                CANCEL
               </Button>
               <Button variant="light" onClick={() => close({ data: true })}>
-                CANCEL UPLOAD
+                DELETE
               </Button>
             </div>
           </div>
@@ -35,4 +35,4 @@ const ConfirmModal = ({ show, close }) => {
   );
 };
 
-export default ConfirmModal;
+export default ConfirmDeleteModal;
