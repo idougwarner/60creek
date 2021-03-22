@@ -658,6 +658,11 @@ export const changeEmail = /* GraphQL */ `
     }
   }
 `;
+export const fetchEnhanceData = /* GraphQL */ `
+  mutation FetchEnhanceData($input: FetchEnhanceDataInput) {
+    fetchEnhanceData(input: $input)
+  }
+`;
 export const createUser = /* GraphQL */ `
   mutation CreateUser(
     $input: CreateUserInput!

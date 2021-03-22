@@ -32,6 +32,7 @@ import { useHistory } from "react-router-dom";
 import { APP_URLS } from "../../helpers/routers";
 import { WORKER_STATUS } from "../../redux/uploadWorkerReducer";
 import { QUERY_LIMIT } from "../../helpers/constants";
+import { deleteProspect } from "../../graphql/mutations";
 
 const tableFields = [
   { title: "STATUS", field: "status", sortable: false },
@@ -67,6 +68,7 @@ const ProspectsPage = () => {
   const [selected, setSelected] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showOriginUpload, setShowOriginUpload] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   const user = useSelector((state) => state.userStore);
   const prospectsDb = useIndexedDB(IndexDBStores.PROSPECT);
@@ -236,6 +238,23 @@ const ProspectsPage = () => {
   const gotoDetailPage = (id) => {
     history.push(APP_URLS.PROSPECTS + "/" + id);
   };
+
+  const deleteProspects = async () => {
+    setDeleting(true);
+    const newData = [...data];
+    for (let i = 0; i < selected.length; i++) {
+      await API.graphql(
+        graphqlOperation(deleteProspect, {
+          input: { id: selected[i] },
+        })
+      );
+      const idx = newData.findIndex((item) => item.id === selected[i]);
+      newData.splice(idx, 1);
+    }
+    setData(newData);
+    setSelected([]);
+    setDeleting(false);
+  };
   return (
     <>
       <h4>Prospect List</h4>
@@ -302,27 +321,49 @@ const ProspectsPage = () => {
             className="more-menu-btn"
             title={<img src="/assets/icons/more.svg" alt="search" />}
           >
-            <Dropdown.Item href="#/action-1" onClick={downloadExcel}>
+            <Dropdown.Item onClick={downloadExcel}>
               <img
                 src="/assets/icons/excel.svg"
                 className="item-icon"
                 alt="excel"
                 onClick={downloadExcel}
-              />{" "}
+              />
               Excel
             </Dropdown.Item>
-            <Dropdown.Item href="#/action-2" onClick={downloadCSV}>
+            <Dropdown.Item onClick={downloadCSV}>
               <img
                 src="/assets/icons/csv.svg"
                 className="item-icon"
                 alt="csv"
-              />{" "}
+              />
               CSV
+            </Dropdown.Item>
+            <Dropdown.Item onClick={deleteProspects}>
+              <img
+                src="/assets/icons/delete.svg"
+                className="item-icon"
+                alt="csv"
+              />
+              Delete
             </Dropdown.Item>
           </DropdownButton>
         </div>
         <div className="d-flex justify-content-between mb-4">
-          <div className="selected">{selected.length} selected</div>
+          <div className="selected d-flex align-items-center">
+            {!deleting ? (
+              <>{selected.length} selected</>
+            ) : (
+              <>
+                <Spinner
+                  size="sm"
+                  animation="border"
+                  role="status"
+                  style={{ marginRight: 10 }}
+                />{" "}
+                deleting ...
+              </>
+            )}
+          </div>
           <div className="showing">
             Showing<span>{filteredData.length}</span>of
             <span>{data.length}</span>prospects
