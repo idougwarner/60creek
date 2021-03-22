@@ -33,6 +33,7 @@ import { APP_URLS } from "../../helpers/routers";
 import { WORKER_STATUS } from "../../redux/uploadWorkerReducer";
 import { QUERY_LIMIT } from "../../helpers/constants";
 import { deleteProspect } from "../../graphql/mutations";
+import ConfirmDeleteModal from "../../components/Prospects/ConfirmDeleteModal";
 
 const tableFields = [
   { title: "STATUS", field: "status", sortable: false },
@@ -69,6 +70,7 @@ const ProspectsPage = () => {
   const [loading, setLoading] = useState(false);
   const [showOriginUpload, setShowOriginUpload] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   const user = useSelector((state) => state.userStore);
   const prospectsDb = useIndexedDB(IndexDBStores.PROSPECT);
@@ -338,7 +340,7 @@ const ProspectsPage = () => {
               />
               CSV
             </Dropdown.Item>
-            <Dropdown.Item onClick={deleteProspects}>
+            <Dropdown.Item onClick={() => setShowConfirmModal(true)}>
               <img
                 src="/assets/icons/delete.svg"
                 className="item-icon"
@@ -502,6 +504,16 @@ const ProspectsPage = () => {
           />
         )}
       </div>
+      <ConfirmDeleteModal
+        show={showConfirmModal}
+        close={({ data }) => {
+          setShowConfirmModal(false);
+          if (data) {
+            deleteProspects();
+          }
+        }}
+        prospectsCount={selected.length}
+      />
     </>
   );
 };
