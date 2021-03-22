@@ -137,7 +137,7 @@
         },
         "fetchEnhanceData": {
           "deploymentBucketName": "amplify-60creek-stage-01840-deployment",
-          "s3Key": "amplify-builds/fetchEnhanceData-3558573455332b576259-build.zip"
+          "s3Key": "amplify-builds/fetchEnhanceData-35702b4f30557747414d-build.zip"
         }
       },
       "hosting": {
