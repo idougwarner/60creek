@@ -102,6 +102,20 @@ type Mutation {
 
   fetchEnhanceData(input: FetchEnhanceDataInput): String
     @function(name: "fetchEnhanceData-${env}")
+
+  uploadProspects(input: UploadProspectsInput): String
+    @function(name: "uploadProspects-${env}")
+}
+
+input UploadProspectsInput {
+  file: String
+  prospectListId: String
+  userId: String
+  enhance: Boolean
+  customerId: String
+  customerEmail: String
+  paymentMethodId: String
+  srcBucketName: String
 }
 
 input FetchEnhanceDataInput {

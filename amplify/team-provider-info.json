@@ -196,11 +196,15 @@
         },
         "prospectListTableTrigger": {
           "deploymentBucketName": "amplify-60creek-develop-13734-deployment",
-          "s3Key": "amplify-builds/prospectListTableTrigger-394e4858687751473761-build.zip"
+          "s3Key": "amplify-builds/prospectListTableTrigger-44386531626459797269-build.zip"
         },
         "fetchEnhanceData": {
           "deploymentBucketName": "amplify-60creek-develop-13734-deployment",
           "s3Key": "amplify-builds/fetchEnhanceData-3558573455332b576259-build.zip"
+        },
+        "uploadProspects": {
+          "deploymentBucketName": "amplify-60creek-develop-13734-deployment",
+          "s3Key": "amplify-builds/uploadProspects-684b765568372f5a5435-build.zip"
         }
       },
       "hosting": {

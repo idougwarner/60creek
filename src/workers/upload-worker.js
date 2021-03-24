@@ -3,17 +3,20 @@ import {
   createProspect,
   createProspectList,
   updateProspectList,
+  uploadProspects,
 } from "../graphql/mutations";
-import { timeConversion } from "../helpers/utils";
+import { delay, timeConversion } from "../helpers/utils";
 import { UPLOAD_STATUS } from "../redux/actionTypes";
 import awsconfig from "../aws-exports";
 import { INTEREST_STATUS } from "../helpers/interestStatus";
+import { UPLOAD_PROSPECTS_LIMIT } from "../helpers/constants";
 Amplify.configure(awsconfig);
 
 export const startUploadProspects = async (
   userId,
   storedProspects,
-  storedProspectList
+  storedProspectList,
+  fileKey = ""
 ) => {
   postMessage({ type: UPLOAD_STATUS.STARTED });
 
@@ -31,10 +34,6 @@ export const startUploadProspects = async (
           graphqlOperation(updateProspectList, {
             input: {
               id: prospectListId,
-              customerId: prospectList.customerId,
-              amount: prospectList.amount,
-              customerEmail: prospectList.customerEmail,
-              paymentMethodId: prospectList.paymentMethodId,
               enhance: enhance,
               uploadCompleted: false,
             },
@@ -46,10 +45,6 @@ export const startUploadProspects = async (
             input: {
               userId: userId,
               name: prospectList.prospectName,
-              customerId: prospectList.customerId,
-              amount: prospectList.amount,
-              customerEmail: prospectList.customerEmail,
-              paymentMethodId: prospectList.paymentMethodId,
               enhance: enhance,
               uploadCompleted: false,
             },
@@ -78,73 +73,108 @@ export const startUploadProspects = async (
         },
       });
     }
-    for (let i = 0; i < storedProspects.length; i++) {
-      const start = new Date().getTime();
-      await API.graphql(
-        graphqlOperation(createProspect, {
-          input: {
-            userId: userId,
-            prospectListId: prospectListId,
-            firstName: storedProspects[i].firstName,
-            lastName: storedProspects[i].lastName,
-            address1: storedProspects[i].address1,
-            city: storedProspects[i].city,
-            state: storedProspects[i].state,
-            zip: storedProspects[i].zip,
-            company: storedProspects[i].company,
-            phone: storedProspects[i].phone,
-            email: storedProspects[i].email,
-            facebook: storedProspects[i].facebook,
-            status: storedProspects[i].status || INTEREST_STATUS.INTERESTED,
-            enhance: storedProspects[i].enhance,
-            enhanced: false,
-            fetched: false,
-            demographic: storedProspects[i].demographic
-              ? JSON.parse(storedProspects[i].demographic)
-              : null,
-            lifestyle: storedProspects[i].lifestyle
-              ? JSON.parse(storedProspects[i].lifestyle)
-              : null,
+
+    if (storedProspects.length < UPLOAD_PROSPECTS_LIMIT) {
+      for (let i = 0; i < storedProspects.length; i++) {
+        const start = new Date().getTime();
+        await API.graphql(
+          graphqlOperation(createProspect, {
+            input: {
+              userId: userId,
+              prospectListId: prospectListId,
+              firstName: storedProspects[i].firstName,
+              lastName: storedProspects[i].lastName,
+              address1: storedProspects[i].address1,
+              city: storedProspects[i].city,
+              state: storedProspects[i].state,
+              zip: storedProspects[i].zip,
+              company: storedProspects[i].company,
+              phone: storedProspects[i].phone,
+              email: storedProspects[i].email,
+              facebook: storedProspects[i].facebook,
+              status: storedProspects[i].status || INTEREST_STATUS.INTERESTED,
+              enhance: storedProspects[i].enhance,
+              enhanced: false,
+              fetched: false,
+              demographic: null,
+              lifestyle: null,
+            },
+          })
+        );
+        const end = new Date().getTime();
+        const delta = end - start;
+        estimate = timeConversion(delta * (storedProspects.length - i + 1));
+        percentage = Math.round(
+          ((i + 1 + 1) / (storedProspects.length + 1)) * 100
+        );
+        postMessage({
+          type: UPLOAD_STATUS.UPLOADED_ONE,
+          estimate: estimate,
+          percentage: percentage,
+          uploaded: i + 1,
+          data: {
+            type: "prospect",
+            prospectId: storedProspects[i].id,
           },
-        })
-      );
-      const end = new Date().getTime();
-      const delta = end - start;
-      estimate = timeConversion(delta * (storedProspects.length - i + 1));
-      percentage = Math.round(
-        ((i + 1 + 1) / (storedProspects.length + 1)) * 100
-      );
-      postMessage({
-        type: UPLOAD_STATUS.UPLOADED_ONE,
-        estimate: estimate,
-        percentage: percentage,
-        uploaded: i + 1,
-        data: {
-          type: "prospect",
-          prospectId: storedProspects[i].id,
-        },
-      });
-    }
+        });
+      }
 
-    postMessage({ type: UPLOAD_STATUS.COMPLETED_UPLOAD });
-
-    if (enhance) {
+      if (enhance) {
+        await API.graphql(
+          graphqlOperation(updateProspectList, {
+            input: {
+              id: prospectListId,
+              customerId: prospectList.customerId,
+              customerEmail: prospectList.customerEmail,
+              paymentMethodId: prospectList.paymentMethodId,
+              enhance: enhance,
+              uploadCompleted: true,
+            },
+          })
+        );
+        console.log("finished -------");
+      }
+    } else {
       await API.graphql(
-        graphqlOperation(updateProspectList, {
+        graphqlOperation(uploadProspects, {
           input: {
-            id: prospectListId,
+            file: fileKey,
+            prospectListId: prospectListId,
+            srcBucketName: awsconfig.aws_user_files_s3_bucket,
+            userId: userId,
+            enhance: enhance,
             customerId: prospectList.customerId,
-            amount: prospectList.amount,
             customerEmail: prospectList.customerEmail,
             paymentMethodId: prospectList.paymentMethodId,
-            enhance: enhance,
-            uploadCompleted: true,
           },
         })
       );
-      console.log("finished -------");
+      const delayTime = 15;
+      let count = 0;
+      const timer = setInterval(() => {
+        count++;
+        postMessage({
+          type: UPLOAD_STATUS.UPLOADED_ONE,
+          estimate: timeConversion((delayTime - count) * 1000),
+          percentage: count * (90 / delayTime) + 10,
+          uploaded: Math.round((storedProspects.length / delayTime) * count),
+          data: {
+            type: "bulk-upload",
+          },
+        });
+        if (count >= delayTime) {
+          clearInterval(timer);
+        }
+      }, 1000);
+      await delay(delayTime * 1000);
     }
+
+    postMessage({
+      type: UPLOAD_STATUS.COMPLETED_UPLOAD,
+      prospectListId: prospectListId,
+    });
   } catch (err) {
+    console.log(err);
     postMessage({ type: UPLOAD_STATUS.ERROR, error: err });
   }
 };

@@ -22,6 +22,7 @@ import {
 import {
   downloadCSVFromJSON,
   downloadXlsxFromJSON,
+  formatProspects,
 } from "../../helpers/CSVFileHelper";
 import { useDispatch, useSelector } from "react-redux";
 import FilterDropdown from "../../components/Prospects/FilterDropdown";
@@ -126,20 +127,7 @@ const ProspectsPage = () => {
     if (selected.length > 0) {
       rtVal = rtVal.filter((item) => selected.includes(item.id));
     }
-    return rtVal.map((item) => ({
-      firstName: item.firstName,
-      lastName: item.lastName,
-      address1: item.address1,
-      address2: item.address2,
-      city: item.city,
-      state: item.state,
-      zip: item.zip,
-      company: item.company,
-      phone: item.phone,
-      email: item.email,
-      facebook: item.facebook,
-      status: item.status,
-    }));
+    return formatProspects(rtVal);
   };
   const downloadCSV = () => {
     downloadCSVFromJSON(getExportData(), "Prospects.csv");

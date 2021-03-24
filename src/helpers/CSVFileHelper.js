@@ -41,6 +41,22 @@ export const downloadXlsxFromJSON = (
   });
 };
 
+export const formatProspects = (data) => {
+  return data.map((item) => ({
+    firstName: item.firstName,
+    lastName: item.lastName,
+    address1: item.address1,
+    address2: item.address2,
+    city: item.city,
+    state: item.state,
+    zip: item.zip,
+    company: item.company,
+    phone: item.phone,
+    email: item.email,
+    facebook: item.facebook,
+    status: item.status,
+  }));
+};
 export const getJsonFromFile = (file) => {
   return new Promise((resolver) => {
     const reader = new FileReader();

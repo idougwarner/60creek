@@ -663,6 +663,11 @@ export const fetchEnhanceData = /* GraphQL */ `
     fetchEnhanceData(input: $input)
   }
 `;
+export const uploadProspects = /* GraphQL */ `
+  mutation UploadProspects($input: UploadProspectsInput) {
+    uploadProspects(input: $input)
+  }
+`;
 export const createUser = /* GraphQL */ `
   mutation CreateUser(
     $input: CreateUserInput!

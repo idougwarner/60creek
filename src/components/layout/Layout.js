@@ -4,10 +4,13 @@ import "./Layout.scss";
 import { useHistory, useLocation } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { APP_URLS } from "../../helpers/routers";
-import { API, Auth, graphqlOperation } from "aws-amplify";
+import { API, Auth, graphqlOperation, Storage } from "aws-amplify";
 import { usersByUserId } from "../../graphql/queries";
 import { ACTIONS, UPLOAD_STATUS } from "../../redux/actionTypes";
 import { WORKER_STATUS } from "../../redux/uploadWorkerReducer";
+
+import { jsonToCSV } from "react-papaparse";
+import { v4 as uuidv4 } from "uuid";
 
 // Import your worker
 import worker from "workerize-loader!../../workers/upload-worker"; // eslint-disable-line import/no-webpack-loader-syntax
@@ -16,6 +19,8 @@ import { useIndexedDB } from "react-indexed-db";
 import { IndexDBStores } from "../../helpers/DBConfig";
 import { toast, ToastContainer } from "react-toastify";
 import { Spinner } from "react-bootstrap";
+import { UPLOAD_PROSPECTS_LIMIT } from "../../helpers/constants";
+import { formatProspects } from "../../helpers/CSVFileHelper";
 
 var g_workerInstance;
 
@@ -66,10 +71,20 @@ const Layout = ({ children }) => {
         try {
           const storedProspectList = await prospectListDb.getAll();
           const storedProspects = await prospectsDb.getAll();
+          let fileKey = "";
+          if (storedProspects.length >= UPLOAD_PROSPECTS_LIMIT) {
+            const data = jsonToCSV(formatProspects(storedProspects));
+            const blob = new Blob([data], { type: "text/csv" });
+            const file = new File([blob], uuidv4() + ".csv");
+            const rtInfo = await Storage.put(uuidv4() + "-" + file.name, file);
+            fileKey = rtInfo.key;
+          }
+
           g_workerInstance.startUploadProspects(
             user.id,
             storedProspects,
-            storedProspectList
+            storedProspectList,
+            fileKey
           );
         } catch (err) {}
       } else if (uploadStatus.status === WORKER_STATUS.CHANGE) {
@@ -112,6 +127,7 @@ const Layout = ({ children }) => {
         type: ACTIONS.COMPLETED_UPLOADE_WORKER,
         estimate: "",
         percentage: 100,
+        prospectListId: data.prospectListId,
       });
       setTimeout(() => {
         dispatch({
@@ -136,13 +152,19 @@ const Layout = ({ children }) => {
   };
 
   useEffect(() => {
-    const workerInstance = worker();
+    const prospectsUploadWorkerInstance = worker();
     // Attach an event listener to receive calculations from your worker
-    workerInstance.addEventListener("message", serviceWorkerListener);
+    prospectsUploadWorkerInstance.addEventListener(
+      "message",
+      serviceWorkerListener
+    );
     // Run your calculations
-    g_workerInstance = workerInstance;
+    g_workerInstance = prospectsUploadWorkerInstance;
     return () => {
-      workerInstance.removeEventListener("message", serviceWorkerListener);
+      prospectsUploadWorkerInstance.removeEventListener(
+        "message",
+        serviceWorkerListener
+      );
     };
     // eslint-disable-next-line
   }, []);

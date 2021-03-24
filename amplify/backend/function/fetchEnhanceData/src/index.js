@@ -217,7 +217,6 @@ exports.handler = async (event) => {
         },
       },
     });
-
     console.log("=============  event end =============== >  ");
     return "Successfully updated data";
   } catch (err) {

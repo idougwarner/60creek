@@ -13,6 +13,7 @@ const initState = {
   uploaded: 0,
   estimate: "",
   percentage: 0,
+  prospectListId: "",
 };
 
 const uploadWorkerStore = (state = initState, action) => {
@@ -39,6 +40,7 @@ const uploadWorkerStore = (state = initState, action) => {
         status: WORKER_STATUS.COMPLETED,
         estimate: "",
         percentage: 100,
+        prospectListId: action.prospectListId,
       };
     case ACTIONS.ERROR_UPLOADE_WORKER:
       return {
