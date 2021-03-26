@@ -47,6 +47,7 @@ const NewProspectListModal = ({
   existingList = false,
 }) => {
   const [step, setStep] = useState(STEP1);
+  const [nexting, setNexting] = useState(false);
   const [percentage, setPercentage] = useState(0);
   const [loading, setLoading] = useState(false);
   const [loadingEnhanceData, setLoadingEnhanceData] = useState(false);
@@ -140,8 +141,10 @@ const NewProspectListModal = ({
   useEffect(() => {
     const f = async () => {
       if (originUpload) {
+        setNexting(true);
         let storedProspects = await prospectsDb.getAll();
         let storedUploadStep = await prospectUploadStepDb.getAll();
+        setNexting(false);
         if (storedUploadStep.length > 0 && storedProspects.length > 0) {
           setStep(STEP2);
           setProspectList(storedProspects);
@@ -266,6 +269,7 @@ const NewProspectListModal = ({
             item["enhance"] = true;
             newProspects[i] = item;
           }
+          setNexting(true);
           await prospectsDb.clear();
           for (let i = 0; i < newProspects.length; i++) {
             const item = newProspects[i];
@@ -281,6 +285,7 @@ const NewProspectListModal = ({
             paymentMethodId: rt.data.createStripeCustomer.data.paymentMethodId,
             amount: prospectList.length,
           });
+          setNexting(false);
           setProspectList(newProspects);
           next();
         } catch (err) {}
@@ -293,6 +298,7 @@ const NewProspectListModal = ({
 
   const gotoSecondStep = async () => {
     try {
+      setNexting(true);
       await prospectListDb.clear();
       await prospectListDb.add({
         prospectName: listName,
@@ -302,9 +308,10 @@ const NewProspectListModal = ({
 
       await prospectsDb.clear();
       for (let i = 0; i < prospectList.length; i++) {
-        const item = prospectList[i];
+        const item = { ...prospectList[i], enhance: enhance };
         await prospectsDb.add(item);
       }
+      setNexting(false);
     } catch (err) {}
     if (enhance) {
       setLoadingEnhanceData(true);
@@ -314,6 +321,7 @@ const NewProspectListModal = ({
     }
   };
   const gotoThirdStep = async () => {
+    setNexting(true);
     await prospectUploadStepDb.clear();
     await prospectUploadStepDb.add({
       step: STEP3,
@@ -324,6 +332,7 @@ const NewProspectListModal = ({
       const item = prospectList[i];
       await prospectsDb.add(item);
     }
+    setNexting(false);
     pushData();
     setStep(STEP3);
   };
@@ -773,8 +782,9 @@ const NewProspectListModal = ({
                 <Button
                   variant="primary"
                   onClick={gotoThirdStep}
-                  disabled={errors}
+                  disabled={errors || nexting}
                 >
+                  {nexting && <Spinner style={{ marginRight: 10 }} />}
                   CONFIRM
                 </Button>
               </div>
@@ -842,10 +852,10 @@ const NewProspectListModal = ({
         <Modal.Footer>
           <Button
             variant="primary"
-            disabled={!isNext || loadingEnhanceData}
+            disabled={!isNext || loadingEnhanceData || nexting}
             onClick={() => gotoSecondStep()}
           >
-            {loadingEnhanceData ? (
+            {loadingEnhanceData || nexting ? (
               <>
                 <Spinner /> LOADING ...
               </>
@@ -863,9 +873,11 @@ const NewProspectListModal = ({
           show={showCloseConfirm}
           close={async (rt) => {
             if (rt.data) {
-              await prospectListDb.clear();
-              await prospectsDb.clear();
-              await prospectUploadStepDb.clear();
+              try {
+                await prospectListDb.clear();
+                await prospectsDb.clear();
+                await prospectUploadStepDb.clear();
+              } catch (err) {}
               close({ data: false });
             }
             setShowCloseConfirm(false);

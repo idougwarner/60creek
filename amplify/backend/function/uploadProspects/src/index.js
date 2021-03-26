@@ -33,21 +33,33 @@ const updateProspectList = gql`
   ) {
     updateProspectList(input: $input, condition: $condition) {
       id
+      userId
+      name
+      file
+      enhance
+      customerEmail
+      customerId
+      paymentMethodId
+      amount
+      uploadStatus
+      createdAt
+      updatedAt
     }
   }
 `;
 
-const createProspect = gql`
-  mutation CreateProspect(
-    $input: CreateProspectInput!
-    $condition: ModelProspectConditionInput
-  ) {
-    createProspect(input: $input, condition: $condition) {
-      id
+const batchCreateProspects = gql`
+  mutation BatchCreateProspects($prospects: [BatchCreateProspectInput]) {
+    batchCreateProspects(prospects: $prospects) {
+      items {
+        id
+        userId
+        prospectListId
+      }
+      nextToken
     }
   }
 `;
-
 const getEnvValue = (values, key) => {
   const r = values.filter((item) => item.Name === key);
   if (r.length > 0) {
@@ -56,13 +68,7 @@ const getEnvValue = (values, key) => {
   return "";
 };
 
-const delay = (ms) => {
-  return new Promise((resolver) => {
-    setTimeout(() => {
-      return resolver(true);
-    }, ms);
-  });
-};
+const MAX_ITEMS = 25; // don't change this value
 
 exports.handler = async (event) => {
   try {
@@ -70,11 +76,6 @@ exports.handler = async (event) => {
     const params = envVariables.Parameters;
     const graphqlEndpoint = getEnvValue(params, graphqlEndpointPath);
     const appsyncApiKey = getEnvValue(params, appsyncApiKeyPath);
-    // const srcBucketName = getEnvValue(params, srcBucketNamePath);
-    console.log(
-      "=============  event start =============== >  ",
-      event.arguments.input
-    );
     const {
       file,
       prospectListId,
@@ -92,37 +93,9 @@ exports.handler = async (event) => {
     };
 
     const stream = s3.getObject(s3Param).createReadStream();
-    const prospects = await csv().fromStream(stream);
-    console.log("prospects count: ", prospects.length);
-    await s3.deleteObject(s3Param).promise();
-    for (let i = 0; i < prospects.length; i++) {
-      const prospect = prospects[i];
-
-      axios({
-        url: graphqlEndpoint,
-        method: "post",
-        headers: {
-          "x-api-key": appsyncApiKey,
-        },
-        data: {
-          query: print(createProspect),
-          variables: {
-            input: {
-              userId: userId,
-              prospectListId: prospectListId,
-              ...prospect,
-              enhance: enhance ? true : false,
-              enhanced: false,
-              fetched: false,
-              demographic: null,
-              lifestyle: null,
-            },
-          },
-        },
-      });
-    }
-    await delay(10000);
-    if (enhance) {
+    const data = await csv().fromStream(stream);
+    for (let i = 0; i < data.length; i += MAX_ITEMS) {
+      const prospects = data.slice(i, i + MAX_ITEMS);
       await axios({
         url: graphqlEndpoint,
         method: "post",
@@ -130,25 +103,57 @@ exports.handler = async (event) => {
           "x-api-key": appsyncApiKey,
         },
         data: {
-          query: print(updateProspectList),
+          query: print(batchCreateProspects),
           variables: {
-            input: {
-              id: prospectListId,
-              customerId: customerId,
-              customerEmail: customerEmail,
-              paymentMethodId: paymentMethodId,
-              enhance: enhance,
-              uploadCompleted: true,
-            },
+            prospects: prospects.map((item) => ({
+              userId: userId,
+              prospectListId: prospectListId,
+              firstName: item.firstName,
+              lastName: item.lastName,
+              address1: item.address1,
+              city: item.city,
+              state: item.state,
+              zip: item.zip,
+              company: item.company,
+              phone: item.phone,
+              email: item.email,
+              facebook: item.facebook,
+              status: item.status,
+              enhance: item.enhance,
+              enhanced: false,
+              fetched: false,
+              demographic: null,
+              lifestyle: null,
+            })),
           },
         },
       });
     }
-    console.log("=============  upload completed ============");
+    await s3.deleteObject(s3Param).promise();
+    await axios({
+      url: graphqlEndpoint,
+      method: "post",
+      headers: {
+        "x-api-key": appsyncApiKey,
+      },
+      data: {
+        query: print(updateProspectList),
+        variables: {
+          input: {
+            id: prospectListId,
+            file: file,
+            customerId: customerId,
+            customerEmail: customerEmail,
+            paymentMethodId: paymentMethodId,
+            enhance: enhance,
+            uploadStatus: enhance ? "need-enhance" : "completed",
+          },
+        },
+      },
+    });
 
     return "Successfully uploaded prospects";
   } catch (err) {
-    console.log(err);
     return new Error(err).message;
   }
 };

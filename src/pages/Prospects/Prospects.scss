@@ -1,5 +1,25 @@
-@import "../../assets/styles/global-styles.scss";
+@import "../../assets/styles/vars.scss";
 
+.upload-banner {
+  background-color: $primary;
+  color: white;
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-left: -40px;
+  margin-right: -40px;
+  margin-top: -40px;
+  margin-bottom: 40px;
+  transition: $transition;
+  &.hide {
+    margin-top: -86px;
+  }
+  span {
+    font-weight: bold;
+    margin-left: 5px;
+  }
+}
 .search-input {
   min-width: 320px;
   margin-right: 20px;

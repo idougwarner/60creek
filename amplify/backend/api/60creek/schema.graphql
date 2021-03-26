@@ -3,10 +3,6 @@ type schema {
   mutation: Mutation
 }
 type Query {
-  prospectList: ProspectList
-  prospect: Prospect
-  paymentMethod: PaymentMethod
-  marketingCampaign: MarketingCampaign
   subscriptionInfo: SubscriptionInfoResult
     @function(name: "subscriptionInfo-${env}")
 }
@@ -16,65 +12,95 @@ type ModelProspectConnection {
   scannedCount: Int
   count: Int
 }
+
+input DemographicInfoInput {
+  DOB: String
+  ageRange: String
+  ethnicCode: String
+  singleParent: String
+  seniorAdultInHousehold: String
+  youngAdultInHousehold: String
+  workingWoman: String
+  SOHOIndicator: String
+  businessOwner: String
+  language: String
+  religion: String
+  numberOfChildren: String
+  maritalStatusInHousehold: String
+  homeOwnerRenter: String
+  education: String
+  occupation: String
+  occupationDetail: String
+  gender: String
+  socialPresence: String
+  presenceOfChildren: String
+}
+
+input LifestyleInfoInput {
+  magazines: String
+  computerAndTechnology: String
+  dietingWeightLoss: String
+  exerciseHealthGrouping: String
+  doItYourselferHomeImprovement: String
+  jewelry: String
+  mailOrderBuyer: String
+  membershipClubs: String
+  travelGrouping: String
+  onlineEducation: String
+  sportsGrouping: String
+  sportsOutdoorsGrouping: String
+  investing: String
+  booksAndReading: String
+  politicalDonor: String
+  hobbiesAndCrafts: String
+  cosmetics: String
+  charitableDonations: String
+  artsAntiquesCollectibles: String
+  petOwner: String
+  cooking: String
+  autoPartsAccessories: String
+  healthBeautyWellness: String
+  parentingAndChildrensProducts: String
+  music: String
+  movie: String
+  selfImprovement: String
+  womensApparel: String
+}
+
+input BatchCreateProspectInput {
+  id: ID
+  userId: ID!
+  prospectListId: ID!
+  status: String
+  firstName: String
+  lastName: String
+  company: String
+  address1: String
+  address2: String
+  city: String
+  state: String
+  zip: String
+  phone: String
+  email: String
+  facebook: String
+  notes: String
+  interested: String
+  enhance: Boolean
+  enhanced: Boolean
+  fetched: Boolean
+  demographic: DemographicInfoInput
+  lifestyle: LifestyleInfoInput
+}
+
+type BatchCreateProspectsOutput {
+  items: [Prospect]
+  nextToken: String
+}
+
 type Mutation {
-  user(
-    id: ID
-    firstName: String
-    lastName: String
-    company: String
-    address1: String
-    address2: String
-    city: String
-    state: String
-    zip: String
-    phone: String
-    email: String
-    signature: String
-  ): User
-  prospectList(id: ID, name: String, owningUserId: Int): ProspectList
-  prospect(
-    id: ID
-    prospectListId: Int
-    firstName: String
-    lastName: String
-    company: String
-    address1: String
-    address2: String
-    city: String
-    state: String
-    zip: String
-    phone: String
-    email: String
-    facebook: String
-    owningUserId: Int
-  ): Prospect
-  paymentMethod(
-    id: ID
-    userId: Int
-    title: String
-    stripeInfo: String
-    name: String
-    email: String
-    phone: String
-  ): PaymentMethod
-  marketingCampaign(
-    id: ID
-    title: String
-    prospectListId: Int
-    startDateTime: String
-    autmatedEmail: Boolean
-    automatedText: Boolean
-    automatedRinglessVoiceMail: Boolean
-    automatedPostcard: Boolean
-    paymentMethodId: Int
-    consent: Boolean
-    owningUserId: Int
-  ): MarketingCampaign
-  deletedUser(id: ID!): User
-  deletedProspectLists(id: ID!): ProspectList
-  deletedProspect(id: ID!): Prospect
-  deletedPaymentMethod(id: ID!): PaymentMethod
-  deletedMarketingCampaign(id: ID!): MarketingCampaign
+  batchCreateProspects(
+    prospects: [BatchCreateProspectInput]
+  ): BatchCreateProspectsOutput
 
   createStripeCustomer(input: CreateStripeCustomerInput): StripeCustomerResult
     @function(name: "createStripeCustomer-${env}")
@@ -416,13 +442,14 @@ type ProspectList
   @auth(rules: [{ allow: public, provider: apiKey }]) {
   id: ID!
   userId: ID!
+  file: String
   name: String
   enhance: Boolean
   customerEmail: String
   customerId: String
   paymentMethodId: String
   amount: Float
-  uploadCompleted: Boolean
+  uploadStatus: String
 }
 type ErrorResponse {
   message: String

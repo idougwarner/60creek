@@ -31,6 +31,7 @@ const Layout = ({ children }) => {
 
   const prospectsDb = useIndexedDB(IndexDBStores.PROSPECT);
   const prospectListDb = useIndexedDB(IndexDBStores.PROSPECT_LIST);
+  const prospectUploadStepDb = useIndexedDB(IndexDBStores.PROSPECT_UPLOAD_STEP);
 
   const [loading, setLoading] = useState(false);
 
@@ -98,57 +99,62 @@ const Layout = ({ children }) => {
   }, [uploadStatus, prospectListDb, prospectsDb, user]);
 
   const serviceWorkerListener = async ({ data }) => {
-    if (data.type === UPLOAD_STATUS.STARTED) {
-    } else if (data.type === UPLOAD_STATUS.UPLOADED_ONE) {
-      if (data.data.type === "prospect-list") {
-        await prospectListDb.clear();
-        await prospectListDb.add({
-          prospectName: data.data.prospectName,
-          prospectListId: data.data.prospectListId,
-          customerId: data.data.customerId,
-          amount: data.data.amount,
-          paymentMethodId: data.data.paymentMethodId,
-          customerEmail: data.data.customerEmail,
-          enhance: data.data.enhance,
-        });
-      } else if (data.data.type === "prospect") {
-        await prospectsDb.deleteRecord(data.data.prospectId);
-      }
-      dispatch({
-        type: ACTIONS.UPDATE_UPLOADE_WORKER,
-        uploaded: data.uploaded,
-        estimate: data.estimate,
-        percentage: data.percentage,
-      });
-    } else if (data.type === UPLOAD_STATUS.COMPLETED_UPLOAD) {
-      await prospectListDb.clear();
-      await prospectsDb.clear();
-      dispatch({
-        type: ACTIONS.COMPLETED_UPLOADE_WORKER,
-        estimate: "",
-        percentage: 100,
-        prospectListId: data.prospectListId,
-      });
-      setTimeout(() => {
+    try {
+      if (data.type === UPLOAD_STATUS.STARTED) {
+      } else if (data.type === UPLOAD_STATUS.UPLOADED_ONE) {
+        if (data.data.type === "prospect-list") {
+          await prospectListDb.clear();
+          await prospectListDb.add({
+            prospectName: data.data.prospectName,
+            prospectListId: data.data.prospectListId,
+            customerId: data.data.customerId,
+            amount: data.data.amount,
+            paymentMethodId: data.data.paymentMethodId,
+            customerEmail: data.data.customerEmail,
+            enhance: data.data.enhance,
+          });
+        } else if (data.data.type === "prospect") {
+          const prospectIds = data.data.prospectIds;
+          for (let i = 0; i < prospectIds.length; i++) {
+            await prospectsDb.deleteRecord(prospectIds[i]);
+          }
+        }
         dispatch({
-          type: ACTIONS.IDLE_UPLOADE_WORKER,
+          type: ACTIONS.UPDATE_UPLOADE_WORKER,
+          uploaded: data.uploaded,
+          estimate: data.estimate,
+          percentage: data.percentage,
+        });
+      } else if (data.type === UPLOAD_STATUS.COMPLETED_UPLOAD) {
+        await prospectListDb.clear();
+        await prospectsDb.clear();
+        await prospectUploadStepDb.clear();
+        dispatch({
+          type: ACTIONS.COMPLETED_UPLOADE_WORKER,
           estimate: "",
           percentage: 100,
+          prospectListId: data.prospectListId,
         });
-      }, 3000);
-      console.log("upload completed -----------------------");
-    } else if (data.type === UPLOAD_STATUS.ERROR) {
-      dispatch({
-        type: ACTIONS.ERROR_UPLOADE_WORKER,
-      });
-      toast.error(
-        "Oops! It looks like something went wrong. Please retry your upload here!",
-        {
-          autoClose: false,
-        }
-      );
-    } else {
-    }
+        setTimeout(() => {
+          dispatch({
+            type: ACTIONS.IDLE_UPLOADE_WORKER,
+            estimate: "",
+            percentage: 100,
+          });
+        }, 3000);
+      } else if (data.type === UPLOAD_STATUS.ERROR) {
+        dispatch({
+          type: ACTIONS.ERROR_UPLOADE_WORKER,
+        });
+        toast.error(
+          "Oops! It looks like something went wrong. Please retry your upload here!",
+          {
+            autoClose: false,
+          }
+        );
+      } else {
+      }
+    } catch (err) {}
   };
 
   useEffect(() => {

@@ -176,35 +176,35 @@
         },
         "sendCampaignConfirmEmail": {
           "deploymentBucketName": "amplify-60creek-develop-13734-deployment",
-          "s3Key": "amplify-builds/sendCampaignConfirmEmail-2b55727477396d6c6c31-build.zip"
+          "s3Key": "amplify-builds/sendCampaignConfirmEmail-6d2f386b51686c2f385a-build.zip"
         },
         "requestPasswordReset": {
           "deploymentBucketName": "amplify-60creek-develop-13734-deployment",
-          "s3Key": "amplify-builds/requestPasswordReset-564348584d7156723347-build.zip"
+          "s3Key": "amplify-builds/requestPasswordReset-33577465363471395472-build.zip"
         },
         "resetPassword": {
           "deploymentBucketName": "amplify-60creek-develop-13734-deployment",
-          "s3Key": "amplify-builds/resetPassword-346d396579554f6c5044-build.zip"
+          "s3Key": "amplify-builds/resetPassword-53417a6a386b52532b2b-build.zip"
         },
         "changeEmail": {
           "deploymentBucketName": "amplify-60creek-develop-13734-deployment",
-          "s3Key": "amplify-builds/changeEmail-53426269496a685a396e-build.zip"
+          "s3Key": "amplify-builds/changeEmail-544974594b385a49417a-build.zip"
         },
         "createStripeCustomer": {
           "deploymentBucketName": "amplify-60creek-develop-13734-deployment",
-          "s3Key": "amplify-builds/createStripeCustomer-66376a712b796c4b5431-build.zip"
+          "s3Key": "amplify-builds/createStripeCustomer-37654f336e2f35367273-build.zip"
         },
         "prospectListTableTrigger": {
           "deploymentBucketName": "amplify-60creek-develop-13734-deployment",
-          "s3Key": "amplify-builds/prospectListTableTrigger-44386531626459797269-build.zip"
+          "s3Key": "amplify-builds/prospectListTableTrigger-6953596d35695a655245-build.zip"
         },
         "fetchEnhanceData": {
           "deploymentBucketName": "amplify-60creek-develop-13734-deployment",
-          "s3Key": "amplify-builds/fetchEnhanceData-3558573455332b576259-build.zip"
+          "s3Key": "amplify-builds/fetchEnhanceData-39686277726b58503234-build.zip"
         },
         "uploadProspects": {
           "deploymentBucketName": "amplify-60creek-develop-13734-deployment",
-          "s3Key": "amplify-builds/uploadProspects-684b765568372f5a5435-build.zip"
+          "s3Key": "amplify-builds/uploadProspects-7a56533039415a526138-build.zip"
         }
       },
       "hosting": {

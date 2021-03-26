@@ -55,6 +55,7 @@ export const formatProspects = (data) => {
     email: item.email,
     facebook: item.facebook,
     status: item.status,
+    enhance: item.enhance,
   }));
 };
 export const getJsonFromFile = (file) => {

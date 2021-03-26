@@ -1,203 +1,6 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
-export const prospectList = /* GraphQL */ `
-  query ProspectList {
-    prospectList {
-      id
-      userId
-      name
-      enhance
-      customerEmail
-      customerId
-      paymentMethodId
-      amount
-      uploadCompleted
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const prospect = /* GraphQL */ `
-  query Prospect {
-    prospect {
-      id
-      userId
-      prospectListId
-      status
-      firstName
-      lastName
-      company
-      address1
-      address2
-      city
-      state
-      zip
-      phone
-      email
-      facebook
-      notes
-      interested
-      enhance
-      enhanced
-      fetched
-      demographic {
-        DOB
-        ageRange
-        ethnicCode
-        singleParent
-        seniorAdultInHousehold
-        youngAdultInHousehold
-        workingWoman
-        SOHOIndicator
-        businessOwner
-        language
-        religion
-        numberOfChildren
-        maritalStatusInHousehold
-        homeOwnerRenter
-        education
-        occupation
-        occupationDetail
-        gender
-        socialPresence
-        presenceOfChildren
-      }
-      lifestyle {
-        magazines
-        computerAndTechnology
-        dietingWeightLoss
-        exerciseHealthGrouping
-        doItYourselferHomeImprovement
-        jewelry
-        mailOrderBuyer
-        membershipClubs
-        travelGrouping
-        onlineEducation
-        sportsGrouping
-        sportsOutdoorsGrouping
-        investing
-        booksAndReading
-        politicalDonor
-        hobbiesAndCrafts
-        cosmetics
-        charitableDonations
-        artsAntiquesCollectibles
-        petOwner
-        cooking
-        autoPartsAccessories
-        healthBeautyWellness
-        parentingAndChildrensProducts
-        music
-        movie
-        selfImprovement
-        womensApparel
-      }
-      prospectList {
-        id
-        userId
-        name
-        enhance
-        customerEmail
-        customerId
-        paymentMethodId
-        amount
-        uploadCompleted
-        createdAt
-        updatedAt
-      }
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const paymentMethod = /* GraphQL */ `
-  query PaymentMethod {
-    paymentMethod {
-      id
-      address
-      name
-      email
-      phone
-      paymentMethodId
-      subscriptionId
-      customerId
-      cardType
-      expMonth
-      expYear
-      last4
-      subscriptionType
-      discount
-      unitAmount
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const marketingCampaign = /* GraphQL */ `
-  query MarketingCampaign {
-    marketingCampaign {
-      id
-      userId
-      title
-      prospectListId
-      startDateTime {
-        day
-        month
-        year
-        hour
-        minute
-        am
-      }
-      automatedEmail {
-        prospects
-        message
-        replyEmail
-      }
-      automatedText {
-        prospects
-        text
-        phone
-      }
-      automatedRinglessVoiceMail {
-        prospects
-        file
-        phone
-      }
-      automatedPostcard {
-        prospects
-        file
-      }
-      automatedSocialPost {
-        prospects
-        image
-        content
-      }
-      checkout {
-        brand
-        last4
-        total
-        discount
-        email
-      }
-      prospectList {
-        id
-        userId
-        name
-        enhance
-        customerEmail
-        customerId
-        paymentMethodId
-        amount
-        uploadCompleted
-        createdAt
-        updatedAt
-      }
-      createdAt
-      updatedAt
-    }
-  }
-`;
 export const subscriptionInfo = /* GraphQL */ `
   query SubscriptionInfo {
     subscriptionInfo {
@@ -362,13 +165,14 @@ export const getProspect = /* GraphQL */ `
       prospectList {
         id
         userId
+        file
         name
         enhance
         customerEmail
         customerId
         paymentMethodId
         amount
-        uploadCompleted
+        uploadStatus
         createdAt
         updatedAt
       }
@@ -460,13 +264,14 @@ export const listProspects = /* GraphQL */ `
         prospectList {
           id
           userId
+          file
           name
           enhance
           customerEmail
           customerId
           paymentMethodId
           amount
-          uploadCompleted
+          uploadStatus
           createdAt
           updatedAt
         }
@@ -484,13 +289,14 @@ export const getProspectList = /* GraphQL */ `
     getProspectList(id: $id) {
       id
       userId
+      file
       name
       enhance
       customerEmail
       customerId
       paymentMethodId
       amount
-      uploadCompleted
+      uploadStatus
       createdAt
       updatedAt
     }
@@ -506,13 +312,14 @@ export const listProspectLists = /* GraphQL */ `
       items {
         id
         userId
+        file
         name
         enhance
         customerEmail
         customerId
         paymentMethodId
         amount
-        uploadCompleted
+        uploadStatus
         createdAt
         updatedAt
       }
@@ -622,13 +429,14 @@ export const getMarketingCampaign = /* GraphQL */ `
       prospectList {
         id
         userId
+        file
         name
         enhance
         customerEmail
         customerId
         paymentMethodId
         amount
-        uploadCompleted
+        uploadStatus
         createdAt
         updatedAt
       }
@@ -695,13 +503,14 @@ export const listMarketingCampaigns = /* GraphQL */ `
         prospectList {
           id
           userId
+          file
           name
           enhance
           customerEmail
           customerId
           paymentMethodId
           amount
-          uploadCompleted
+          uploadStatus
           createdAt
           updatedAt
         }
@@ -925,13 +734,14 @@ export const prospectsByUserId = /* GraphQL */ `
         prospectList {
           id
           userId
+          file
           name
           enhance
           customerEmail
           customerId
           paymentMethodId
           amount
-          uploadCompleted
+          uploadStatus
           createdAt
           updatedAt
         }
@@ -1035,13 +845,14 @@ export const prospectsByProspectListId = /* GraphQL */ `
         prospectList {
           id
           userId
+          file
           name
           enhance
           customerEmail
           customerId
           paymentMethodId
           amount
-          uploadCompleted
+          uploadStatus
           createdAt
           updatedAt
         }
@@ -1074,13 +885,14 @@ export const prospectListsByUserId = /* GraphQL */ `
       items {
         id
         userId
+        file
         name
         enhance
         customerEmail
         customerId
         paymentMethodId
         amount
-        uploadCompleted
+        uploadStatus
         createdAt
         updatedAt
       }
@@ -1152,13 +964,14 @@ export const campaignsByUserId = /* GraphQL */ `
         prospectList {
           id
           userId
+          file
           name
           enhance
           customerEmail
           customerId
           paymentMethodId
           amount
-          uploadCompleted
+          uploadStatus
           createdAt
           updatedAt
         }

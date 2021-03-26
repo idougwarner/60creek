@@ -32,8 +32,8 @@
           "defaultAuthentication": {
             "authenticationType": "API_KEY",
             "apiKeyConfig": {
-              "apiKeyExpirationDays": 7,
-              "description": "60creek GraphQL API key"
+              "apiKeyExpirationDays": 365,
+              "description": ""
             }
           },
           "additionalAuthenticationProviders": []

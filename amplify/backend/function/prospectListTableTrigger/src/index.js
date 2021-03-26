@@ -23,6 +23,16 @@ const updateProspectList = gql`
   ) {
     updateProspectList(input: $input, condition: $condition) {
       id
+      userId
+      name
+      enhance
+      customerEmail
+      customerId
+      paymentMethodId
+      amount
+      uploadStatus
+      createdAt
+      updatedAt
     }
   }
 `;
@@ -69,8 +79,7 @@ const getEnvValue = (values, key) => {
   }
   return "";
 };
-
-const delay = (ms) => {
+const delay_ms = (ms) => {
   return new Promise((resolver) => {
     setTimeout(() => {
       return resolver(true);
@@ -86,20 +95,13 @@ exports.handler = async (event) => {
     const stripeSecretKey = getEnvValue(params, stripeSecretKeyPath);
 
     const stripe = require("stripe")(stripeSecretKey);
-    //eslint-disable-line
-    console.log(
-      "=============  event start =============== >  ",
-      event.Records.length
-    );
+
     for (let i = 0; i < event.Records.length; i++) {
       const record = event.Records[i];
       if (
         record.eventName === "MODIFY" &&
-        record.dynamodb.NewImage.uploadCompleted.BOOL &&
-        !record.dynamodb.OldImage.uploadCompleted.BOOL
+        record.dynamodb.NewImage.uploadStatus.S === "need-enhance"
       ) {
-        console.log("new image ======> ", record.dynamodb.NewImage);
-        console.log("old image ======> ", record.dynamodb.OldImage);
         const prospectListId = record.dynamodb.NewImage.id.S;
         const customerId = record.dynamodb.NewImage.customerId.S;
         const customerEmail = record.dynamodb.NewImage.customerEmail.S;
@@ -127,7 +129,7 @@ exports.handler = async (event) => {
         const prospects = graphqlData.data.data.prospectsByProspectListId.items;
 
         if (prospects.length > 0) {
-          const stripeCheckoutInfo = await stripe.paymentIntents.create({
+          await stripe.paymentIntents.create({
             amount: parseInt(prospects.length * 100),
             currency: "usd",
             customer: customerId,
@@ -137,7 +139,6 @@ exports.handler = async (event) => {
             confirm: true,
             description: "Enhanced prospects uploaded",
           });
-          console.log(stripeCheckoutInfo);
         }
         for (let j = 0; j < prospects.length; j++) {
           const {
@@ -176,7 +177,7 @@ exports.handler = async (event) => {
             },
           });
         }
-        await delay(5000);
+        await delay_ms(10000);
         await axios({
           url: graphqlEndpoint,
           method: "post",
@@ -188,19 +189,17 @@ exports.handler = async (event) => {
             variables: {
               input: {
                 id: prospectListId,
-                uploadCompleted: false,
+                uploadStatus: "completed",
                 customerId: "-",
                 amount: 0,
               },
             },
           },
         });
-        console.log("===============  upload completed ==============");
       }
     }
     return "Successfully processed DynamoDB record";
   } catch (err) {
-    console.log(err);
     return new Error(err).message;
   }
 };
