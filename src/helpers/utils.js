@@ -22,3 +22,11 @@ export const formatPhoneNumber = (phoneNumberString) => {
   }
   return "";
 };
+
+export const delay = (ms) => {
+  return new Promise((resolver) => {
+    setTimeout(() => {
+      return resolver(true);
+    }, ms);
+  });
+};

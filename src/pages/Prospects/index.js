@@ -22,6 +22,7 @@ import {
 import {
   downloadCSVFromJSON,
   downloadXlsxFromJSON,
+  formatProspects,
 } from "../../helpers/CSVFileHelper";
 import { useDispatch, useSelector } from "react-redux";
 import FilterDropdown from "../../components/Prospects/FilterDropdown";
@@ -34,6 +35,13 @@ import { WORKER_STATUS } from "../../redux/uploadWorkerReducer";
 import { QUERY_LIMIT } from "../../helpers/constants";
 import { deleteProspect } from "../../graphql/mutations";
 import ConfirmDeleteModal from "../../components/Prospects/ConfirmDeleteModal";
+import {
+  onCreateProspect,
+  onCreateProspectList,
+  onDeleteProspect,
+  onUpdateProspect,
+  onUpdateProspectList,
+} from "../../graphql/subscriptions";
 
 const tableFields = [
   { title: "STATUS", field: "status", sortable: false },
@@ -52,7 +60,7 @@ const tableFields = [
 const ASC = 1;
 // const DESC = -1;
 const ProspectsPage = () => {
-  const [data, setData] = useState([]);
+  const [prospects, setProspects] = useState([]);
   const [nextToken, setNextToken] = useState("");
 
   const [filteredData, setFilteredData] = useState([]);
@@ -71,6 +79,10 @@ const ProspectsPage = () => {
   const [showOriginUpload, setShowOriginUpload] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [showUploadCompleteBanner, setShowUploadCompleteBanner] = useState(
+    false
+  );
+  const [completedProspectListId, setCompletedProspectListId] = useState("");
 
   const user = useSelector((state) => state.userStore);
   const prospectsDb = useIndexedDB(IndexDBStores.PROSPECT);
@@ -92,7 +104,7 @@ const ProspectsPage = () => {
         })
       );
       if (rt?.data?.prospectsByUserId?.items) {
-        setData(rt.data.prospectsByUserId.items);
+        setProspects(rt.data.prospectsByUserId.items);
         setNextToken(rt.data.prospectsByUserId.nextToken);
       }
       const rtList = await API.graphql(
@@ -126,20 +138,7 @@ const ProspectsPage = () => {
     if (selected.length > 0) {
       rtVal = rtVal.filter((item) => selected.includes(item.id));
     }
-    return rtVal.map((item) => ({
-      firstName: item.firstName,
-      lastName: item.lastName,
-      address1: item.address1,
-      address2: item.address2,
-      city: item.city,
-      state: item.state,
-      zip: item.zip,
-      company: item.company,
-      phone: item.phone,
-      email: item.email,
-      facebook: item.facebook,
-      status: item.status,
-    }));
+    return formatProspects(rtVal);
   };
   const downloadCSV = () => {
     downloadCSVFromJSON(getExportData(), "Prospects.csv");
@@ -168,7 +167,7 @@ const ProspectsPage = () => {
   const sortData = () => {
     let newData = [];
     if (strFilter) {
-      newData = data.filter((item) => {
+      newData = prospects.filter((item) => {
         if (
           item["firstName"].toLowerCase().indexOf(strFilter.toLowerCase()) >= 0
         ) {
@@ -192,7 +191,7 @@ const ProspectsPage = () => {
         return false;
       });
     } else {
-      newData = [...data];
+      newData = [...prospects];
     }
     if (statusFilter.length > 0) {
       newData = newData.filter(
@@ -217,7 +216,7 @@ const ProspectsPage = () => {
   useEffect(() => {
     sortData();
     // eslint-disable-next-line
-  }, [strFilter, statusFilter, listFilter, data, sortType]);
+  }, [strFilter, statusFilter, listFilter, prospects, sortType]);
   const checkLocalStorage = async () => {
     const localProspects = await prospectsDb.getAll();
     if (localProspects && localProspects.length > 0) {
@@ -230,35 +229,119 @@ const ProspectsPage = () => {
     } else if (uploadStatus.status === WORKER_STATUS.START) {
     } else if (uploadStatus.status === WORKER_STATUS.CHANGE) {
     } else if (uploadStatus.status === WORKER_STATUS.COMPLETED) {
-      loadData();
+      // loadData();
     } else if (uploadStatus.status === WORKER_STATUS.ERROR) {
       checkLocalStorage();
     } else {
     }
     // eslint-disable-next-line
   }, [uploadStatus]);
+
+  const onCreateProspectSubscription = (value) => {};
+  const onUpdateProspectSubscription = (value) => {};
+  const onDeleteProspectSubscription = (value) => {};
+  const onCreateProspectListSubscription = (data) => {};
+  const onUpdateProspectListSubscription = (data) => {
+    const prospectList = data.value.data.onUpdateProspectList;
+    if (
+      user &&
+      prospectList &&
+      user.id === prospectList.userId &&
+      prospectList.uploadStatus === "completed"
+    ) {
+      setShowUploadCompleteBanner(true);
+      setCompletedProspectListId(prospectList.id);
+      loadData();
+    }
+  };
+  useEffect(() => {
+    const createProspectSubscription = API.graphql(
+      graphqlOperation(onCreateProspect)
+    ).subscribe({
+      next: onCreateProspectSubscription,
+    });
+    const updateProspectSubscription = API.graphql(
+      graphqlOperation(onUpdateProspect)
+    ).subscribe({
+      next: onUpdateProspectSubscription,
+    });
+    const deleteProspectSubscription = API.graphql(
+      graphqlOperation(onDeleteProspect)
+    ).subscribe({
+      next: onDeleteProspectSubscription,
+    });
+    const createProspectListSubscription = API.graphql(
+      graphqlOperation(onCreateProspectList)
+    ).subscribe({
+      next: onCreateProspectListSubscription,
+    });
+    const updateProspectListSubscription = API.graphql(
+      graphqlOperation(onUpdateProspectList)
+    ).subscribe({
+      next: onUpdateProspectListSubscription,
+      error: (error) => {
+        console.warn(error);
+      },
+    });
+    return () => {
+      createProspectSubscription.unsubscribe();
+      updateProspectSubscription.unsubscribe();
+      deleteProspectSubscription.unsubscribe();
+      createProspectListSubscription.unsubscribe();
+      updateProspectListSubscription.unsubscribe();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const gotoDetailPage = (id) => {
     history.push(APP_URLS.PROSPECTS + "/" + id);
   };
 
   const deleteProspects = async () => {
     setDeleting(true);
-    const newData = [...data];
-    for (let i = 0; i < selected.length; i++) {
-      await API.graphql(
-        graphqlOperation(deleteProspect, {
-          input: { id: selected[i] },
-        })
-      );
-      const idx = newData.findIndex((item) => item.id === selected[i]);
-      newData.splice(idx, 1);
-    }
-    setData(newData);
-    setSelected([]);
+    try {
+      const newData = [...prospects];
+      for (let i = 0; i < selected.length; i++) {
+        await API.graphql(
+          graphqlOperation(deleteProspect, {
+            input: { id: selected[i] },
+          })
+        );
+        const idx = newData.findIndex((item) => item.id === selected[i]);
+        newData.splice(idx, 1);
+      }
+      setProspects(newData);
+      setSelected([]);
+    } catch (err) {}
     setDeleting(false);
+  };
+  const showUpdatedProspects = () => {
+    setListFilter([completedProspectListId]);
+    setShowUploadCompleteBanner(false);
   };
   return (
     <>
+      <div
+        className={"upload-banner " + (!showUploadCompleteBanner ? "hide" : "")}
+      >
+        <div>
+          Your prospect list has been successfully uploaded and can be viewed
+          <span
+            className="clickable"
+            onClick={() => {
+              showUpdatedProspects();
+            }}
+          >
+            here!
+          </span>
+        </div>
+        <img
+          src="/assets/icons/close.svg"
+          alt="close-banner"
+          className="clickable"
+          onClick={() => setShowUploadCompleteBanner(false)}
+        />
+      </div>
       <h4>Prospect List</h4>
       <div className="mb-4">
         <SplitButton
@@ -316,7 +399,10 @@ const ProspectsPage = () => {
                 onChange={(e) => setStrFilter(e.target.value)}
               />
             </InputGroup>
-            <FilterDropdown changeFilterEvent={changeFilterEvent} />
+            <FilterDropdown
+              changeFilterEvent={changeFilterEvent}
+              selectedList={listFilter}
+            />
           </div>
           <DropdownButton
             variant="light"
@@ -368,7 +454,7 @@ const ProspectsPage = () => {
           </div>
           <div className="showing">
             Showing<span>{filteredData.length}</span>of
-            <span>{data.length}</span>prospects
+            <span>{prospects.length}</span>prospects
           </div>
         </div>
         <Table responsive="xl" className="data-table">
@@ -468,6 +554,7 @@ const ProspectsPage = () => {
             show={showAddExistingModal}
             close={() => {
               setShowAddExistingModal(false);
+              setShowNewListModal(false);
             }}
             existingList={true}
           />
@@ -487,6 +574,8 @@ const ProspectsPage = () => {
           <NewProspectListModal
             show={showNewListModal}
             close={() => {
+              setShowAddExistingModal(false);
+              setShowOriginUpload(false);
               setShowNewListModal(false);
             }}
           />
@@ -494,11 +583,10 @@ const ProspectsPage = () => {
         {showOriginUpload && (
           <NewProspectListModal
             show={showOriginUpload}
-            close={(event) => {
+            close={() => {
+              setShowAddExistingModal(false);
               setShowOriginUpload(false);
-              if (event && event.data) {
-                loadData();
-              }
+              setShowNewListModal(false);
             }}
             originUpload={true}
           />

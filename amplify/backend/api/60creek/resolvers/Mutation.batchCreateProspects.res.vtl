@@ -1,0 +1,5 @@
+#if ($ctx.error)
+    $util.appendError($ctx.error.message, $ctx.error.type, null, $ctx.result.data.unprocessedKeys)
+#else
+    $util.toJson($ctx.result)
+#end

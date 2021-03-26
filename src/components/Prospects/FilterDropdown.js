@@ -7,7 +7,7 @@ import {
 } from "../../helpers/interestStatus";
 import "./FilterDropdown.scss";
 
-const FilterDropdown = ({ changeFilterEvent }) => {
+const FilterDropdown = ({ changeFilterEvent, selectedList }) => {
   const [filterList, setFilterList] = useState(["all"]);
   const [filterStatus, setFilterStatus] = useState(["all"]);
 
