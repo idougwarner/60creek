@@ -79,13 +79,6 @@ const getEnvValue = (values, key) => {
   }
   return "";
 };
-const delay_ms = (ms) => {
-  return new Promise((resolver) => {
-    setTimeout(() => {
-      return resolver(true);
-    }, ms);
-  });
-};
 exports.handler = async (event) => {
   try {
     const envVariables = await envPromise;
@@ -177,7 +170,6 @@ exports.handler = async (event) => {
             },
           });
         }
-        await delay_ms(10000);
         await axios({
           url: graphqlEndpoint,
           method: "post",
