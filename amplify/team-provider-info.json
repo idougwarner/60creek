@@ -133,7 +133,7 @@
         },
         "prospectListTableTrigger": {
           "deploymentBucketName": "amplify-60creek-stage-01840-deployment",
-          "s3Key": "amplify-builds/prospectListTableTrigger-6953596d35695a655245-build.zip"
+          "s3Key": "amplify-builds/prospectListTableTrigger-4f636f324f3234346d57-build.zip"
         },
         "fetchEnhanceData": {
           "deploymentBucketName": "amplify-60creek-stage-01840-deployment",
