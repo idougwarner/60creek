@@ -1,85 +1,77 @@
 import React, { useEffect, useState } from "react";
 import { DropdownButton, FormCheck } from "react-bootstrap";
 import { useSelector } from "react-redux";
+import { useHistory, useLocation } from "react-router";
 import {
   INTEREST_STATUS,
   INTEREST_STATUSES,
 } from "../../helpers/interestStatus";
 import "./FilterDropdown.scss";
 
-const FilterDropdown = ({ changeFilterEvent, selectedList }) => {
-  const [filterList, setFilterList] = useState(["all"]);
-  const [filterStatus, setFilterStatus] = useState(["all"]);
+const FilterDropdown = ({ changeFilterEvent }) => {
+  const [filterList, setFilterList] = useState([]);
+  const [filterStatus, setFilterStatus] = useState([]);
+  const history = useHistory();
+  const location = useLocation();
 
-  const [filter, setFilter] = useState({
-    list: [],
-    status: [],
-  });
-
-  const [filterFieldOptions, setFilterFieldOptions] = useState([
-    { label: "All Prospects", value: "all" },
-  ]);
+  const [filterFieldOptions, setFilterFieldOptions] = useState([]);
   const prospectList = useSelector((state) => state.prospectStore.prospectList);
-  const changeEvent = (status) => {
+  const changeStatusFilter = (status) => {
     if (status === INTEREST_STATUS.ALL) {
-      setFilterStatus(["all"]);
+      setFilterStatus([]);
     } else {
-      const newList = [...filterStatus.filter((item) => item !== "all")];
+      const newList = [...filterStatus];
       const i = filterStatus.indexOf(status);
       if (i < 0) {
         newList.push(status);
       } else {
         newList.splice(i, 1);
       }
-      if (newList.length === 0) {
-        setFilterStatus(["all"]);
-      } else {
-        setFilterStatus(newList);
-      }
+      setFilterStatus(newList);
     }
   };
-  const changeList = (value) => {
+  const changeProspectListFilter = (value) => {
     if (value === "all") {
-      setFilterList(["all"]);
+      setFilterList([]);
     } else {
-      let oldList = filterList.filter((item) => item !== "all");
+      let oldList = [...filterList];
       const idx = oldList.indexOf(value);
       if (idx >= 0) {
         oldList.splice(idx, 1);
       } else {
         oldList.push(value);
       }
-      if (oldList.length === 0) {
-        setFilterList(["all"]);
-      } else {
-        setFilterList(oldList);
-      }
+      setFilterList(oldList);
     }
   };
 
   useEffect(() => {
     if (prospectList) {
       setFilterFieldOptions(
-        [{ label: "All Prospects", value: "all" }].concat(
-          prospectList.map((item) => ({ label: item.name, value: item.id }))
-        )
+        prospectList.map((item) => ({ label: item.name, value: item.id }))
       );
     }
   }, [prospectList]);
   useEffect(() => {
-    setFilter({
-      list:
-        filterList.length === 0 || filterList[0] === "all" ? [] : filterList,
-      status:
-        filterStatus.length === 0 || filterStatus[0] === "all"
-          ? []
-          : filterStatus,
-    });
+    const params = new URLSearchParams();
+    for (let i = 0; i < filterList.length; i++) {
+      params.append("prospectList", filterList[i]);
+    }
+    for (let i = 0; i < filterStatus.length; i++) {
+      params.append("status", filterStatus[i]);
+    }
+    history.push({ search: params.toString() });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filterList, filterStatus]);
+
   useEffect(() => {
-    changeFilterEvent(filter);
-    // eslint-disable-next-line
-  }, [filter]);
+    const queryParams = new URLSearchParams(location.search);
+    const prospectListIds = queryParams.getAll("prospectList");
+    const status = queryParams.getAll("status");
+    setFilterList(prospectListIds);
+    setFilterStatus(status);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   return (
     <>
       <DropdownButton
@@ -87,20 +79,18 @@ const FilterDropdown = ({ changeFilterEvent, selectedList }) => {
         title={
           <>
             <img src="/assets/icons/filter.svg" className="mr-3" alt="filter" />
-            {filter.list.length === 0 && filter.status.length === 0 ? (
+            {filterList.length === 0 && filterStatus.length === 0 ? (
               "Filter Prospects"
-            ) : filter.list.length === 0 && filter.status.length !== 0 ? (
-              filter.status[0]
-            ) : filter.list.length !== 0 && filter.status.length === 0 ? (
+            ) : filterList.length === 0 && filterStatus.length !== 0 ? (
+              filterStatus[0]
+            ) : filterList.length !== 0 && filterStatus.length === 0 ? (
               "Prospect List" +
-              (filter.list.length > 1 ? "(" + filter.list.length + ")" : "")
+              (filterList.length > 1 ? "(" + filterList.length + ")" : "")
             ) : (
               <>
                 {"Prospect List" +
-                  (filter.list.length > 1
-                    ? "(" + filter.list.length + ")"
-                    : "")}
-                <span className="sub-option">{filter.status[0]}</span>
+                  (filterList.length > 1 ? "(" + filterList.length + ")" : "")}
+                <span className="sub-option">{filterStatus[0]}</span>
               </>
             )}
           </>
@@ -113,11 +103,19 @@ const FilterDropdown = ({ changeFilterEvent, selectedList }) => {
           variant="outline-primary"
           className="prospect-list"
           title={
-            filterList.length < 1 || filterList[0] === "all"
+            filterList.length === 0
               ? "All Prospects"
               : "Prospects (" + filterList.length + ")"
           }
         >
+          <div
+            className={
+              (filterList.length === 0 ? "active " : "") + "prospect-list-item"
+            }
+            onClick={() => changeProspectListFilter("all")}
+          >
+            All Prospects
+          </div>
           {filterFieldOptions.map((item, idx) => (
             <div
               key={idx}
@@ -126,7 +124,7 @@ const FilterDropdown = ({ changeFilterEvent, selectedList }) => {
                   ? "active "
                   : "") + "prospect-list-item"
               }
-              onClick={() => changeList(item.value)}
+              onClick={() => changeProspectListFilter(item.value)}
             >
               {item.label}
             </div>
@@ -139,8 +137,8 @@ const FilterDropdown = ({ changeFilterEvent, selectedList }) => {
           id="all"
           label="All"
           className="mb-3"
-          checked={filterStatus.includes(INTEREST_STATUS.ALL)}
-          onChange={() => changeEvent(INTEREST_STATUS.ALL)}
+          checked={filterStatus.length === 0}
+          onChange={() => changeStatusFilter(INTEREST_STATUS.ALL)}
         />
         {INTEREST_STATUSES.map((item, idx) => (
           <FormCheck
@@ -151,7 +149,7 @@ const FilterDropdown = ({ changeFilterEvent, selectedList }) => {
             label={item}
             className="mb-3"
             checked={filterStatus.includes(item)}
-            onChange={(event) => changeEvent(item, event.target.checked)}
+            onChange={(event) => changeStatusFilter(item, event.target.checked)}
           />
         ))}
       </DropdownButton>

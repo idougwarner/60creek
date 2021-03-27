@@ -72,6 +72,13 @@ const fetchEnhanceData = gql`
   }
 `;
 
+// const delay_ms = (ms) => {
+//   return new Promise((resolver) => {
+//     setTimeout(() => {
+//       return resolver(true);
+//     }, ms);
+//   });
+// };
 const getEnvValue = (values, key) => {
   const r = values.filter((item) => item.Name === key);
   if (r.length > 0) {
@@ -133,6 +140,7 @@ exports.handler = async (event) => {
             description: "Enhanced prospects uploaded",
           });
         }
+        console.log("enhanced prospects:", prospects.length);
         for (let j = 0; j < prospects.length; j++) {
           const {
             id,
@@ -170,6 +178,7 @@ exports.handler = async (event) => {
             },
           });
         }
+        // await delay_ms(10000);
         await axios({
           url: graphqlEndpoint,
           method: "post",
@@ -192,6 +201,7 @@ exports.handler = async (event) => {
     }
     return "Successfully processed DynamoDB record";
   } catch (err) {
+    console.log(err);
     return new Error(err).message;
   }
 };
