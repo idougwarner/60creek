@@ -28,6 +28,7 @@ import InfoTooltip from "../controls/InfoTooltip";
 const STEP1 = 0;
 const STEP2 = 1;
 const STEP3 = 2;
+const STEP4 = 3;
 const tableFields = [
   { fieldName: "firstName", required: false, width: "93px" },
   { fieldName: "lastName", required: true, width: "100px" },
@@ -71,7 +72,7 @@ const NewProspectListModal = ({
   const [generateToken, setGenerateToken] = useState(false);
   const [cardStatus, setCardStatus] = useState(false);
 
-  const [errMsg, setErrMsg] = useState("");
+  const [stripeErrMsg, setStripeErrMsg] = useState("");
   const [selectedField, setSelectedField] = useState({
     idx: -1,
     fieldName: "",
@@ -113,9 +114,7 @@ const NewProspectListModal = ({
       setPercentage(uploadStatus.percentage);
       setEstimate(uploadStatus.estimate);
       setCompleted(true);
-      setTimeout(() => {
-        close({ data: true });
-      }, 3000);
+      setStep(STEP4);
     } else if (uploadStatus.status === WORKER_STATUS.ERROR) {
     } else {
     }
@@ -246,7 +245,7 @@ const NewProspectListModal = ({
       if (!paymentMethod) return;
       if (enhance) {
         setLoadingEnhanceData(true);
-        setErrMsg("");
+        setStripeErrMsg("");
         try {
           const rt = await API.graphql(
             graphqlOperation(createStripeCustomer, {
@@ -257,7 +256,7 @@ const NewProspectListModal = ({
             })
           );
           if (rt.data.createStripeCustomer.error) {
-            setErrMsg(
+            setStripeErrMsg(
               messageConvert(rt.data.createStripeCustomer.error.message)
             );
             setLoadingEnhanceData(false);
@@ -600,7 +599,7 @@ const NewProspectListModal = ({
           prospectsDb.clear();
           prospectUploadStepDb.clear();
           close({ data: false });
-        } else if (step === STEP3) {
+        } else if (step === STEP3 || step === STEP4) {
           close({ data: true });
         }
       }}
@@ -764,6 +763,9 @@ const NewProspectListModal = ({
                 changeCardStatus={(event) => setCardStatus(event)}
               />
             )}
+            {stripeErrMsg && (
+              <Form.Text className="text-danger">{stripeErrMsg}</Form.Text>
+            )}
           </div>
         )}
         {step === STEP2 && (
@@ -831,7 +833,7 @@ const NewProspectListModal = ({
           </div>
         )}
         {step === STEP3 && (
-          <div className="step-4 d-flex flex-column align-items-center mb-3">
+          <div className="step-3 d-flex flex-column align-items-center mb-3">
             {!completed && (
               <div className="text-muted mb-3">
                 est. time remaining {estimate}
@@ -846,7 +848,14 @@ const NewProspectListModal = ({
             </div>
           </div>
         )}
-        {errMsg && <Form.Text className="text-danger">{errMsg}</Form.Text>}
+        {step === STEP4 && (
+          <div className="step-4 d-flex flex-column align-items-center mb-3">
+            <div className="text-muted mb-3">
+              We will upload your prospects and notify you once they are
+              completed!
+            </div>
+          </div>
+        )}
       </Modal.Body>
       {step === STEP1 && (
         <Modal.Footer>
@@ -864,6 +873,13 @@ const NewProspectListModal = ({
             ) : (
               "NEXT"
             )}
+          </Button>
+        </Modal.Footer>
+      )}
+      {step === STEP4 && (
+        <Modal.Footer>
+          <Button variant="primary" onClick={() => close({ data: true })}>
+            GOT IT!
           </Button>
         </Modal.Footer>
       )}

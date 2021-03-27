@@ -9,7 +9,6 @@ import {
   FormCheck,
   Spinner,
   SplitButton,
-  Pagination,
   Button,
 } from "react-bootstrap";
 import AddSingleProspectModal from "../../components/Prospects/AddSingleProspectModal";
@@ -29,19 +28,13 @@ import FilterDropdown from "../../components/Prospects/FilterDropdown";
 import { ACTIONS } from "../../redux/actionTypes";
 import { useIndexedDB } from "react-indexed-db";
 import { IndexDBStores } from "../../helpers/DBConfig";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import { APP_URLS } from "../../helpers/routers";
 import { WORKER_STATUS } from "../../redux/uploadWorkerReducer";
 import { QUERY_LIMIT } from "../../helpers/constants";
 import { deleteProspect } from "../../graphql/mutations";
 import ConfirmDeleteModal from "../../components/Prospects/ConfirmDeleteModal";
-import {
-  onCreateProspect,
-  onCreateProspectList,
-  onDeleteProspect,
-  onUpdateProspect,
-  onUpdateProspectList,
-} from "../../graphql/subscriptions";
+import { onUpdateProspectList } from "../../graphql/subscriptions";
 
 const tableFields = [
   { title: "STATUS", field: "status", sortable: false },
@@ -66,9 +59,6 @@ const ProspectsPage = () => {
   const [filteredData, setFilteredData] = useState([]);
   const [strFilter, setStrFilter] = useState("");
 
-  const [statusFilter, setStatusFilter] = useState([]);
-  const [listFilter, setListFilter] = useState([]);
-
   const [sortType, setSortType] = useState({ sort: ASC, field: "lastName" });
 
   const [showAddExistingModal, setShowAddExistingModal] = useState(false);
@@ -79,14 +69,11 @@ const ProspectsPage = () => {
   const [showOriginUpload, setShowOriginUpload] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
-  const [showUploadCompleteBanner, setShowUploadCompleteBanner] = useState(
-    false
-  );
-  const [completedProspectListId, setCompletedProspectListId] = useState("");
 
   const user = useSelector((state) => state.userStore);
   const prospectsDb = useIndexedDB(IndexDBStores.PROSPECT);
   const history = useHistory();
+  const location = useLocation();
   const dispatch = useDispatch();
 
   const uploadStatus = useSelector((state) => state.uploadWorkerStore);
@@ -96,17 +83,7 @@ const ProspectsPage = () => {
     try {
       const token = nextToken;
       setNextToken("");
-      const rt = await API.graphql(
-        graphqlOperation(prospectsByUserId, {
-          userId: user.id,
-          limit: QUERY_LIMIT,
-          nextToken: token ? token : null,
-        })
-      );
-      if (rt?.data?.prospectsByUserId?.items) {
-        setProspects(rt.data.prospectsByUserId.items);
-        setNextToken(rt.data.prospectsByUserId.nextToken);
-      }
+
       const rtList = await API.graphql(
         graphqlOperation(prospectListsByUserId, {
           userId: user.id,
@@ -118,6 +95,17 @@ const ProspectsPage = () => {
           type: ACTIONS.SET_PROSPECT_LIST,
           prospectList: rtList.data.prospectListsByUserId.items,
         });
+      }
+      const rt = await API.graphql(
+        graphqlOperation(prospectsByUserId, {
+          userId: user.id,
+          limit: QUERY_LIMIT,
+          nextToken: token ? token : null,
+        })
+      );
+      if (rt?.data?.prospectsByUserId?.items) {
+        setProspects(rt.data.prospectsByUserId.items);
+        setNextToken(rt.data.prospectsByUserId.nextToken);
       }
     } catch (err) {}
     setLoading(false);
@@ -153,10 +141,6 @@ const ProspectsPage = () => {
       setSortType({ sort: ASC, field: field });
     }
   };
-  const changeFilterEvent = (filter) => {
-    setListFilter(filter.list);
-    setStatusFilter(filter.status);
-  };
   useEffect(() => {
     if (user) {
       checkLocalStorage();
@@ -164,7 +148,7 @@ const ProspectsPage = () => {
     }
     // eslint-disable-next-line
   }, [user]);
-  const sortData = () => {
+  useEffect(() => {
     let newData = [];
     if (strFilter) {
       newData = prospects.filter((item) => {
@@ -193,6 +177,12 @@ const ProspectsPage = () => {
     } else {
       newData = [...prospects];
     }
+
+    const queryParams = new URLSearchParams(location.search);
+    let listFilter = queryParams.getAll("prospectList");
+    let statusFilter = queryParams.getAll("status");
+    console.log(listFilter, statusFilter);
+
     if (statusFilter.length > 0) {
       newData = newData.filter(
         (item) =>
@@ -212,11 +202,7 @@ const ProspectsPage = () => {
         : 0 + sortType.sort;
     });
     setFilteredData(newData);
-  };
-  useEffect(() => {
-    sortData();
-    // eslint-disable-next-line
-  }, [strFilter, statusFilter, listFilter, prospects, sortType]);
+  }, [strFilter, prospects, sortType, location.search]);
   const checkLocalStorage = async () => {
     const localProspects = await prospectsDb.getAll();
     if (localProspects && localProspects.length > 0) {
@@ -237,10 +223,6 @@ const ProspectsPage = () => {
     // eslint-disable-next-line
   }, [uploadStatus]);
 
-  const onCreateProspectSubscription = (value) => {};
-  const onUpdateProspectSubscription = (value) => {};
-  const onDeleteProspectSubscription = (value) => {};
-  const onCreateProspectListSubscription = (data) => {};
   const onUpdateProspectListSubscription = (data) => {
     const prospectList = data.value.data.onUpdateProspectList;
     if (
@@ -249,45 +231,16 @@ const ProspectsPage = () => {
       user.id === prospectList.userId &&
       prospectList.uploadStatus === "completed"
     ) {
-      setShowUploadCompleteBanner(true);
-      setCompletedProspectListId(prospectList.id);
       loadData();
     }
   };
   useEffect(() => {
-    const createProspectSubscription = API.graphql(
-      graphqlOperation(onCreateProspect)
-    ).subscribe({
-      next: onCreateProspectSubscription,
-    });
-    const updateProspectSubscription = API.graphql(
-      graphqlOperation(onUpdateProspect)
-    ).subscribe({
-      next: onUpdateProspectSubscription,
-    });
-    const deleteProspectSubscription = API.graphql(
-      graphqlOperation(onDeleteProspect)
-    ).subscribe({
-      next: onDeleteProspectSubscription,
-    });
-    const createProspectListSubscription = API.graphql(
-      graphqlOperation(onCreateProspectList)
-    ).subscribe({
-      next: onCreateProspectListSubscription,
-    });
     const updateProspectListSubscription = API.graphql(
       graphqlOperation(onUpdateProspectList)
     ).subscribe({
       next: onUpdateProspectListSubscription,
-      error: (error) => {
-        console.warn(error);
-      },
     });
     return () => {
-      createProspectSubscription.unsubscribe();
-      updateProspectSubscription.unsubscribe();
-      deleteProspectSubscription.unsubscribe();
-      createProspectListSubscription.unsubscribe();
       updateProspectListSubscription.unsubscribe();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -315,33 +268,8 @@ const ProspectsPage = () => {
     } catch (err) {}
     setDeleting(false);
   };
-  const showUpdatedProspects = () => {
-    setListFilter([completedProspectListId]);
-    setShowUploadCompleteBanner(false);
-  };
   return (
     <>
-      <div
-        className={"upload-banner " + (!showUploadCompleteBanner ? "hide" : "")}
-      >
-        <div>
-          Your prospect list has been successfully uploaded and can be viewed
-          <span
-            className="clickable"
-            onClick={() => {
-              showUpdatedProspects();
-            }}
-          >
-            here!
-          </span>
-        </div>
-        <img
-          src="/assets/icons/close.svg"
-          alt="close-banner"
-          className="clickable"
-          onClick={() => setShowUploadCompleteBanner(false)}
-        />
-      </div>
       <h4>Prospect List</h4>
       <div className="mb-4">
         <SplitButton
@@ -399,10 +327,7 @@ const ProspectsPage = () => {
                 onChange={(e) => setStrFilter(e.target.value)}
               />
             </InputGroup>
-            <FilterDropdown
-              changeFilterEvent={changeFilterEvent}
-              selectedList={listFilter}
-            />
+            <FilterDropdown />
           </div>
           <DropdownButton
             variant="light"
@@ -531,23 +456,6 @@ const ProspectsPage = () => {
               Next
             </Button>
           )}
-          <Pagination>
-            {/* <Pagination.First />
-            <Pagination.Prev />
-            <Pagination.Item>{1}</Pagination.Item>
-            <Pagination.Ellipsis />
-
-            <Pagination.Item>{10}</Pagination.Item>
-            <Pagination.Item>{11}</Pagination.Item>
-            <Pagination.Item active>{12}</Pagination.Item>
-            <Pagination.Item>{13}</Pagination.Item>
-            <Pagination.Item>{14}</Pagination.Item>
-
-            <Pagination.Ellipsis />
-            <Pagination.Item>{20}</Pagination.Item> */}
-            {/* {nextToken && <Pagination.Next onClick={loadData} />} */}
-            {/* <Pagination.Last /> */}
-          </Pagination>
         </div>
         {showAddExistingModal && (
           <NewProspectListModal

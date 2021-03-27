@@ -21,6 +21,7 @@ import { toast, ToastContainer } from "react-toastify";
 import { Spinner } from "react-bootstrap";
 import { UPLOAD_PROSPECTS_LIMIT } from "../../helpers/constants";
 import { formatProspects } from "../../helpers/CSVFileHelper";
+import { onUpdateProspectList } from "../../graphql/subscriptions";
 
 var g_workerInstance;
 
@@ -32,7 +33,10 @@ const Layout = ({ children }) => {
   const prospectsDb = useIndexedDB(IndexDBStores.PROSPECT);
   const prospectListDb = useIndexedDB(IndexDBStores.PROSPECT_LIST);
   const prospectUploadStepDb = useIndexedDB(IndexDBStores.PROSPECT_UPLOAD_STEP);
-
+  const [completedProspectListId, setCompletedProspectListId] = useState("");
+  const [showUploadCompleteBanner, setShowUploadCompleteBanner] = useState(
+    false
+  );
   const [loading, setLoading] = useState(false);
 
   const dispatch = useDispatch();
@@ -90,7 +94,6 @@ const Layout = ({ children }) => {
         } catch (err) {}
       } else if (uploadStatus.status === WORKER_STATUS.CHANGE) {
       } else if (uploadStatus.status === WORKER_STATUS.COMPLETED) {
-        toast.success("Successfully uploaded.", { hideProgressBar: true });
       } else if (uploadStatus.status === WORKER_STATUS.ERROR) {
       } else {
       }
@@ -174,11 +177,67 @@ const Layout = ({ children }) => {
     };
     // eslint-disable-next-line
   }, []);
+
+  const showUpdatedProspects = () => {
+    setShowUploadCompleteBanner(false);
+    history.push({
+      pathname: APP_URLS.PROSPECTS,
+      search: "prospectList=" + completedProspectListId,
+    });
+  };
+
+  const onUpdateProspectListSubscription = (data) => {
+    const prospectList = data.value.data.onUpdateProspectList;
+    if (
+      user &&
+      prospectList &&
+      user.id === prospectList.userId &&
+      prospectList.uploadStatus === "completed"
+    ) {
+      setShowUploadCompleteBanner(true);
+      setCompletedProspectListId(prospectList.id);
+    }
+  };
+  useEffect(() => {
+    const updateProspectListSubscription = API.graphql(
+      graphqlOperation(onUpdateProspectList)
+    ).subscribe({
+      next: onUpdateProspectListSubscription,
+    });
+    return () => {
+      updateProspectListSubscription.unsubscribe();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <div className="admin-layout">
       <ToastContainer />
       <Sidebar />
       <main className="admin-body">
+        <div
+          className={
+            "upload-banner " + (!showUploadCompleteBanner ? "hide" : "")
+          }
+        >
+          <div>
+            Your prospect list has been successfully uploaded and can be viewed
+            <span
+              className="clickable"
+              onClick={() => {
+                showUpdatedProspects();
+              }}
+            >
+              here!
+            </span>
+          </div>
+          <img
+            src="/assets/icons/close.svg"
+            alt="close-banner"
+            className="clickable"
+            onClick={() => setShowUploadCompleteBanner(false)}
+          />
+        </div>
         {loading ? (
           <div className="d-flex p-5 justify-content-center">
             <Spinner animation="border" role="status" />
