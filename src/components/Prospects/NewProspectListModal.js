@@ -28,6 +28,7 @@ import InfoTooltip from "../controls/InfoTooltip";
 const STEP1 = 0;
 const STEP2 = 1;
 const STEP3 = 2;
+const STEP4 = 3;
 const tableFields = [
   { fieldName: "firstName", required: false, width: "93px" },
   { fieldName: "lastName", required: true, width: "100px" },
@@ -47,6 +48,7 @@ const NewProspectListModal = ({
   existingList = false,
 }) => {
   const [step, setStep] = useState(STEP1);
+  const [nexting, setNexting] = useState(false);
   const [percentage, setPercentage] = useState(0);
   const [loading, setLoading] = useState(false);
   const [loadingEnhanceData, setLoadingEnhanceData] = useState(false);
@@ -70,7 +72,7 @@ const NewProspectListModal = ({
   const [generateToken, setGenerateToken] = useState(false);
   const [cardStatus, setCardStatus] = useState(false);
 
-  const [errMsg, setErrMsg] = useState("");
+  const [stripeErrMsg, setStripeErrMsg] = useState("");
   const [selectedField, setSelectedField] = useState({
     idx: -1,
     fieldName: "",
@@ -112,9 +114,7 @@ const NewProspectListModal = ({
       setPercentage(uploadStatus.percentage);
       setEstimate(uploadStatus.estimate);
       setCompleted(true);
-      setTimeout(() => {
-        close({ data: true });
-      }, 3000);
+      setStep(STEP4);
     } else if (uploadStatus.status === WORKER_STATUS.ERROR) {
     } else {
     }
@@ -140,8 +140,10 @@ const NewProspectListModal = ({
   useEffect(() => {
     const f = async () => {
       if (originUpload) {
+        setNexting(true);
         let storedProspects = await prospectsDb.getAll();
         let storedUploadStep = await prospectUploadStepDb.getAll();
+        setNexting(false);
         if (storedUploadStep.length > 0 && storedProspects.length > 0) {
           setStep(STEP2);
           setProspectList(storedProspects);
@@ -243,7 +245,7 @@ const NewProspectListModal = ({
       if (!paymentMethod) return;
       if (enhance) {
         setLoadingEnhanceData(true);
-        setErrMsg("");
+        setStripeErrMsg("");
         try {
           const rt = await API.graphql(
             graphqlOperation(createStripeCustomer, {
@@ -254,7 +256,7 @@ const NewProspectListModal = ({
             })
           );
           if (rt.data.createStripeCustomer.error) {
-            setErrMsg(
+            setStripeErrMsg(
               messageConvert(rt.data.createStripeCustomer.error.message)
             );
             setLoadingEnhanceData(false);
@@ -266,6 +268,7 @@ const NewProspectListModal = ({
             item["enhance"] = true;
             newProspects[i] = item;
           }
+          setNexting(true);
           await prospectsDb.clear();
           for (let i = 0; i < newProspects.length; i++) {
             const item = newProspects[i];
@@ -281,6 +284,7 @@ const NewProspectListModal = ({
             paymentMethodId: rt.data.createStripeCustomer.data.paymentMethodId,
             amount: prospectList.length,
           });
+          setNexting(false);
           setProspectList(newProspects);
           next();
         } catch (err) {}
@@ -293,6 +297,7 @@ const NewProspectListModal = ({
 
   const gotoSecondStep = async () => {
     try {
+      setNexting(true);
       await prospectListDb.clear();
       await prospectListDb.add({
         prospectName: listName,
@@ -302,9 +307,10 @@ const NewProspectListModal = ({
 
       await prospectsDb.clear();
       for (let i = 0; i < prospectList.length; i++) {
-        const item = prospectList[i];
+        const item = { ...prospectList[i], enhance: enhance };
         await prospectsDb.add(item);
       }
+      setNexting(false);
     } catch (err) {}
     if (enhance) {
       setLoadingEnhanceData(true);
@@ -314,6 +320,7 @@ const NewProspectListModal = ({
     }
   };
   const gotoThirdStep = async () => {
+    setNexting(true);
     await prospectUploadStepDb.clear();
     await prospectUploadStepDb.add({
       step: STEP3,
@@ -324,6 +331,7 @@ const NewProspectListModal = ({
       const item = prospectList[i];
       await prospectsDb.add(item);
     }
+    setNexting(false);
     pushData();
     setStep(STEP3);
   };
@@ -591,7 +599,7 @@ const NewProspectListModal = ({
           prospectsDb.clear();
           prospectUploadStepDb.clear();
           close({ data: false });
-        } else if (step === STEP3) {
+        } else if (step === STEP3 || step === STEP4) {
           close({ data: true });
         }
       }}
@@ -755,6 +763,9 @@ const NewProspectListModal = ({
                 changeCardStatus={(event) => setCardStatus(event)}
               />
             )}
+            {stripeErrMsg && (
+              <Form.Text className="text-danger">{stripeErrMsg}</Form.Text>
+            )}
           </div>
         )}
         {step === STEP2 && (
@@ -773,8 +784,9 @@ const NewProspectListModal = ({
                 <Button
                   variant="primary"
                   onClick={gotoThirdStep}
-                  disabled={errors}
+                  disabled={errors || nexting}
                 >
+                  {nexting && <Spinner style={{ marginRight: 10 }} />}
                   CONFIRM
                 </Button>
               </div>
@@ -821,7 +833,7 @@ const NewProspectListModal = ({
           </div>
         )}
         {step === STEP3 && (
-          <div className="step-4 d-flex flex-column align-items-center mb-3">
+          <div className="step-3 d-flex flex-column align-items-center mb-3">
             {!completed && (
               <div className="text-muted mb-3">
                 est. time remaining {estimate}
@@ -836,16 +848,23 @@ const NewProspectListModal = ({
             </div>
           </div>
         )}
-        {errMsg && <Form.Text className="text-danger">{errMsg}</Form.Text>}
+        {step === STEP4 && (
+          <div className="step-4 d-flex flex-column align-items-center mb-3">
+            <div className="text-muted mb-3">
+              We will upload your prospects and notify you once they are
+              completed!
+            </div>
+          </div>
+        )}
       </Modal.Body>
       {step === STEP1 && (
         <Modal.Footer>
           <Button
             variant="primary"
-            disabled={!isNext || loadingEnhanceData}
+            disabled={!isNext || loadingEnhanceData || nexting}
             onClick={() => gotoSecondStep()}
           >
-            {loadingEnhanceData ? (
+            {loadingEnhanceData || nexting ? (
               <>
                 <Spinner /> LOADING ...
               </>
@@ -857,15 +876,24 @@ const NewProspectListModal = ({
           </Button>
         </Modal.Footer>
       )}
+      {step === STEP4 && (
+        <Modal.Footer>
+          <Button variant="primary" onClick={() => close({ data: true })}>
+            GOT IT!
+          </Button>
+        </Modal.Footer>
+      )}
       {step === STEP2 && (
         <ConfirmModal
           prospectsCount={prospectList.length}
           show={showCloseConfirm}
           close={async (rt) => {
             if (rt.data) {
-              await prospectListDb.clear();
-              await prospectsDb.clear();
-              await prospectUploadStepDb.clear();
+              try {
+                await prospectListDb.clear();
+                await prospectsDb.clear();
+                await prospectUploadStepDb.clear();
+              } catch (err) {}
               close({ data: false });
             }
             setShowCloseConfirm(false);

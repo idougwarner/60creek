@@ -6,7 +6,6 @@ const stripeSecretKeyPromise = ssm
     WithDecryption: true,
   })
   .promise();
-
 exports.handler = async (event) => {
   try {
     const stripeSecretKey = await stripeSecretKeyPromise;

@@ -9,7 +9,6 @@ import {
   FormCheck,
   Spinner,
   SplitButton,
-  Pagination,
   Button,
 } from "react-bootstrap";
 import AddSingleProspectModal from "../../components/Prospects/AddSingleProspectModal";
@@ -22,18 +21,20 @@ import {
 import {
   downloadCSVFromJSON,
   downloadXlsxFromJSON,
+  formatProspects,
 } from "../../helpers/CSVFileHelper";
 import { useDispatch, useSelector } from "react-redux";
 import FilterDropdown from "../../components/Prospects/FilterDropdown";
 import { ACTIONS } from "../../redux/actionTypes";
 import { useIndexedDB } from "react-indexed-db";
 import { IndexDBStores } from "../../helpers/DBConfig";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import { APP_URLS } from "../../helpers/routers";
 import { WORKER_STATUS } from "../../redux/uploadWorkerReducer";
 import { QUERY_LIMIT } from "../../helpers/constants";
 import { deleteProspect } from "../../graphql/mutations";
 import ConfirmDeleteModal from "../../components/Prospects/ConfirmDeleteModal";
+import { onUpdateProspectList } from "../../graphql/subscriptions";
 
 const tableFields = [
   { title: "STATUS", field: "status", sortable: false },
@@ -52,14 +53,11 @@ const tableFields = [
 const ASC = 1;
 // const DESC = -1;
 const ProspectsPage = () => {
-  const [data, setData] = useState([]);
+  const [prospects, setProspects] = useState([]);
   const [nextToken, setNextToken] = useState("");
 
   const [filteredData, setFilteredData] = useState([]);
   const [strFilter, setStrFilter] = useState("");
-
-  const [statusFilter, setStatusFilter] = useState([]);
-  const [listFilter, setListFilter] = useState([]);
 
   const [sortType, setSortType] = useState({ sort: ASC, field: "lastName" });
 
@@ -75,6 +73,7 @@ const ProspectsPage = () => {
   const user = useSelector((state) => state.userStore);
   const prospectsDb = useIndexedDB(IndexDBStores.PROSPECT);
   const history = useHistory();
+  const location = useLocation();
   const dispatch = useDispatch();
 
   const uploadStatus = useSelector((state) => state.uploadWorkerStore);
@@ -84,17 +83,7 @@ const ProspectsPage = () => {
     try {
       const token = nextToken;
       setNextToken("");
-      const rt = await API.graphql(
-        graphqlOperation(prospectsByUserId, {
-          userId: user.id,
-          limit: QUERY_LIMIT,
-          nextToken: token ? token : null,
-        })
-      );
-      if (rt?.data?.prospectsByUserId?.items) {
-        setData(rt.data.prospectsByUserId.items);
-        setNextToken(rt.data.prospectsByUserId.nextToken);
-      }
+
       const rtList = await API.graphql(
         graphqlOperation(prospectListsByUserId, {
           userId: user.id,
@@ -106,6 +95,17 @@ const ProspectsPage = () => {
           type: ACTIONS.SET_PROSPECT_LIST,
           prospectList: rtList.data.prospectListsByUserId.items,
         });
+      }
+      const rt = await API.graphql(
+        graphqlOperation(prospectsByUserId, {
+          userId: user.id,
+          limit: QUERY_LIMIT,
+          nextToken: token ? token : null,
+        })
+      );
+      if (rt?.data?.prospectsByUserId?.items) {
+        setProspects(rt.data.prospectsByUserId.items);
+        setNextToken(rt.data.prospectsByUserId.nextToken);
       }
     } catch (err) {}
     setLoading(false);
@@ -126,20 +126,7 @@ const ProspectsPage = () => {
     if (selected.length > 0) {
       rtVal = rtVal.filter((item) => selected.includes(item.id));
     }
-    return rtVal.map((item) => ({
-      firstName: item.firstName,
-      lastName: item.lastName,
-      address1: item.address1,
-      address2: item.address2,
-      city: item.city,
-      state: item.state,
-      zip: item.zip,
-      company: item.company,
-      phone: item.phone,
-      email: item.email,
-      facebook: item.facebook,
-      status: item.status,
-    }));
+    return formatProspects(rtVal);
   };
   const downloadCSV = () => {
     downloadCSVFromJSON(getExportData(), "Prospects.csv");
@@ -154,10 +141,6 @@ const ProspectsPage = () => {
       setSortType({ sort: ASC, field: field });
     }
   };
-  const changeFilterEvent = (filter) => {
-    setListFilter(filter.list);
-    setStatusFilter(filter.status);
-  };
   useEffect(() => {
     if (user) {
       checkLocalStorage();
@@ -165,10 +148,10 @@ const ProspectsPage = () => {
     }
     // eslint-disable-next-line
   }, [user]);
-  const sortData = () => {
+  useEffect(() => {
     let newData = [];
     if (strFilter) {
-      newData = data.filter((item) => {
+      newData = prospects.filter((item) => {
         if (
           item["firstName"].toLowerCase().indexOf(strFilter.toLowerCase()) >= 0
         ) {
@@ -192,8 +175,14 @@ const ProspectsPage = () => {
         return false;
       });
     } else {
-      newData = [...data];
+      newData = [...prospects];
     }
+
+    const queryParams = new URLSearchParams(location.search);
+    let listFilter = queryParams.getAll("prospectList");
+    let statusFilter = queryParams.getAll("status");
+    console.log(listFilter, statusFilter);
+
     if (statusFilter.length > 0) {
       newData = newData.filter(
         (item) =>
@@ -213,11 +202,7 @@ const ProspectsPage = () => {
         : 0 + sortType.sort;
     });
     setFilteredData(newData);
-  };
-  useEffect(() => {
-    sortData();
-    // eslint-disable-next-line
-  }, [strFilter, statusFilter, listFilter, data, sortType]);
+  }, [strFilter, prospects, sortType, location.search]);
   const checkLocalStorage = async () => {
     const localProspects = await prospectsDb.getAll();
     if (localProspects && localProspects.length > 0) {
@@ -230,31 +215,57 @@ const ProspectsPage = () => {
     } else if (uploadStatus.status === WORKER_STATUS.START) {
     } else if (uploadStatus.status === WORKER_STATUS.CHANGE) {
     } else if (uploadStatus.status === WORKER_STATUS.COMPLETED) {
-      loadData();
+      // loadData();
     } else if (uploadStatus.status === WORKER_STATUS.ERROR) {
       checkLocalStorage();
     } else {
     }
     // eslint-disable-next-line
   }, [uploadStatus]);
+
+  const onUpdateProspectListSubscription = (data) => {
+    const prospectList = data.value.data.onUpdateProspectList;
+    if (
+      user &&
+      prospectList &&
+      user.id === prospectList.userId &&
+      prospectList.uploadStatus === "completed"
+    ) {
+      loadData();
+    }
+  };
+  useEffect(() => {
+    const updateProspectListSubscription = API.graphql(
+      graphqlOperation(onUpdateProspectList)
+    ).subscribe({
+      next: onUpdateProspectListSubscription,
+    });
+    return () => {
+      updateProspectListSubscription.unsubscribe();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const gotoDetailPage = (id) => {
     history.push(APP_URLS.PROSPECTS + "/" + id);
   };
 
   const deleteProspects = async () => {
     setDeleting(true);
-    const newData = [...data];
-    for (let i = 0; i < selected.length; i++) {
-      await API.graphql(
-        graphqlOperation(deleteProspect, {
-          input: { id: selected[i] },
-        })
-      );
-      const idx = newData.findIndex((item) => item.id === selected[i]);
-      newData.splice(idx, 1);
-    }
-    setData(newData);
-    setSelected([]);
+    try {
+      const newData = [...prospects];
+      for (let i = 0; i < selected.length; i++) {
+        await API.graphql(
+          graphqlOperation(deleteProspect, {
+            input: { id: selected[i] },
+          })
+        );
+        const idx = newData.findIndex((item) => item.id === selected[i]);
+        newData.splice(idx, 1);
+      }
+      setProspects(newData);
+      setSelected([]);
+    } catch (err) {}
     setDeleting(false);
   };
   return (
@@ -316,7 +327,7 @@ const ProspectsPage = () => {
                 onChange={(e) => setStrFilter(e.target.value)}
               />
             </InputGroup>
-            <FilterDropdown changeFilterEvent={changeFilterEvent} />
+            <FilterDropdown />
           </div>
           <DropdownButton
             variant="light"
@@ -368,7 +379,7 @@ const ProspectsPage = () => {
           </div>
           <div className="showing">
             Showing<span>{filteredData.length}</span>of
-            <span>{data.length}</span>prospects
+            <span>{prospects.length}</span>prospects
           </div>
         </div>
         <Table responsive="xl" className="data-table">
@@ -445,29 +456,13 @@ const ProspectsPage = () => {
               Next
             </Button>
           )}
-          <Pagination>
-            {/* <Pagination.First />
-            <Pagination.Prev />
-            <Pagination.Item>{1}</Pagination.Item>
-            <Pagination.Ellipsis />
-
-            <Pagination.Item>{10}</Pagination.Item>
-            <Pagination.Item>{11}</Pagination.Item>
-            <Pagination.Item active>{12}</Pagination.Item>
-            <Pagination.Item>{13}</Pagination.Item>
-            <Pagination.Item>{14}</Pagination.Item>
-
-            <Pagination.Ellipsis />
-            <Pagination.Item>{20}</Pagination.Item> */}
-            {/* {nextToken && <Pagination.Next onClick={loadData} />} */}
-            {/* <Pagination.Last /> */}
-          </Pagination>
         </div>
         {showAddExistingModal && (
           <NewProspectListModal
             show={showAddExistingModal}
             close={() => {
               setShowAddExistingModal(false);
+              setShowNewListModal(false);
             }}
             existingList={true}
           />
@@ -487,6 +482,8 @@ const ProspectsPage = () => {
           <NewProspectListModal
             show={showNewListModal}
             close={() => {
+              setShowAddExistingModal(false);
+              setShowOriginUpload(false);
               setShowNewListModal(false);
             }}
           />
@@ -494,11 +491,10 @@ const ProspectsPage = () => {
         {showOriginUpload && (
           <NewProspectListModal
             show={showOriginUpload}
-            close={(event) => {
+            close={() => {
+              setShowAddExistingModal(false);
               setShowOriginUpload(false);
-              if (event && event.data) {
-                loadData();
-              }
+              setShowNewListModal(false);
             }}
             originUpload={true}
           />

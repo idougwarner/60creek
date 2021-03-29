@@ -56,8 +56,6 @@ exports.handler = async (event) => {
       state,
     } = event.arguments.input;
 
-    console.log("=============  event start =============== >  ", prospectId);
-
     let dt = {};
     const queryParams = {
       d_phone: phone ? phone : null,
@@ -217,11 +215,8 @@ exports.handler = async (event) => {
         },
       },
     });
-
-    console.log("=============  event end =============== >  ");
     return "Successfully updated data";
   } catch (err) {
-    console.log(err);
     return new Error(err).message;
   }
 };

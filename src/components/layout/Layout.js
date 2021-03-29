@@ -4,10 +4,13 @@ import "./Layout.scss";
 import { useHistory, useLocation } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { APP_URLS } from "../../helpers/routers";
-import { API, Auth, graphqlOperation } from "aws-amplify";
+import { API, Auth, graphqlOperation, Storage } from "aws-amplify";
 import { usersByUserId } from "../../graphql/queries";
 import { ACTIONS, UPLOAD_STATUS } from "../../redux/actionTypes";
 import { WORKER_STATUS } from "../../redux/uploadWorkerReducer";
+
+import { jsonToCSV } from "react-papaparse";
+import { v4 as uuidv4 } from "uuid";
 
 // Import your worker
 import worker from "workerize-loader!../../workers/upload-worker"; // eslint-disable-line import/no-webpack-loader-syntax
@@ -16,6 +19,9 @@ import { useIndexedDB } from "react-indexed-db";
 import { IndexDBStores } from "../../helpers/DBConfig";
 import { toast, ToastContainer } from "react-toastify";
 import { Spinner } from "react-bootstrap";
+import { UPLOAD_PROSPECTS_LIMIT } from "../../helpers/constants";
+import { formatProspects } from "../../helpers/CSVFileHelper";
+import { onUpdateProspectList } from "../../graphql/subscriptions";
 
 var g_workerInstance;
 
@@ -26,7 +32,11 @@ const Layout = ({ children }) => {
 
   const prospectsDb = useIndexedDB(IndexDBStores.PROSPECT);
   const prospectListDb = useIndexedDB(IndexDBStores.PROSPECT_LIST);
-
+  const prospectUploadStepDb = useIndexedDB(IndexDBStores.PROSPECT_UPLOAD_STEP);
+  const [completedProspectListId, setCompletedProspectListId] = useState("");
+  const [showUploadCompleteBanner, setShowUploadCompleteBanner] = useState(
+    false
+  );
   const [loading, setLoading] = useState(false);
 
   const dispatch = useDispatch();
@@ -66,15 +76,24 @@ const Layout = ({ children }) => {
         try {
           const storedProspectList = await prospectListDb.getAll();
           const storedProspects = await prospectsDb.getAll();
+          let fileKey = "";
+          if (storedProspects.length >= UPLOAD_PROSPECTS_LIMIT) {
+            const data = jsonToCSV(formatProspects(storedProspects));
+            const blob = new Blob([data], { type: "text/csv" });
+            const file = new File([blob], uuidv4() + ".csv");
+            const rtInfo = await Storage.put(uuidv4() + "-" + file.name, file);
+            fileKey = rtInfo.key;
+          }
+
           g_workerInstance.startUploadProspects(
             user.id,
             storedProspects,
-            storedProspectList
+            storedProspectList,
+            fileKey
           );
         } catch (err) {}
       } else if (uploadStatus.status === WORKER_STATUS.CHANGE) {
       } else if (uploadStatus.status === WORKER_STATUS.COMPLETED) {
-        toast.success("Successfully uploaded.", { hideProgressBar: true });
       } else if (uploadStatus.status === WORKER_STATUS.ERROR) {
       } else {
       }
@@ -83,74 +102,142 @@ const Layout = ({ children }) => {
   }, [uploadStatus, prospectListDb, prospectsDb, user]);
 
   const serviceWorkerListener = async ({ data }) => {
-    if (data.type === UPLOAD_STATUS.STARTED) {
-    } else if (data.type === UPLOAD_STATUS.UPLOADED_ONE) {
-      if (data.data.type === "prospect-list") {
-        await prospectListDb.clear();
-        await prospectListDb.add({
-          prospectName: data.data.prospectName,
-          prospectListId: data.data.prospectListId,
-          customerId: data.data.customerId,
-          amount: data.data.amount,
-          paymentMethodId: data.data.paymentMethodId,
-          customerEmail: data.data.customerEmail,
-          enhance: data.data.enhance,
-        });
-      } else if (data.data.type === "prospect") {
-        await prospectsDb.deleteRecord(data.data.prospectId);
-      }
-      dispatch({
-        type: ACTIONS.UPDATE_UPLOADE_WORKER,
-        uploaded: data.uploaded,
-        estimate: data.estimate,
-        percentage: data.percentage,
-      });
-    } else if (data.type === UPLOAD_STATUS.COMPLETED_UPLOAD) {
-      await prospectListDb.clear();
-      await prospectsDb.clear();
-      dispatch({
-        type: ACTIONS.COMPLETED_UPLOADE_WORKER,
-        estimate: "",
-        percentage: 100,
-      });
-      setTimeout(() => {
+    try {
+      if (data.type === UPLOAD_STATUS.STARTED) {
+      } else if (data.type === UPLOAD_STATUS.UPLOADED_ONE) {
+        if (data.data.type === "prospect-list") {
+          await prospectListDb.clear();
+          await prospectListDb.add({
+            prospectName: data.data.prospectName,
+            prospectListId: data.data.prospectListId,
+            customerId: data.data.customerId,
+            amount: data.data.amount,
+            paymentMethodId: data.data.paymentMethodId,
+            customerEmail: data.data.customerEmail,
+            enhance: data.data.enhance,
+          });
+        } else if (data.data.type === "prospect") {
+          const prospectIds = data.data.prospectIds;
+          for (let i = 0; i < prospectIds.length; i++) {
+            await prospectsDb.deleteRecord(prospectIds[i]);
+          }
+        }
         dispatch({
-          type: ACTIONS.IDLE_UPLOADE_WORKER,
+          type: ACTIONS.UPDATE_UPLOADE_WORKER,
+          uploaded: data.uploaded,
+          estimate: data.estimate,
+          percentage: data.percentage,
+        });
+      } else if (data.type === UPLOAD_STATUS.COMPLETED_UPLOAD) {
+        await prospectListDb.clear();
+        await prospectsDb.clear();
+        await prospectUploadStepDb.clear();
+        dispatch({
+          type: ACTIONS.COMPLETED_UPLOADE_WORKER,
           estimate: "",
           percentage: 100,
+          prospectListId: data.prospectListId,
         });
-      }, 3000);
-      console.log("upload completed -----------------------");
-    } else if (data.type === UPLOAD_STATUS.ERROR) {
-      dispatch({
-        type: ACTIONS.ERROR_UPLOADE_WORKER,
-      });
-      toast.error(
-        "Oops! It looks like something went wrong. Please retry your upload here!",
-        {
-          autoClose: false,
-        }
-      );
-    } else {
-    }
+        setTimeout(() => {
+          dispatch({
+            type: ACTIONS.IDLE_UPLOADE_WORKER,
+            estimate: "",
+            percentage: 100,
+          });
+        }, 3000);
+      } else if (data.type === UPLOAD_STATUS.ERROR) {
+        dispatch({
+          type: ACTIONS.ERROR_UPLOADE_WORKER,
+        });
+        toast.error(
+          "Oops! It looks like something went wrong. Please retry your upload here!",
+          {
+            autoClose: false,
+          }
+        );
+      } else {
+      }
+    } catch (err) {}
   };
 
   useEffect(() => {
-    const workerInstance = worker();
+    const prospectsUploadWorkerInstance = worker();
     // Attach an event listener to receive calculations from your worker
-    workerInstance.addEventListener("message", serviceWorkerListener);
+    prospectsUploadWorkerInstance.addEventListener(
+      "message",
+      serviceWorkerListener
+    );
     // Run your calculations
-    g_workerInstance = workerInstance;
+    g_workerInstance = prospectsUploadWorkerInstance;
     return () => {
-      workerInstance.removeEventListener("message", serviceWorkerListener);
+      prospectsUploadWorkerInstance.removeEventListener(
+        "message",
+        serviceWorkerListener
+      );
     };
     // eslint-disable-next-line
   }, []);
+
+  const showUpdatedProspects = () => {
+    setShowUploadCompleteBanner(false);
+    history.push({
+      pathname: APP_URLS.PROSPECTS,
+      search: "prospectList=" + completedProspectListId,
+    });
+  };
+
+  const onUpdateProspectListSubscription = (data) => {
+    const prospectList = data.value.data.onUpdateProspectList;
+    if (
+      user &&
+      prospectList &&
+      user.id === prospectList.userId &&
+      prospectList.uploadStatus === "completed"
+    ) {
+      setShowUploadCompleteBanner(true);
+      setCompletedProspectListId(prospectList.id);
+    }
+  };
+  useEffect(() => {
+    const updateProspectListSubscription = API.graphql(
+      graphqlOperation(onUpdateProspectList)
+    ).subscribe({
+      next: onUpdateProspectListSubscription,
+    });
+    return () => {
+      updateProspectListSubscription.unsubscribe();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <div className="admin-layout">
       <ToastContainer />
       <Sidebar />
       <main className="admin-body">
+        <div
+          className={
+            "upload-banner " + (!showUploadCompleteBanner ? "hide" : "")
+          }
+        >
+          <div>
+            Your prospect list has been successfully uploaded and can be viewed
+            <span
+              className="clickable"
+              onClick={() => {
+                showUpdatedProspects();
+              }}
+            >
+              here!
+            </span>
+          </div>
+          <img
+            src="/assets/icons/close.svg"
+            alt="close-banner"
+            className="clickable"
+            onClick={() => setShowUploadCompleteBanner(false)}
+          />
+        </div>
         {loading ? (
           <div className="d-flex p-5 justify-content-center">
             <Spinner animation="border" role="status" />

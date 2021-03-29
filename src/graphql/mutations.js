@@ -1,539 +1,100 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
-export const user = /* GraphQL */ `
-  mutation User(
-    $id: ID
-    $firstName: String
-    $lastName: String
-    $company: String
-    $address1: String
-    $address2: String
-    $city: String
-    $state: String
-    $zip: String
-    $phone: String
-    $email: String
-    $signature: String
-  ) {
-    user(
-      id: $id
-      firstName: $firstName
-      lastName: $lastName
-      company: $company
-      address1: $address1
-      address2: $address2
-      city: $city
-      state: $state
-      zip: $zip
-      phone: $phone
-      email: $email
-      signature: $signature
-    ) {
-      id
-      cognitoUserName
-      firstName
-      lastName
-      company
-      address1
-      address2
-      city
-      state
-      zip
-      phone
-      email
-      signature
-      receiveEmail
-      code
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const prospectList = /* GraphQL */ `
-  mutation ProspectList($id: ID, $name: String, $owningUserId: Int) {
-    prospectList(id: $id, name: $name, owningUserId: $owningUserId) {
-      id
-      userId
-      name
-      enhance
-      customerEmail
-      customerId
-      paymentMethodId
-      amount
-      uploadCompleted
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const prospect = /* GraphQL */ `
-  mutation Prospect(
-    $id: ID
-    $prospectListId: Int
-    $firstName: String
-    $lastName: String
-    $company: String
-    $address1: String
-    $address2: String
-    $city: String
-    $state: String
-    $zip: String
-    $phone: String
-    $email: String
-    $facebook: String
-    $owningUserId: Int
-  ) {
-    prospect(
-      id: $id
-      prospectListId: $prospectListId
-      firstName: $firstName
-      lastName: $lastName
-      company: $company
-      address1: $address1
-      address2: $address2
-      city: $city
-      state: $state
-      zip: $zip
-      phone: $phone
-      email: $email
-      facebook: $facebook
-      owningUserId: $owningUserId
-    ) {
-      id
-      userId
-      prospectListId
-      status
-      firstName
-      lastName
-      company
-      address1
-      address2
-      city
-      state
-      zip
-      phone
-      email
-      facebook
-      notes
-      interested
-      enhance
-      enhanced
-      fetched
-      demographic {
-        DOB
-        ageRange
-        ethnicCode
-        singleParent
-        seniorAdultInHousehold
-        youngAdultInHousehold
-        workingWoman
-        SOHOIndicator
-        businessOwner
-        language
-        religion
-        numberOfChildren
-        maritalStatusInHousehold
-        homeOwnerRenter
-        education
-        occupation
-        occupationDetail
-        gender
-        socialPresence
-        presenceOfChildren
-      }
-      lifestyle {
-        magazines
-        computerAndTechnology
-        dietingWeightLoss
-        exerciseHealthGrouping
-        doItYourselferHomeImprovement
-        jewelry
-        mailOrderBuyer
-        membershipClubs
-        travelGrouping
-        onlineEducation
-        sportsGrouping
-        sportsOutdoorsGrouping
-        investing
-        booksAndReading
-        politicalDonor
-        hobbiesAndCrafts
-        cosmetics
-        charitableDonations
-        artsAntiquesCollectibles
-        petOwner
-        cooking
-        autoPartsAccessories
-        healthBeautyWellness
-        parentingAndChildrensProducts
-        music
-        movie
-        selfImprovement
-        womensApparel
-      }
-      prospectList {
+export const batchCreateProspects = /* GraphQL */ `
+  mutation BatchCreateProspects($prospects: [BatchCreateProspectInput]) {
+    batchCreateProspects(prospects: $prospects) {
+      items {
         id
         userId
-        name
-        enhance
-        customerEmail
-        customerId
-        paymentMethodId
-        amount
-        uploadCompleted
-        createdAt
-        updatedAt
-      }
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const paymentMethod = /* GraphQL */ `
-  mutation PaymentMethod(
-    $id: ID
-    $userId: Int
-    $title: String
-    $stripeInfo: String
-    $name: String
-    $email: String
-    $phone: String
-  ) {
-    paymentMethod(
-      id: $id
-      userId: $userId
-      title: $title
-      stripeInfo: $stripeInfo
-      name: $name
-      email: $email
-      phone: $phone
-    ) {
-      id
-      address
-      name
-      email
-      phone
-      paymentMethodId
-      subscriptionId
-      customerId
-      cardType
-      expMonth
-      expYear
-      last4
-      subscriptionType
-      discount
-      unitAmount
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const marketingCampaign = /* GraphQL */ `
-  mutation MarketingCampaign(
-    $id: ID
-    $title: String
-    $prospectListId: Int
-    $startDateTime: String
-    $autmatedEmail: Boolean
-    $automatedText: Boolean
-    $automatedRinglessVoiceMail: Boolean
-    $automatedPostcard: Boolean
-    $paymentMethodId: Int
-    $consent: Boolean
-    $owningUserId: Int
-  ) {
-    marketingCampaign(
-      id: $id
-      title: $title
-      prospectListId: $prospectListId
-      startDateTime: $startDateTime
-      autmatedEmail: $autmatedEmail
-      automatedText: $automatedText
-      automatedRinglessVoiceMail: $automatedRinglessVoiceMail
-      automatedPostcard: $automatedPostcard
-      paymentMethodId: $paymentMethodId
-      consent: $consent
-      owningUserId: $owningUserId
-    ) {
-      id
-      userId
-      title
-      prospectListId
-      startDateTime {
-        day
-        month
-        year
-        hour
-        minute
-        am
-      }
-      automatedEmail {
-        prospects
-        message
-        replyEmail
-      }
-      automatedText {
-        prospects
-        text
+        prospectListId
+        status
+        firstName
+        lastName
+        company
+        address1
+        address2
+        city
+        state
+        zip
         phone
-      }
-      automatedRinglessVoiceMail {
-        prospects
-        file
-        phone
-      }
-      automatedPostcard {
-        prospects
-        file
-      }
-      automatedSocialPost {
-        prospects
-        image
-        content
-      }
-      checkout {
-        brand
-        last4
-        total
-        discount
         email
-      }
-      prospectList {
-        id
-        userId
-        name
+        facebook
+        notes
+        interested
         enhance
-        customerEmail
-        customerId
-        paymentMethodId
-        amount
-        uploadCompleted
+        enhanced
+        fetched
+        demographic {
+          DOB
+          ageRange
+          ethnicCode
+          singleParent
+          seniorAdultInHousehold
+          youngAdultInHousehold
+          workingWoman
+          SOHOIndicator
+          businessOwner
+          language
+          religion
+          numberOfChildren
+          maritalStatusInHousehold
+          homeOwnerRenter
+          education
+          occupation
+          occupationDetail
+          gender
+          socialPresence
+          presenceOfChildren
+        }
+        lifestyle {
+          magazines
+          computerAndTechnology
+          dietingWeightLoss
+          exerciseHealthGrouping
+          doItYourselferHomeImprovement
+          jewelry
+          mailOrderBuyer
+          membershipClubs
+          travelGrouping
+          onlineEducation
+          sportsGrouping
+          sportsOutdoorsGrouping
+          investing
+          booksAndReading
+          politicalDonor
+          hobbiesAndCrafts
+          cosmetics
+          charitableDonations
+          artsAntiquesCollectibles
+          petOwner
+          cooking
+          autoPartsAccessories
+          healthBeautyWellness
+          parentingAndChildrensProducts
+          music
+          movie
+          selfImprovement
+          womensApparel
+        }
+        prospectList {
+          id
+          userId
+          file
+          name
+          enhance
+          customerEmail
+          customerId
+          paymentMethodId
+          amount
+          uploadStatus
+          createdAt
+          updatedAt
+        }
         createdAt
         updatedAt
       }
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const deletedUser = /* GraphQL */ `
-  mutation DeletedUser($id: ID!) {
-    deletedUser(id: $id) {
-      id
-      cognitoUserName
-      firstName
-      lastName
-      company
-      address1
-      address2
-      city
-      state
-      zip
-      phone
-      email
-      signature
-      receiveEmail
-      code
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const deletedProspectLists = /* GraphQL */ `
-  mutation DeletedProspectLists($id: ID!) {
-    deletedProspectLists(id: $id) {
-      id
-      userId
-      name
-      enhance
-      customerEmail
-      customerId
-      paymentMethodId
-      amount
-      uploadCompleted
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const deletedProspect = /* GraphQL */ `
-  mutation DeletedProspect($id: ID!) {
-    deletedProspect(id: $id) {
-      id
-      userId
-      prospectListId
-      status
-      firstName
-      lastName
-      company
-      address1
-      address2
-      city
-      state
-      zip
-      phone
-      email
-      facebook
-      notes
-      interested
-      enhance
-      enhanced
-      fetched
-      demographic {
-        DOB
-        ageRange
-        ethnicCode
-        singleParent
-        seniorAdultInHousehold
-        youngAdultInHousehold
-        workingWoman
-        SOHOIndicator
-        businessOwner
-        language
-        religion
-        numberOfChildren
-        maritalStatusInHousehold
-        homeOwnerRenter
-        education
-        occupation
-        occupationDetail
-        gender
-        socialPresence
-        presenceOfChildren
-      }
-      lifestyle {
-        magazines
-        computerAndTechnology
-        dietingWeightLoss
-        exerciseHealthGrouping
-        doItYourselferHomeImprovement
-        jewelry
-        mailOrderBuyer
-        membershipClubs
-        travelGrouping
-        onlineEducation
-        sportsGrouping
-        sportsOutdoorsGrouping
-        investing
-        booksAndReading
-        politicalDonor
-        hobbiesAndCrafts
-        cosmetics
-        charitableDonations
-        artsAntiquesCollectibles
-        petOwner
-        cooking
-        autoPartsAccessories
-        healthBeautyWellness
-        parentingAndChildrensProducts
-        music
-        movie
-        selfImprovement
-        womensApparel
-      }
-      prospectList {
-        id
-        userId
-        name
-        enhance
-        customerEmail
-        customerId
-        paymentMethodId
-        amount
-        uploadCompleted
-        createdAt
-        updatedAt
-      }
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const deletedPaymentMethod = /* GraphQL */ `
-  mutation DeletedPaymentMethod($id: ID!) {
-    deletedPaymentMethod(id: $id) {
-      id
-      address
-      name
-      email
-      phone
-      paymentMethodId
-      subscriptionId
-      customerId
-      cardType
-      expMonth
-      expYear
-      last4
-      subscriptionType
-      discount
-      unitAmount
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const deletedMarketingCampaign = /* GraphQL */ `
-  mutation DeletedMarketingCampaign($id: ID!) {
-    deletedMarketingCampaign(id: $id) {
-      id
-      userId
-      title
-      prospectListId
-      startDateTime {
-        day
-        month
-        year
-        hour
-        minute
-        am
-      }
-      automatedEmail {
-        prospects
-        message
-        replyEmail
-      }
-      automatedText {
-        prospects
-        text
-        phone
-      }
-      automatedRinglessVoiceMail {
-        prospects
-        file
-        phone
-      }
-      automatedPostcard {
-        prospects
-        file
-      }
-      automatedSocialPost {
-        prospects
-        image
-        content
-      }
-      checkout {
-        brand
-        last4
-        total
-        discount
-        email
-      }
-      prospectList {
-        id
-        userId
-        name
-        enhance
-        customerEmail
-        customerId
-        paymentMethodId
-        amount
-        uploadCompleted
-        createdAt
-        updatedAt
-      }
-      createdAt
-      updatedAt
+      nextToken
     }
   }
 `;
@@ -661,6 +222,11 @@ export const changeEmail = /* GraphQL */ `
 export const fetchEnhanceData = /* GraphQL */ `
   mutation FetchEnhanceData($input: FetchEnhanceDataInput) {
     fetchEnhanceData(input: $input)
+  }
+`;
+export const uploadProspects = /* GraphQL */ `
+  mutation UploadProspects($input: UploadProspectsInput) {
+    uploadProspects(input: $input)
   }
 `;
 export const createUser = /* GraphQL */ `
@@ -822,13 +388,14 @@ export const createProspect = /* GraphQL */ `
       prospectList {
         id
         userId
+        file
         name
         enhance
         customerEmail
         customerId
         paymentMethodId
         amount
-        uploadCompleted
+        uploadStatus
         createdAt
         updatedAt
       }
@@ -918,13 +485,14 @@ export const updateProspect = /* GraphQL */ `
       prospectList {
         id
         userId
+        file
         name
         enhance
         customerEmail
         customerId
         paymentMethodId
         amount
-        uploadCompleted
+        uploadStatus
         createdAt
         updatedAt
       }
@@ -1014,13 +582,14 @@ export const deleteProspect = /* GraphQL */ `
       prospectList {
         id
         userId
+        file
         name
         enhance
         customerEmail
         customerId
         paymentMethodId
         amount
-        uploadCompleted
+        uploadStatus
         createdAt
         updatedAt
       }
@@ -1037,13 +606,14 @@ export const createProspectList = /* GraphQL */ `
     createProspectList(input: $input, condition: $condition) {
       id
       userId
+      file
       name
       enhance
       customerEmail
       customerId
       paymentMethodId
       amount
-      uploadCompleted
+      uploadStatus
       createdAt
       updatedAt
     }
@@ -1057,13 +627,14 @@ export const updateProspectList = /* GraphQL */ `
     updateProspectList(input: $input, condition: $condition) {
       id
       userId
+      file
       name
       enhance
       customerEmail
       customerId
       paymentMethodId
       amount
-      uploadCompleted
+      uploadStatus
       createdAt
       updatedAt
     }
@@ -1077,13 +648,14 @@ export const deleteProspectList = /* GraphQL */ `
     deleteProspectList(input: $input, condition: $condition) {
       id
       userId
+      file
       name
       enhance
       customerEmail
       customerId
       paymentMethodId
       amount
-      uploadCompleted
+      uploadStatus
       createdAt
       updatedAt
     }
@@ -1219,13 +791,14 @@ export const createMarketingCampaign = /* GraphQL */ `
       prospectList {
         id
         userId
+        file
         name
         enhance
         customerEmail
         customerId
         paymentMethodId
         amount
-        uploadCompleted
+        uploadStatus
         createdAt
         updatedAt
       }
@@ -1286,13 +859,14 @@ export const updateMarketingCampaign = /* GraphQL */ `
       prospectList {
         id
         userId
+        file
         name
         enhance
         customerEmail
         customerId
         paymentMethodId
         amount
-        uploadCompleted
+        uploadStatus
         createdAt
         updatedAt
       }
@@ -1353,13 +927,14 @@ export const deleteMarketingCampaign = /* GraphQL */ `
       prospectList {
         id
         userId
+        file
         name
         enhance
         customerEmail
         customerId
         paymentMethodId
         amount
-        uploadCompleted
+        uploadStatus
         createdAt
         updatedAt
       }
