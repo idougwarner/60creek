@@ -1,9 +1,9 @@
-const AWS = require("aws-sdk");
+const AWS = require('aws-sdk');
 const ssm = new AWS.SSM();
-const gql = require("graphql-tag");
-const graphql = require("graphql");
+const gql = require('graphql-tag');
+const graphql = require('graphql');
 const { print } = graphql;
-const axios = require("axios");
+const axios = require('axios');
 
 const graphqlEndpointPath = `/sixtycreek-${process.env.ENV}/graphql-endpoint`;
 const appsyncApiKeyPath = `/sixtycreek-${process.env.ENV}/appsync-api-key`;
@@ -37,54 +37,12 @@ const updateProspectList = gql`
   }
 `;
 
-const prospectsByProspectListId = gql`
-  query ProspectsByProspectListId(
-    $prospectListId: ID
-    $sortDirection: ModelSortDirection
-    $filter: ModelProspectFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
-    prospectsByProspectListId(
-      prospectListId: $prospectListId
-      sortDirection: $sortDirection
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-    ) {
-      items {
-        id
-        firstName
-        lastName
-        phone
-        email
-      }
-      nextToken
-      scannedCount
-      count
-    }
-  }
-`;
-
-const fetchEnhanceData = gql`
-  mutation FetchEnhanceData($input: FetchEnhanceDataInput) {
-    fetchEnhanceData(input: $input)
-  }
-`;
-
-// const delay_ms = (ms) => {
-//   return new Promise((resolver) => {
-//     setTimeout(() => {
-//       return resolver(true);
-//     }, ms);
-//   });
-// };
 const getEnvValue = (values, key) => {
   const r = values.filter((item) => item.Name === key);
   if (r.length > 0) {
     return r[0].Value;
   }
-  return "";
+  return '';
 };
 exports.handler = async (event) => {
   try {
@@ -94,104 +52,45 @@ exports.handler = async (event) => {
     const appsyncApiKey = getEnvValue(params, appsyncApiKeyPath);
     const stripeSecretKey = getEnvValue(params, stripeSecretKeyPath);
 
-    const stripe = require("stripe")(stripeSecretKey);
+    const stripe = require('stripe')(stripeSecretKey);
 
     for (let i = 0; i < event.Records.length; i++) {
       const record = event.Records[i];
       if (
-        record.eventName === "MODIFY" &&
-        record.dynamodb.NewImage.uploadStatus.S === "need-enhance"
+        record.eventName === 'MODIFY' &&
+        record.dynamodb.NewImage.uploadStatus.S === 'need-enhance'
       ) {
         const prospectListId = record.dynamodb.NewImage.id.S;
         const customerId = record.dynamodb.NewImage.customerId.S;
         const customerEmail = record.dynamodb.NewImage.customerEmail.S;
         const paymentMethodId = record.dynamodb.NewImage.paymentMethodId.S;
+        const amount = record.dynamodb.NewImage.amount.N;
 
-        const graphqlData = await axios({
-          url: graphqlEndpoint,
-          method: "post",
-          headers: {
-            "x-api-key": appsyncApiKey,
-          },
-          data: {
-            query: print(prospectsByProspectListId),
-            variables: {
-              prospectListId: prospectListId,
-              limit: 200000,
-              filter: {
-                enhance: { eq: true },
-                fetched: { eq: false },
-              },
-            },
-          },
-        });
-
-        const prospects = graphqlData.data.data.prospectsByProspectListId.items;
-
-        if (prospects.length > 0) {
+        if (amount > 1) {
           await stripe.paymentIntents.create({
-            amount: parseInt(prospects.length * 100),
-            currency: "usd",
+            amount: Number.round(amount * 100),
+            currency: 'usd',
             customer: customerId,
             payment_method: paymentMethodId,
             receipt_email: customerEmail,
             off_session: true,
             confirm: true,
-            description: "Enhanced prospects uploaded",
+            description: 'Enhanced prospects uploaded',
           });
         }
-        console.log("enhanced prospects:", prospects.length);
-        for (let j = 0; j < prospects.length; j++) {
-          const {
-            id,
-            firstName,
-            lastName,
-            email,
-            phone,
-            city,
-            state,
-            zip,
-            address1,
-          } = prospects[j];
-
-          axios({
-            url: graphqlEndpoint,
-            method: "post",
-            headers: {
-              "x-api-key": appsyncApiKey,
-            },
-            data: {
-              query: print(fetchEnhanceData),
-              variables: {
-                input: {
-                  prospectId: id,
-                  firstName: firstName,
-                  lastName: lastName,
-                  email: email,
-                  phone: phone,
-                  city: city,
-                  state: state,
-                  zip: zip,
-                  address1: address1,
-                },
-              },
-            },
-          });
-        }
-        // await delay_ms(10000);
         await axios({
           url: graphqlEndpoint,
-          method: "post",
+          method: 'post',
           headers: {
-            "x-api-key": appsyncApiKey,
+            'x-api-key': appsyncApiKey,
           },
           data: {
             query: print(updateProspectList),
             variables: {
               input: {
                 id: prospectListId,
-                uploadStatus: "completed",
-                customerId: "-",
+                uploadStatus: 'completed',
+                customerId: '-',
                 amount: 0,
               },
             },
@@ -199,7 +98,7 @@ exports.handler = async (event) => {
         });
       }
     }
-    return "Successfully processed DynamoDB record";
+    return 'Successfully processed DynamoDB record';
   } catch (err) {
     console.log(err);
     return new Error(err).message;

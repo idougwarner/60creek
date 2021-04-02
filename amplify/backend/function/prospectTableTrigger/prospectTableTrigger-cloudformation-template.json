@@ -15,6 +15,14 @@
     },
     "s3Key": {
       "Type": "String"
+    },
+    "api60creekGraphQLAPIIdOutput": {
+      "Type": "String",
+      "Default": "api60creekGraphQLAPIIdOutput"
+    },
+    "api60creekGraphQLAPIEndpointOutput": {
+      "Type": "String",
+      "Default": "api60creekGraphQLAPIEndpointOutput"
     }
   },
   "Conditions": {
@@ -47,12 +55,12 @@
         "FunctionName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "uploadProspects",
+            "prospectTableTrigger",
             {
               "Fn::Join": [
                 "",
                 [
-                  "uploadProspects",
+                  "prospectTableTrigger",
                   "-",
                   {
                     "Ref": "env"
@@ -80,7 +88,7 @@
         },
         "Runtime": "nodejs14.x",
         "Layers": [],
-        "Timeout": "600"
+        "Timeout": "900"
       }
     },
     "LambdaExecutionRole": {
@@ -89,12 +97,12 @@
         "RoleName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "60creekLambdaRoled66400eb",
+            "60creekLambdaRolee15018a6",
             {
               "Fn::Join": [
                 "",
                 [
-                  "60creekLambdaRoled66400eb",
+                  "60creekLambdaRolee15018a6",
                   "-",
                   {
                     "Ref": "env"
@@ -163,6 +171,62 @@
             }
           ]
         }
+      }
+    },
+    "LambdaTriggerPolicyProspect": {
+      "DependsOn": [
+        "LambdaExecutionRole"
+      ],
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": "amplify-lambda-execution-policy-Prospect",
+        "Roles": [
+          {
+            "Ref": "LambdaExecutionRole"
+          }
+        ],
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "dynamodb:DescribeStream",
+                "dynamodb:GetRecords",
+                "dynamodb:GetShardIterator",
+                "dynamodb:ListStreams"
+              ],
+              "Resource": {
+                "Fn::ImportValue": {
+                  "Fn::Sub": "${api60creekGraphQLAPIIdOutput}:GetAtt:ProspectTable:StreamArn"
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "LambdaEventSourceMappingProspect": {
+      "Type": "AWS::Lambda::EventSourceMapping",
+      "DependsOn": [
+        "LambdaTriggerPolicyProspect",
+        "LambdaExecutionRole"
+      ],
+      "Properties": {
+        "BatchSize": 100,
+        "Enabled": true,
+        "EventSourceArn": {
+          "Fn::ImportValue": {
+            "Fn::Sub": "${api60creekGraphQLAPIIdOutput}:GetAtt:ProspectTable:StreamArn"
+          }
+        },
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "LambdaFunction",
+            "Arn"
+          ]
+        },
+        "StartingPosition": "LATEST"
       }
     }
   },

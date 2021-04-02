@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from "react";
-import { Button, FormControl, FormGroup, FormLabel } from "react-bootstrap";
-import { validateEmail } from "../../helpers/validations";
-import InputMask from "react-input-mask";
+import React, { useEffect, useState } from 'react';
+import { Button, FormControl, FormGroup, FormLabel } from 'react-bootstrap';
+import { validateEmail } from '../../helpers/validations';
+import InputMask from 'react-input-mask';
 
 var g_data = null;
 const ProspectListTab = ({ data, changeData }) => {
-  const [company, setCompany] = useState("");
-  const [address1, setAddress1] = useState("");
-  const [facebook, setFacebook] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [notes, setNotes] = useState("");
+  const [company, setCompany] = useState('');
+  const [address1, setAddress1] = useState('');
+  const [facebook, setFacebook] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [notes, setNotes] = useState('');
   const [companyEditable, setCompanyEditable] = useState(false);
   const [address1Editable, setAddress1Editable] = useState(false);
   const [facebookEditable, setFacebookEditable] = useState(false);
@@ -25,16 +25,16 @@ const ProspectListTab = ({ data, changeData }) => {
       setFacebook(data.facebook);
       setEmail(data.email);
       setPhone(data.phone);
-      setNotes(data.notes || "");
+      setNotes(data.notes || '');
     }
   }, [data]);
 
   const handleClickEvent = (event) => {
     if (
-      (event.target.className.indexOf("save-btn") >= 0 &&
-        event.target.innerText === "Save") ||
-      (event.target.className.indexOf("form-control") >= 0 &&
-        !event.target.readOnly)
+      (event.target?.className?.indexOf('save-btn') >= 0 &&
+        event.target?.innerText === 'Save') ||
+      (event.target?.className?.indexOf('form-control') >= 0 &&
+        !event.target?.readOnly)
     ) {
     } else {
       setCompanyEditable(false);
@@ -49,14 +49,14 @@ const ProspectListTab = ({ data, changeData }) => {
         setFacebook(g_data.facebook);
         setEmail(g_data.email);
         setPhone(g_data.phone);
-        setNotes(g_data.notes || "");
+        setNotes(g_data.notes || '');
       }
     }
   };
   useEffect(() => {
-    document.addEventListener("mousedown", handleClickEvent);
+    document.addEventListener('mousedown', handleClickEvent);
     return () => {
-      document.removeEventListener("mousedown", handleClickEvent);
+      document.removeEventListener('mousedown', handleClickEvent);
     };
     // eslint-disable-next-line
   }, []);
@@ -69,127 +69,127 @@ const ProspectListTab = ({ data, changeData }) => {
           facebook: facebook,
           email: email,
           phone: phone,
-          notes: notes || "",
+          notes: notes || '',
         });
       }
     }
   };
 
   const isValidPhone = () => {
-    if (phone.indexOf("_") < 0) {
+    if (phone.indexOf('_') < 0) {
       return true;
     }
     return false;
   };
   return (
     <>
-      <FormGroup controlId="company">
+      <FormGroup controlId='company'>
         <FormLabel>Company</FormLabel>
-        <div className="d-flex">
+        <div className='d-flex'>
           <FormControl
-            type="text"
-            placeholder="Enter Company"
+            type='text'
+            placeholder='Enter Company'
             value={company}
-            className="mr-3"
+            className='mr-3'
             readOnly={!companyEditable}
             onChange={(e) => setCompany(e.target.value)}
           />
           <Button
-            variant="outline-primary"
-            className="save-btn"
+            variant='outline-primary'
+            className='save-btn'
             onClick={() => {
               change(companyEditable);
               setCompanyEditable(!companyEditable);
             }}
           >
-            {companyEditable ? "Save" : "Edit"}
+            {companyEditable ? 'Save' : 'Edit'}
           </Button>
         </div>
       </FormGroup>
-      <FormGroup controlId="address1">
+      <FormGroup controlId='address1'>
         <FormLabel>Address</FormLabel>
-        <div className="d-flex">
+        <div className='d-flex'>
           <FormControl
-            type="text"
-            placeholder="Enter Address"
+            type='text'
+            placeholder='Enter Address'
             value={address1}
             readOnly={!address1Editable}
-            className="mr-3"
+            className='mr-3'
             onChange={(e) => setAddress1(e.target.value)}
           />
           <Button
-            variant="outline-primary"
-            className="save-btn"
+            variant='outline-primary'
+            className='save-btn'
             onClick={() => {
               change(address1Editable);
               setAddress1Editable(!address1Editable);
             }}
           >
-            {address1Editable ? "Save" : "Edit"}
+            {address1Editable ? 'Save' : 'Edit'}
           </Button>
         </div>
       </FormGroup>
-      <FormGroup controlId="facebook">
+      <FormGroup controlId='facebook'>
         <FormLabel>Facebook</FormLabel>
-        <div className="d-flex">
+        <div className='d-flex'>
           <FormControl
-            type="text"
-            placeholder="Enter Facebook"
+            type='text'
+            placeholder='Enter Facebook'
             value={facebook}
             readOnly={!facebookEditable}
-            className="mr-3"
+            className='mr-3'
             onChange={(e) => setFacebook(e.target.value)}
           />
           <Button
-            variant="outline-primary"
-            className="save-btn"
+            variant='outline-primary'
+            className='save-btn'
             onClick={() => {
               change(facebookEditable);
               setFacebookEditable(!facebookEditable);
             }}
           >
-            {facebookEditable ? "Save" : "Edit"}
+            {facebookEditable ? 'Save' : 'Edit'}
           </Button>
         </div>
       </FormGroup>
-      <FormGroup controlId="email">
+      <FormGroup controlId='email'>
         <FormLabel>Email</FormLabel>
-        <div className="d-flex">
-          <div className="flex-grow-1 mr-3">
+        <div className='d-flex'>
+          <div className='flex-grow-1 mr-3'>
             <FormControl
-              type="text"
-              placeholder="Enter Email"
+              type='text'
+              placeholder='Enter Email'
               value={email}
               readOnly={!emailEditable}
               onChange={(e) => setEmail(e.target.value)}
               isInvalid={!validateEmail(email) && email}
             />
-            <FormControl.Feedback type="invalid">
+            <FormControl.Feedback type='invalid'>
               Invalid Email Address
             </FormControl.Feedback>
           </div>
           <Button
-            variant="outline-primary"
-            className="save-btn"
+            variant='outline-primary'
+            className='save-btn'
             onClick={() => {
               change(emailEditable);
               setEmailEditable(!emailEditable);
             }}
             disabled={!validateEmail(email) && email && emailEditable}
           >
-            {emailEditable ? "Save" : "Edit"}
+            {emailEditable ? 'Save' : 'Edit'}
           </Button>
         </div>
       </FormGroup>
-      <FormGroup controlId="phone">
+      <FormGroup controlId='phone'>
         <FormLabel>Phone</FormLabel>
-        <div className="d-flex">
-          <div className="flex-grow-1 mr-3">
+        <div className='d-flex'>
+          <div className='flex-grow-1 mr-3'>
             <InputMask
-              mask="(999) 999 - 9999"
+              mask='(999) 999 - 9999'
               value={phone}
-              type="tel"
-              placeholder="Enter Phone"
+              type='tel'
+              placeholder='Enter Phone'
               readOnly={!phoneEditable}
               onChange={(e) => setPhone(e.target.value)}
             >
@@ -201,44 +201,44 @@ const ProspectListTab = ({ data, changeData }) => {
               )}
             </InputMask>
 
-            <FormControl.Feedback type="invalid">
+            <FormControl.Feedback type='invalid'>
               Invalid Email Address
             </FormControl.Feedback>
           </div>
           <Button
-            variant="outline-primary"
-            className="save-btn"
+            variant='outline-primary'
+            className='save-btn'
             onClick={() => {
               change(phoneEditable);
               setPhoneEditable(!phoneEditable);
             }}
             disabled={phone && !isValidPhone()}
           >
-            {phoneEditable ? "Save" : "Edit"}
+            {phoneEditable ? 'Save' : 'Edit'}
           </Button>
         </div>
       </FormGroup>
-      <FormGroup controlId="firstName">
+      <FormGroup controlId='firstName'>
         <FormLabel>Notes</FormLabel>
         <FormControl
-          as="textarea"
+          as='textarea'
           rows={5}
-          className="mb-2"
+          className='mb-2'
           readOnly={!notesEditable}
-          placeholder="Type to enter notes about this prospect"
+          placeholder='Type to enter notes about this prospect'
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
         />
-        <div className="d-flex justify-content-end">
+        <div className='d-flex justify-content-end'>
           <Button
-            variant="outline-primary"
-            className="save-btn"
+            variant='outline-primary'
+            className='save-btn'
             onClick={() => {
               change(notesEditable);
               setNotesEditable(!notesEditable);
             }}
           >
-            {notesEditable ? "Save" : "Edit"}
+            {notesEditable ? 'Save' : 'Edit'}
           </Button>
         </div>
       </FormGroup>
