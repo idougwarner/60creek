@@ -1,84 +1,81 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Button, Form, Modal, Spinner, Table } from "react-bootstrap";
-import "./NewProspectListModal.scss";
-import { CircularProgressbar } from "react-circular-progressbar";
-import "react-circular-progressbar/dist/styles.css";
-import { getJsonFromFile } from "../../helpers/CSVFileHelper";
-import { API, graphqlOperation } from "aws-amplify";
-import { createStripeCustomer } from "../../graphql/mutations";
-import { useDispatch, useSelector } from "react-redux";
-import ConfirmModal from "./ConfirmModal";
-import Select from "react-select";
-import { customSelectStyles } from "../../assets/styles/select-style";
-import { useIndexedDB } from "react-indexed-db";
-import { IndexDBStores } from "../../helpers/DBConfig";
-import CheckoutForm from "./CheckoutForm";
-import { messageConvert } from "../../helpers/messageConvert";
-import { ACTIONS } from "../../redux/actionTypes";
-import { WORKER_STATUS } from "../../redux/uploadWorkerReducer";
-import { usStates } from "../../helpers/us-states";
+import React, { useEffect, useRef, useState } from 'react';
+import { Button, Form, Modal, Spinner, Table } from 'react-bootstrap';
+import './NewProspectListModal.scss';
+import { CircularProgressbar } from 'react-circular-progressbar';
+import 'react-circular-progressbar/dist/styles.css';
+import { getJsonFromFile } from '../../helpers/CSVFileHelper';
+import { API, graphqlOperation, Storage } from 'aws-amplify';
+import {
+  createProspectList,
+  createStripeCustomer,
+  updateProspectList,
+} from '../../graphql/mutations';
+import { useSelector } from 'react-redux';
+import ConfirmModal from './ConfirmModal';
+import Select from 'react-select';
+import { customSelectStyles } from '../../assets/styles/select-style';
+import CheckoutForm from './CheckoutForm';
+import { messageConvert } from '../../helpers/messageConvert';
+import { v4 as uuidv4 } from 'uuid';
+import { usStates } from '../../helpers/us-states';
 import {
   validateEmail,
   validateZip,
   validateField,
-} from "../../helpers/validations";
-import InputMask from "react-input-mask";
-import InfoTooltip from "../controls/InfoTooltip";
+} from '../../helpers/validations';
+import InputMask from 'react-input-mask';
+import InfoTooltip from '../controls/InfoTooltip';
+import { INTEREST_STATUS } from '../../helpers/interestStatus';
+import { timeConversion } from '../../helpers/utils';
 
 const STEP1 = 0;
 const STEP2 = 1;
 const STEP3 = 2;
 const STEP4 = 3;
 const tableFields = [
-  { fieldName: "firstName", required: false, width: "93px" },
-  { fieldName: "lastName", required: true, width: "100px" },
-  { fieldName: "company", required: true, width: "140px" },
-  { fieldName: "address1", required: false, width: "180px" },
-  { fieldName: "city", required: false, width: "110px" },
-  { fieldName: "state", required: false, width: "95px" },
-  { fieldName: "zip", required: false, width: "80px" },
-  { fieldName: "phone", required: false, width: "160px" },
-  { fieldName: "email", required: false, width: "auto" },
-  { fieldName: "facebook", required: false, width: "140px" },
+  { fieldName: 'firstName', required: false, width: '93px' },
+  { fieldName: 'lastName', required: true, width: '100px' },
+  { fieldName: 'company', required: true, width: '140px' },
+  { fieldName: 'address1', required: false, width: '180px' },
+  { fieldName: 'city', required: false, width: '110px' },
+  { fieldName: 'state', required: false, width: '95px' },
+  { fieldName: 'zip', required: false, width: '80px' },
+  { fieldName: 'phone', required: false, width: '160px' },
+  { fieldName: 'email', required: false, width: 'auto' },
+  { fieldName: 'facebook', required: false, width: '140px' },
 ];
-const NewProspectListModal = ({
-  show,
-  close,
-  originUpload = false,
-  existingList = false,
-}) => {
+const NewProspectListModal = ({ show, close, existingList = false }) => {
   const [step, setStep] = useState(STEP1);
-  const [nexting, setNexting] = useState(false);
   const [percentage, setPercentage] = useState(0);
   const [loading, setLoading] = useState(false);
   const [loadingEnhanceData, setLoadingEnhanceData] = useState(false);
-  const [listName, setListName] = useState("");
-  const [fileName, setFileName] = useState("");
+  const [listName, setListName] = useState('');
+  const [fileName, setFileName] = useState('');
   const [enhance, setEnhance] = useState(true);
-  const [prospectList, setProspectList] = useState([]);
+  const [prospects, setProspects] = useState([]);
   const [isNext, setIsNext] = useState(false);
   const [errors, setErrors] = useState(0);
-  const [estimate, setEstimate] = useState("");
+  const [estimate, setEstimate] = useState('');
   const [completed, setCompleted] = useState(false);
-  const [totalNumber, setTotalNumber] = useState("");
+  const [totalNumber, setTotalNumber] = useState('');
   const [fileData, setFileData] = useState([]);
-  const [fileErrMsg, setFileErrMsg] = useState("");
+  const [fileErrMsg, setFileErrMsg] = useState('');
+  const [customerId, setCustomerId] = useState('');
+  const [paymentMethodId, setPaymentMethodId] = useState('');
 
   const [tmpState, setTmpState] = useState(null);
 
-  const [editField, setEditField] = useState("");
+  const [editField, setEditField] = useState('');
   const [editing, setEditing] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState(null);
   const [generateToken, setGenerateToken] = useState(false);
   const [cardStatus, setCardStatus] = useState(false);
 
-  const [stripeErrMsg, setStripeErrMsg] = useState("");
+  const [stripeErrMsg, setStripeErrMsg] = useState('');
   const [selectedField, setSelectedField] = useState({
     idx: -1,
-    fieldName: "",
+    fieldName: '',
   });
-
-  const uploadStatus = useSelector((state) => state.uploadWorkerStore);
 
   const [showCloseConfirm, setShowCloseConfirm] = useState(false);
 
@@ -86,14 +83,8 @@ const NewProspectListModal = ({
   const user = useSelector((state) => state.userStore);
 
   const [list, setList] = useState([]);
-  const [selectedList, setSelectedList] = useState(null);
+  const [selectedProspectList, setSelectedProspectList] = useState(null);
   const list1 = useSelector((state) => state.prospectStore.prospectList);
-
-  const prospectsDb = useIndexedDB(IndexDBStores.PROSPECT);
-  const prospectListDb = useIndexedDB(IndexDBStores.PROSPECT_LIST);
-  const prospectUploadStepDb = useIndexedDB(IndexDBStores.PROSPECT_UPLOAD_STEP);
-
-  const dispatch = useDispatch();
 
   useEffect(() => {
     if (list1) {
@@ -101,25 +92,10 @@ const NewProspectListModal = ({
     }
   }, [list1]);
 
-  useEffect(() => {
-    if (uploadStatus.status === WORKER_STATUS.IDLE) {
-    } else if (uploadStatus.status === WORKER_STATUS.START) {
-      setCompleted(false);
-      setPercentage(uploadStatus.percentage);
-      setEstimate(uploadStatus.estimate);
-    } else if (uploadStatus.status === WORKER_STATUS.CHANGE) {
-      setPercentage(uploadStatus.percentage);
-      setEstimate(uploadStatus.estimate);
-    } else if (uploadStatus.status === WORKER_STATUS.COMPLETED) {
-      setPercentage(uploadStatus.percentage);
-      setEstimate(uploadStatus.estimate);
-      setCompleted(true);
-      setStep(STEP4);
-    } else if (uploadStatus.status === WORKER_STATUS.ERROR) {
-    } else {
-    }
-    // eslint-disable-next-line
-  }, [uploadStatus]);
+  const updateUploadingStatus = (percentage = 0, estimate = '') => {
+    setPercentage(percentage);
+    setEstimate(estimate);
+  };
 
   // const prev = () => {
   //   if (step > STEP1) {
@@ -128,30 +104,95 @@ const NewProspectListModal = ({
   // };
 
   const pushData = async () => {
-    dispatch({
-      type: ACTIONS.START_UPLOADE_WORKER,
-    });
+    try {
+      let prospectListId = selectedProspectList?.value || '';
+
+      const userId = user.id;
+
+      updateUploadingStatus(0);
+
+      updateUploadingStatus(15, timeConversion(3500));
+
+      if (prospectListId) {
+        await API.graphql(
+          graphqlOperation(updateProspectList, {
+            input: {
+              id: prospectListId,
+              enhance: enhance,
+              uploadStatus: 'upload-start',
+            },
+          })
+        );
+      } else {
+        const listInfo = await API.graphql(
+          graphqlOperation(createProspectList, {
+            input: {
+              userId: userId,
+              name: listName,
+              enhance: enhance,
+              uploadStatus: 'upload-start',
+            },
+          })
+        );
+        prospectListId = listInfo.data.createProspectList.id;
+      }
+      updateUploadingStatus(50, timeConversion(3000));
+
+      const completedProspects = prospects.map((item) => ({
+        userId: userId,
+        prospectListId: prospectListId,
+        firstName: item.firstName,
+        lastName: item.lastName,
+        address1: item.address1,
+        city: item.city,
+        state: item.state,
+        zip: item.zip,
+        company: item.company,
+        phone: item.phone,
+        email: item.email,
+        facebook: item.facebook,
+        status: item.status || INTEREST_STATUS.INTERESTED,
+        enhance: enhance ? true : false,
+        enhanced: false,
+        fetched: false,
+        demographic: null,
+        lifestyle: null,
+      }));
+      const completedProspectList = {
+        id: prospectListId,
+        customerId: customerId,
+        customerEmail: user.email,
+        paymentMethodId: paymentMethodId,
+        enhance: enhance,
+        uploadStatus: enhance ? 'need-enhance' : 'completed',
+      };
+
+      const blob = new Blob(
+        [
+          JSON.stringify({
+            prospects: completedProspects,
+            prospectList: completedProspectList,
+          }),
+        ],
+        {
+          type: 'text/csv',
+        }
+      );
+      const file = new File([blob], uuidv4() + '.pst');
+      await Storage.put('prospects/' + uuidv4() + '-' + file.name, file);
+
+      updateUploadingStatus(100);
+      setCompleted(true);
+      setTimeout(() => {
+        setStep(STEP4);
+      }, 1000);
+    } catch (err) {}
   };
 
   useEffect(() => {
     setCompleted(false);
     setPercentage(0);
   }, []);
-  useEffect(() => {
-    const f = async () => {
-      if (originUpload) {
-        setNexting(true);
-        let storedProspects = await prospectsDb.getAll();
-        let storedUploadStep = await prospectUploadStepDb.getAll();
-        setNexting(false);
-        if (storedUploadStep.length > 0 && storedProspects.length > 0) {
-          setStep(STEP2);
-          setProspectList(storedProspects);
-        }
-      }
-    };
-    f();
-  }, [originUpload, prospectsDb, prospectUploadStepDb]);
   const next = async () => {
     if (step < STEP3) {
       setStep(step + 1);
@@ -167,8 +208,8 @@ const NewProspectListModal = ({
     if (
       !loading &&
       !fileErrMsg &&
-      (existingList ? selectedList : listName) &&
-      prospectList.length > 0 &&
+      (existingList ? selectedProspectList : listName) &&
+      prospects.length > 0 &&
       (enhance ? cardStatus : true)
     ) {
       setIsNext(true);
@@ -179,22 +220,22 @@ const NewProspectListModal = ({
     loading,
     fileErrMsg,
     listName,
-    selectedList,
-    prospectList,
+    selectedProspectList,
+    prospects,
     existingList,
     enhance,
     cardStatus,
   ]);
   useEffect(() => {
     let errCounts = 0;
-    prospectList.forEach((item) => {
+    prospects.forEach((item) => {
       if (!item.lastName && !item.company) errCounts++;
-      if (item.phone && !validateField("phone", item.phone)) errCounts++;
-      if (item.email && !validateField("email", item.email)) errCounts++;
-      if (item.zip && !validateField("zip", item.zip)) errCounts++;
+      if (item.phone && !validateField('phone', item.phone)) errCounts++;
+      if (item.email && !validateField('email', item.email)) errCounts++;
+      if (item.zip && !validateField('zip', item.zip)) errCounts++;
     });
     setErrors(errCounts);
-  }, [prospectList]);
+  }, [prospects]);
   const uploadCsvFile = () => {
     fileInputRef.current.click();
   };
@@ -202,12 +243,12 @@ const NewProspectListModal = ({
     if (totalNumber) {
       const n = parseInt(totalNumber);
       if (n > 0) {
-        setProspectList(fileData.slice(0, n));
+        setProspects(fileData.slice(0, n));
       } else {
-        setProspectList(fileData);
+        setProspects(fileData);
       }
     } else {
-      setProspectList(fileData);
+      setProspects(fileData);
     }
   }, [fileData, totalNumber]);
   const onChangeFile = async (event) => {
@@ -215,8 +256,8 @@ const NewProspectListModal = ({
     event.preventDefault();
     if (event.target.files.length > 0) {
       setLoading(true);
-      setFileErrMsg("");
-      setFileName("");
+      setFileErrMsg('');
+      setFileName('');
       setFileData([]);
       try {
         const fData = await getJsonFromFile(event.target.files[0]);
@@ -225,7 +266,7 @@ const NewProspectListModal = ({
           setFileName(event.target.files[0].name);
         } else {
           setFileErrMsg(
-            "Your CSV file is not supported. Please download the template to see the supported CSV file."
+            'Your CSV file is not supported. Please download the template to see the supported CSV file.'
           );
         }
         event.target.value = null;
@@ -236,8 +277,8 @@ const NewProspectListModal = ({
     }
   };
   const clearFile = () => {
-    setProspectList([]);
-    setFileName("");
+    setProspects([]);
+    setFileName('');
   };
 
   useEffect(() => {
@@ -245,7 +286,7 @@ const NewProspectListModal = ({
       if (!paymentMethod) return;
       if (enhance) {
         setLoadingEnhanceData(true);
-        setStripeErrMsg("");
+        setStripeErrMsg('');
         try {
           const rt = await API.graphql(
             graphqlOperation(createStripeCustomer, {
@@ -262,30 +303,8 @@ const NewProspectListModal = ({
             setLoadingEnhanceData(false);
             return;
           }
-          let newProspects = [...prospectList];
-          for (let i = 0; i < newProspects.length; i++) {
-            let item = newProspects[i];
-            item["enhance"] = true;
-            newProspects[i] = item;
-          }
-          setNexting(true);
-          await prospectsDb.clear();
-          for (let i = 0; i < newProspects.length; i++) {
-            const item = newProspects[i];
-            await prospectsDb.add(item);
-          }
-          await prospectListDb.clear();
-          await prospectListDb.add({
-            prospectName: listName,
-            prospectListId: selectedList?.value || "",
-            enhance: enhance,
-            customerEmail: user.email,
-            customerId: rt.data.createStripeCustomer.data.customerId,
-            paymentMethodId: rt.data.createStripeCustomer.data.paymentMethodId,
-            amount: prospectList.length,
-          });
-          setNexting(false);
-          setProspectList(newProspects);
+          setCustomerId(rt.data.createStripeCustomer.data.customerId);
+          setPaymentMethodId(rt.data.createStripeCustomer.data.paymentMethodId);
           next();
         } catch (err) {}
         setLoadingEnhanceData(false);
@@ -296,22 +315,6 @@ const NewProspectListModal = ({
   }, [paymentMethod]);
 
   const gotoSecondStep = async () => {
-    try {
-      setNexting(true);
-      await prospectListDb.clear();
-      await prospectListDb.add({
-        prospectName: listName,
-        prospectListId: selectedList?.value || "",
-        enhance: enhance,
-      });
-
-      await prospectsDb.clear();
-      for (let i = 0; i < prospectList.length; i++) {
-        const item = { ...prospectList[i], enhance: enhance };
-        await prospectsDb.add(item);
-      }
-      setNexting(false);
-    } catch (err) {}
     if (enhance) {
       setLoadingEnhanceData(true);
       setGenerateToken(!generateToken);
@@ -320,27 +323,15 @@ const NewProspectListModal = ({
     }
   };
   const gotoThirdStep = async () => {
-    setNexting(true);
-    await prospectUploadStepDb.clear();
-    await prospectUploadStepDb.add({
-      step: STEP3,
-    });
-
-    await prospectsDb.clear();
-    for (let i = 0; i < prospectList.length; i++) {
-      const item = prospectList[i];
-      await prospectsDb.add(item);
-    }
-    setNexting(false);
     pushData();
     setStep(STEP3);
   };
   const updateField = (value) => {
-    let newList = [...prospectList];
-    if (selectedField.idx !== -1 && selectedField.fieldName !== "") {
+    let newList = [...prospects];
+    if (selectedField.idx !== -1 && selectedField.fieldName !== '') {
       newList[selectedField.idx][selectedField.fieldName] = value;
     }
-    setProspectList(newList);
+    setProspects(newList);
   };
 
   const toggleEditing = (idx, fieldName) => {
@@ -350,24 +341,24 @@ const NewProspectListModal = ({
     ) {
       if (selectedField.idx === idx && selectedField.fieldName === fieldName) {
       } else {
-        let newList = [...prospectList];
-        if (selectedField.idx !== -1 && selectedField.fieldName !== "") {
+        let newList = [...prospects];
+        if (selectedField.idx !== -1 && selectedField.fieldName !== '') {
           newList[selectedField.idx][selectedField.fieldName] = editField;
         }
-        setProspectList(newList);
-        if (newList[idx][fieldName] === "") {
+        setProspects(newList);
+        if (newList[idx][fieldName] === '') {
           setSelectedField({
             idx: idx,
             fieldName: fieldName,
           });
-          setEditField("");
+          setEditField('');
           setEditing(true);
         } else {
           setSelectedField({
             idx: -1,
-            fieldName: "",
+            fieldName: '',
           });
-          setEditField("");
+          setEditField('');
           setEditing(false);
         }
       }
@@ -376,15 +367,15 @@ const NewProspectListModal = ({
         idx: idx,
         fieldName: fieldName,
       });
-      if (fieldName === "state") {
-        const id = usStates.indexOf(prospectList[idx][fieldName]);
+      if (fieldName === 'state') {
+        const id = usStates.indexOf(prospects[idx][fieldName]);
         if (id < 0) {
           setTmpState(null);
         } else {
           setTmpState({ value: usStates[id], label: usStates[id] });
         }
       } else {
-        setEditField(prospectList[idx][fieldName]);
+        setEditField(prospects[idx][fieldName]);
       }
       setEditing(true);
     }
@@ -397,7 +388,7 @@ const NewProspectListModal = ({
         idx === selectedField.idx &&
         fieldName === selectedField.fieldName ? (
           <>
-            {fieldName === "state" ? (
+            {fieldName === 'state' ? (
               <Select
                 value={tmpState}
                 onChange={(value) => {
@@ -405,24 +396,24 @@ const NewProspectListModal = ({
                   setEditField(value.value);
                   updateField(value.value);
                 }}
-                placeholder="State"
+                placeholder='State'
                 styles={customSelectStyles(28)}
                 options={usStates.map((item) => ({
                   value: item,
                   label: item,
                 }))}
               />
-            ) : fieldName === "zip" ? (
+            ) : fieldName === 'zip' ? (
               <Form.Control
-                type="text"
-                className="edit-field"
-                placeholder="Enter Zip"
+                type='text'
+                className='edit-field'
+                placeholder='Enter Zip'
                 autoFocus
                 value={editField}
                 onKeyDown={(event) => {
-                  if (event.key === "Enter") {
+                  if (event.key === 'Enter') {
                     toggleEditing(idx, fieldName);
-                  } else if (event.key === "Tab") {
+                  } else if (event.key === 'Tab') {
                     event.preventDefault();
                     gotoNextField();
                   }
@@ -434,11 +425,11 @@ const NewProspectListModal = ({
                   updateField(event.target.value);
                 }}
               />
-            ) : fieldName === "phone" ? (
+            ) : fieldName === 'phone' ? (
               <InputMask
-                mask="(999) 999 - 9999"
-                type="tel"
-                placeholder="(555) 555 - 5555"
+                mask='(999) 999 - 9999'
+                type='tel'
+                placeholder='(555) 555 - 5555'
                 value={editField}
                 onChange={(event) => {
                   event.stopPropagation();
@@ -449,13 +440,13 @@ const NewProspectListModal = ({
                 {(inputProps) => (
                   <Form.Control
                     {...inputProps}
-                    className="edit-field"
+                    className='edit-field'
                     autoFocus
-                    isInvalid={editField && editField.indexOf("_") >= 0}
+                    isInvalid={editField && editField.indexOf('_') >= 0}
                     onKeyDown={(event) => {
-                      if (event.key === "Enter") {
+                      if (event.key === 'Enter') {
                         toggleEditing(idx, fieldName);
-                      } else if (event.key === "Tab") {
+                      } else if (event.key === 'Tab') {
                         event.preventDefault();
                         gotoNextField();
                       }
@@ -463,18 +454,18 @@ const NewProspectListModal = ({
                   />
                 )}
               </InputMask>
-            ) : fieldName === "email" ? (
+            ) : fieldName === 'email' ? (
               <Form.Control
-                type="text"
-                className="edit-field"
-                placeholder="Enter Email Address"
+                type='text'
+                className='edit-field'
+                placeholder='Enter Email Address'
                 autoFocus
                 value={editField}
                 isInvalid={editField && !validateEmail(editField)}
                 onKeyDown={(event) => {
-                  if (event.key === "Enter") {
+                  if (event.key === 'Enter') {
                     toggleEditing(idx, fieldName);
-                  } else if (event.key === "Tab") {
+                  } else if (event.key === 'Tab') {
                     event.preventDefault();
                     gotoNextField();
                   }
@@ -487,15 +478,15 @@ const NewProspectListModal = ({
               />
             ) : (
               <Form.Control
-                type="text"
-                className="edit-field"
-                placeholder=""
+                type='text'
+                className='edit-field'
+                placeholder=''
                 autoFocus
                 value={editField}
                 onKeyDown={(event) => {
-                  if (event.key === "Enter") {
+                  if (event.key === 'Enter') {
                     toggleEditing(idx, fieldName);
-                  } else if (event.key === "Tab") {
+                  } else if (event.key === 'Tab') {
                     event.preventDefault();
                     gotoNextField();
                   }
@@ -507,33 +498,31 @@ const NewProspectListModal = ({
                 }}
               />
             )}
-            <Form.Text className="text-primary enter-info">
+            <Form.Text className='text-primary enter-info'>
               Enter info
             </Form.Text>
           </>
-        ) : prospectList[idx][fieldName].length > 0 ? (
-          validateField(fieldName, prospectList[idx][fieldName]) ? (
-            prospectList[idx][fieldName]
+        ) : prospects[idx][fieldName].length > 0 ? (
+          validateField(fieldName, prospects[idx][fieldName]) ? (
+            prospects[idx][fieldName]
           ) : (
-            <div className={"missing-info"}>
-              <div className="missing-field">
-                {prospectList[idx][fieldName]}
-              </div>
+            <div className={'missing-info'}>
+              <div className='missing-field'>{prospects[idx][fieldName]}</div>
               <span>Invalid field</span>
             </div>
           )
         ) : (
           <div
             className={
-              "missing-info" +
+              'missing-info' +
               (required &&
-              ((fieldName === "lastName" && !prospectList[idx].company) ||
-                (fieldName === "company" && !prospectList[idx].lastName))
-                ? ""
-                : " not-required")
+              ((fieldName === 'lastName' && !prospects[idx].company) ||
+                (fieldName === 'company' && !prospects[idx].lastName))
+                ? ''
+                : ' not-required')
             }
           >
-            <div className="missing-field"></div>
+            <div className='missing-field'></div>
             <span>Enter missing info</span>
           </div>
         )}
@@ -542,18 +531,18 @@ const NewProspectListModal = ({
   };
   const gotoNextField = () => {
     let row = -1;
-    let fieldName = "";
-    if (selectedField.idx === -1 || selectedField.fieldName === "") return;
+    let fieldName = '';
+    if (selectedField.idx === -1 || selectedField.fieldName === '') return;
     let idx = tableFields.findIndex(
       (item) => item.fieldName === selectedField.fieldName
     );
     let start = selectedField.idx * tableFields.length + idx;
     for (
       let i = start;
-      i < start + prospectList.length * tableFields.length;
+      i < start + prospects.length * tableFields.length;
       i++
     ) {
-      const j = i % (prospectList.length * tableFields.length);
+      const j = i % (prospects.length * tableFields.length);
       const x = j % tableFields.length,
         y = Math.floor(j / tableFields.length);
       if (
@@ -561,12 +550,12 @@ const NewProspectListModal = ({
         tableFields[x].fieldName !== selectedField.fieldName
       ) {
         if (
-          (prospectList[y][tableFields[x].fieldName] === "" &&
+          (prospects[y][tableFields[x].fieldName] === '' &&
             tableFields[x].required) ||
-          (prospectList[y][tableFields[x].fieldName] &&
+          (prospects[y][tableFields[x].fieldName] &&
             !validateField(
               tableFields[x].fieldName,
-              prospectList[y][tableFields[x].fieldName]
+              prospects[y][tableFields[x].fieldName]
             ))
         ) {
           row = y;
@@ -576,58 +565,55 @@ const NewProspectListModal = ({
       }
     }
 
-    let newList = [...prospectList];
-    if (selectedField.idx !== -1 && selectedField.fieldName !== "") {
+    let newList = [...prospects];
+    if (selectedField.idx !== -1 && selectedField.fieldName !== '') {
       newList[selectedField.idx][selectedField.fieldName] = editField;
     }
-    setProspectList(newList);
+    setProspects(newList);
     setSelectedField({
       idx: row,
       fieldName: fieldName,
     });
-    setEditField("");
+    setEditField('');
   };
   return (
     <Modal
       show={show}
-      className={showCloseConfirm ? "d-none" : ""}
+      className={showCloseConfirm ? 'd-none' : ''}
       onHide={() => {
         if (step === STEP2) {
           setShowCloseConfirm(true);
         } else if (step === STEP1) {
-          prospectListDb.clear();
-          prospectsDb.clear();
-          prospectUploadStepDb.clear();
           close({ data: false });
         } else if (step === STEP3 || step === STEP4) {
           close({ data: true });
         }
       }}
-      size={step === STEP2 ? "xl" : "md"}
+      size={step === STEP2 ? 'xl' : 'md'}
     >
       <Modal.Header closeButton>
         <Modal.Title>
           {step === STEP1 ? (
             existingList ? (
-              "Add To Existing List"
+              'Add To Existing List'
             ) : (
-              "New Prospect List"
+              'New Prospect List'
             )
           ) : step === STEP2 ? (
             existingList ? (
-              "Prospects Added to " + selectedList.label
+              'Prospects Added to ' + selectedProspectList.label
             ) : (
-              "Prospects Created"
+              'Prospects Created'
             )
           ) : (
             <>
               {completed ? (
-                "Completed"
+                'Completed'
               ) : (
                 <>
-                  {" "}
+                  {' '}
                   Uploading
-                  <br /> {prospectList.length} Prospects
+                  <br /> {prospects.length} Prospects
                 </>
               )}
             </>
@@ -636,26 +622,26 @@ const NewProspectListModal = ({
       </Modal.Header>
       <Modal.Body>
         {step === STEP1 && (
-          <div className="step-1">
+          <div className='step-1'>
             {existingList ? (
               <Form.Group>
-                <Form.Label className="required">
+                <Form.Label className='required'>
                   Select Prospect List
                 </Form.Label>
                 <Select
-                  placeholder="Select Prospect List"
+                  placeholder='Select Prospect List'
                   options={list}
-                  value={selectedList}
-                  styles={customSelectStyles("40px")}
-                  onChange={(value) => setSelectedList(value)}
+                  value={selectedProspectList}
+                  styles={customSelectStyles('40px')}
+                  onChange={(value) => setSelectedProspectList(value)}
                 />
               </Form.Group>
             ) : (
               <Form.Group>
-                <Form.Label className="required">Prospect List Name</Form.Label>
+                <Form.Label className='required'>Prospect List Name</Form.Label>
                 <Form.Control
-                  type="text"
-                  placeholder="List name"
+                  type='text'
+                  placeholder='List name'
                   value={listName}
                   onChange={(event) => {
                     setListName(event.target.value);
@@ -666,48 +652,48 @@ const NewProspectListModal = ({
             <Form.Group>
               <Form.Label>Total Number of Prospects</Form.Label>
               <Form.Control
-                type="text"
-                placeholder="Number of records"
+                type='text'
+                placeholder='Number of records'
                 value={totalNumber}
                 onChange={(e) => setTotalNumber(e.target.value)}
               />
             </Form.Group>
             <Form.Group>
-              <Form.Label className="d-flex align-items-center">
+              <Form.Label className='d-flex align-items-center'>
                 Template Download
               </Form.Label>
-              <Form.Text className="text-muted mb-3">
+              <Form.Text className='text-muted mb-3'>
                 This template must be used for upload as a csv file
               </Form.Text>
               <Button
-                variant="outline-primary"
-                href="/assets/template/Prospect_Template.csv"
+                variant='outline-primary'
+                href='/assets/template/Prospect_Template.csv'
                 download
               >
                 DOWNLOAD
               </Button>
             </Form.Group>
             <Form.Group>
-              <Form.Label className="required">Upload Prospect List</Form.Label>
+              <Form.Label className='required'>Upload Prospect List</Form.Label>
               <Form.Text
-                className="text-muted mb-2 d-flex flex-wrap align-items-center"
-                style={{ overflowWrap: "anywhere" }}
+                className='text-muted mb-2 d-flex flex-wrap align-items-center'
+                style={{ overflowWrap: 'anywhere' }}
               >
                 {fileErrMsg
                   ? fileErrMsg
                   : fileName
                   ? fileName
-                  : "No file selected"}
+                  : 'No file selected'}
                 {fileName && (
                   <Button
-                    variant="link"
-                    className="text-muted ml-4"
+                    variant='link'
+                    className='text-muted ml-4'
                     onClick={clearFile}
                   >
                     <img
-                      src="/assets/icons/close-small.svg"
-                      className="mr-1"
-                      alt="close-small"
+                      src='/assets/icons/close-small.svg'
+                      className='mr-1'
+                      alt='close-small'
                     />
                     CLEAR
                   </Button>
@@ -715,64 +701,64 @@ const NewProspectListModal = ({
               </Form.Text>
               <input
                 ref={fileInputRef}
-                type="file"
-                accept=".csv"
-                name="name"
+                type='file'
+                accept='.csv'
+                name='name'
                 hidden
                 onChange={onChangeFile}
               />
               <Button
-                variant="outline-primary"
+                variant='outline-primary'
                 onClick={uploadCsvFile}
                 disabled={loading}
               >
-                {loading ? "UPLOADING" : "UPLOAD"}
+                {loading ? 'UPLOADING' : 'UPLOAD'}
               </Button>
             </Form.Group>
 
             <Form.Group>
-              <Form.Label className="required d-flex align-items-center">
+              <Form.Label className='required d-flex align-items-center'>
                 Enhance Data
-                <InfoTooltip description="Data Enhancement is a systematic process that will search and locate corresponding phone, email, demographic, and relational data variables specific to the uploaded prospects." />
+                <InfoTooltip description='Data Enhancement is a systematic process that will search and locate corresponding phone, email, demographic, and relational data variables specific to the uploaded prospects.' />
               </Form.Label>
               <Form.Check
                 checked={enhance}
-                name="enhance"
-                className="mb-3"
+                name='enhance'
+                className='mb-3'
                 custom
-                type="radio"
-                id="enhance-yes"
-                label="Yes"
+                type='radio'
+                id='enhance-yes'
+                label='Yes'
                 onChange={() => setEnhance(true)}
               />
               <Form.Check
                 checked={!enhance}
-                name="enhance"
+                name='enhance'
                 custom
-                type="radio"
-                id="enhance-no"
-                label="No"
+                type='radio'
+                id='enhance-no'
+                label='No'
                 onChange={() => setEnhance(false)}
               />
             </Form.Group>
             {enhance && (
               <CheckoutForm
-                itemCounts={prospectList.length}
+                itemCounts={prospects.length}
                 generateToken={generateToken}
                 changePaymentMethod={(event) => setPaymentMethod(event)}
                 changeCardStatus={(event) => setCardStatus(event)}
               />
             )}
             {stripeErrMsg && (
-              <Form.Text className="text-danger">{stripeErrMsg}</Form.Text>
+              <Form.Text className='text-danger'>{stripeErrMsg}</Form.Text>
             )}
           </div>
         )}
         {step === STEP2 && (
-          <div className="step-2 mb-3">
-            <div className="d-flex justify-content-between mb-3">
-              <div className="summary">
-                We detected {prospectList.length} contacts
+          <div className='step-2 mb-3'>
+            <div className='d-flex justify-content-between mb-3'>
+              <div className='summary'>
+                We detected {prospects.length} contacts
                 {errors ? (
                   <>
                     , and <span>{errors} errors</span>
@@ -782,27 +768,26 @@ const NewProspectListModal = ({
               </div>
               <div>
                 <Button
-                  variant="primary"
+                  variant='primary'
                   onClick={gotoThirdStep}
-                  disabled={errors || nexting}
+                  disabled={errors}
                 >
-                  {nexting && <Spinner style={{ marginRight: 10 }} />}
                   CONFIRM
                 </Button>
               </div>
             </div>
-            <div className="table-container">
-              <Table responsive="xl" className="data-table">
+            <div className='table-container'>
+              <Table responsive='xl' className='data-table'>
                 <thead>
                   <tr>
                     <th>
-                      FIRST<span className="sort-icon"></span>
+                      FIRST<span className='sort-icon'></span>
                     </th>
                     <th>
-                      LAST<span className="sort-icon"></span>
+                      LAST<span className='sort-icon'></span>
                     </th>
                     <th>
-                      COMPANY<span className="sort-icon"></span>
+                      COMPANY<span className='sort-icon'></span>
                     </th>
                     <th>STREET</th>
                     <th>CITY</th>
@@ -814,7 +799,7 @@ const NewProspectListModal = ({
                   </tr>
                 </thead>
                 <tbody>
-                  {prospectList.map((a, idx) => (
+                  {prospects.map((a, idx) => (
                     <tr key={idx}>
                       {tableFields.map((item, id) => (
                         <td
@@ -833,13 +818,13 @@ const NewProspectListModal = ({
           </div>
         )}
         {step === STEP3 && (
-          <div className="step-3 d-flex flex-column align-items-center mb-3">
+          <div className='step-3 d-flex flex-column align-items-center mb-3'>
             {!completed && (
-              <div className="text-muted mb-3">
+              <div className='text-muted mb-3'>
                 est. time remaining {estimate}
               </div>
             )}
-            <div className="progress">
+            <div className='progress'>
               <CircularProgressbar
                 value={percentage}
                 text={`${percentage}%`}
@@ -849,8 +834,8 @@ const NewProspectListModal = ({
           </div>
         )}
         {step === STEP4 && (
-          <div className="step-4 d-flex flex-column align-items-center mb-3">
-            <div className="text-muted mb-3">
+          <div className='step-4 d-flex flex-column align-items-center mb-3'>
+            <div className='text-muted mb-3'>
               We will upload your prospects and notify you once they are
               completed!
             </div>
@@ -860,40 +845,35 @@ const NewProspectListModal = ({
       {step === STEP1 && (
         <Modal.Footer>
           <Button
-            variant="primary"
-            disabled={!isNext || loadingEnhanceData || nexting}
+            variant='primary'
+            disabled={!isNext || loadingEnhanceData}
             onClick={() => gotoSecondStep()}
           >
-            {loadingEnhanceData || nexting ? (
+            {loadingEnhanceData ? (
               <>
                 <Spinner /> LOADING ...
               </>
             ) : enhance ? (
-              "SUBMIT"
+              'SUBMIT'
             ) : (
-              "NEXT"
+              'NEXT'
             )}
           </Button>
         </Modal.Footer>
       )}
       {step === STEP4 && (
         <Modal.Footer>
-          <Button variant="primary" onClick={() => close({ data: true })}>
+          <Button variant='primary' onClick={() => close({ data: true })}>
             GOT IT!
           </Button>
         </Modal.Footer>
       )}
       {step === STEP2 && (
         <ConfirmModal
-          prospectsCount={prospectList.length}
+          prospectsCount={prospects.length}
           show={showCloseConfirm}
           close={async (rt) => {
             if (rt.data) {
-              try {
-                await prospectListDb.clear();
-                await prospectsDb.clear();
-                await prospectUploadStepDb.clear();
-              } catch (err) {}
               close({ data: false });
             }
             setShowCloseConfirm(false);

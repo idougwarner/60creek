@@ -80,7 +80,6 @@ export const batchCreateProspects = /* GraphQL */ `
         prospectList {
           id
           userId
-          file
           name
           enhance
           customerEmail
@@ -222,11 +221,6 @@ export const changeEmail = /* GraphQL */ `
 export const fetchEnhanceData = /* GraphQL */ `
   mutation FetchEnhanceData($input: FetchEnhanceDataInput) {
     fetchEnhanceData(input: $input)
-  }
-`;
-export const uploadProspects = /* GraphQL */ `
-  mutation UploadProspects($input: UploadProspectsInput) {
-    uploadProspects(input: $input)
   }
 `;
 export const createUser = /* GraphQL */ `
@@ -388,7 +382,6 @@ export const createProspect = /* GraphQL */ `
       prospectList {
         id
         userId
-        file
         name
         enhance
         customerEmail
@@ -485,7 +478,6 @@ export const updateProspect = /* GraphQL */ `
       prospectList {
         id
         userId
-        file
         name
         enhance
         customerEmail
@@ -582,7 +574,6 @@ export const deleteProspect = /* GraphQL */ `
       prospectList {
         id
         userId
-        file
         name
         enhance
         customerEmail
@@ -606,7 +597,6 @@ export const createProspectList = /* GraphQL */ `
     createProspectList(input: $input, condition: $condition) {
       id
       userId
-      file
       name
       enhance
       customerEmail
@@ -627,7 +617,6 @@ export const updateProspectList = /* GraphQL */ `
     updateProspectList(input: $input, condition: $condition) {
       id
       userId
-      file
       name
       enhance
       customerEmail
@@ -648,7 +637,6 @@ export const deleteProspectList = /* GraphQL */ `
     deleteProspectList(input: $input, condition: $condition) {
       id
       userId
-      file
       name
       enhance
       customerEmail
@@ -791,7 +779,6 @@ export const createMarketingCampaign = /* GraphQL */ `
       prospectList {
         id
         userId
-        file
         name
         enhance
         customerEmail
@@ -859,7 +846,6 @@ export const updateMarketingCampaign = /* GraphQL */ `
       prospectList {
         id
         userId
-        file
         name
         enhance
         customerEmail
@@ -927,7 +913,6 @@ export const deleteMarketingCampaign = /* GraphQL */ `
       prospectList {
         id
         userId
-        file
         name
         enhance
         customerEmail

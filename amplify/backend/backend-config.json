@@ -92,7 +92,12 @@
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
     },
-    "prospectListTableTrigger": {
+    "S3Trigger8eb0cf16": {
+      "service": "Lambda",
+      "providerPlugin": "awscloudformation",
+      "build": true
+    },
+    "prospectTableTrigger": {
       "build": true,
       "providerPlugin": "awscloudformation",
       "service": "Lambda",
@@ -106,16 +111,6 @@
           ]
         }
       ]
-    },
-    "fetchEnhanceData": {
-      "build": true,
-      "providerPlugin": "awscloudformation",
-      "service": "Lambda"
-    },
-    "uploadProspects": {
-      "build": true,
-      "providerPlugin": "awscloudformation",
-      "service": "Lambda"
     }
   },
   "hosting": {
@@ -128,7 +123,18 @@
   "storage": {
     "60creek": {
       "service": "S3",
-      "providerPlugin": "awscloudformation"
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [
+        {
+          "category": "function",
+          "resourceName": "S3Trigger8eb0cf16",
+          "attributes": [
+            "Name",
+            "Arn",
+            "LambdaExecutionRole"
+          ]
+        }
+      ]
     }
   },
   "analytics": {}

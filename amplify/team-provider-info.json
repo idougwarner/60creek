@@ -215,6 +215,10 @@
         "uploadProspects": {
           "deploymentBucketName": "amplify-60creek-develop-13734-deployment",
           "s3Key": "amplify-builds/uploadProspects-7a56533039415a526138-build.zip"
+        },
+        "S3Trigger8eb0cf16": {
+          "deploymentBucketName": "amplify-60creek-develop-13734-deployment",
+          "s3Key": "amplify-builds/S3Trigger8eb0cf16-386f7a643672574b5a4f-build.zip"
         }
       },
       "hosting": {
@@ -226,6 +230,81 @@
       "auth": {
         "userPoolGroups": {},
         "60creekde5ff758": {}
+      }
+    }
+  },
+  "jin": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-60creek-jin-232521-authRole",
+      "UnauthRoleArn": "arn:aws:iam::313220278604:role/amplify-60creek-jin-232521-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::313220278604:role/amplify-60creek-jin-232521-authRole",
+      "Region": "us-west-2",
+      "DeploymentBucketName": "amplify-60creek-jin-232521-deployment",
+      "UnauthRoleName": "amplify-60creek-jin-232521-unauthRole",
+      "StackName": "amplify-60creek-jin-232521",
+      "StackId": "arn:aws:cloudformation:us-west-2:313220278604:stack/amplify-60creek-jin-232521/e630edf0-9299-11eb-81cd-02a5b94954d5",
+      "AmplifyAppId": "d2xdfv13yonrbo"
+    },
+    "categories": {
+      "auth": {
+        "userPoolGroups": {},
+        "60creekde5ff758": {}
+      },
+      "function": {
+        "createStripeSubscription": {
+          "deploymentBucketName": "amplify-60creek-jin-232521-deployment",
+          "s3Key": "amplify-builds/createStripeSubscription-5830306772434b44492b-build.zip"
+        },
+        "preSignUp": {
+          "deploymentBucketName": "amplify-60creek-jin-232521-deployment",
+          "s3Key": "amplify-builds/preSignUp-77584f714d5672705a61-build.zip"
+        },
+        "validatePromoCode": {
+          "deploymentBucketName": "amplify-60creek-jin-232521-deployment",
+          "s3Key": "amplify-builds/validatePromoCode-7057717a666535617654-build.zip"
+        },
+        "subscriptionInfo": {
+          "deploymentBucketName": "amplify-60creek-jin-232521-deployment",
+          "s3Key": "amplify-builds/subscriptionInfo-30434b7149496e7a545a-build.zip"
+        },
+        "checkout": {
+          "deploymentBucketName": "amplify-60creek-jin-232521-deployment",
+          "s3Key": "amplify-builds/checkout-5a64795a70546a534268-build.zip"
+        },
+        "sendCampaignConfirmEmail": {
+          "deploymentBucketName": "amplify-60creek-jin-232521-deployment",
+          "s3Key": "amplify-builds/sendCampaignConfirmEmail-6d2f386b51686c2f385a-build.zip"
+        },
+        "requestPasswordReset": {
+          "deploymentBucketName": "amplify-60creek-jin-232521-deployment",
+          "s3Key": "amplify-builds/requestPasswordReset-33577465363471395472-build.zip"
+        },
+        "resetPassword": {
+          "deploymentBucketName": "amplify-60creek-jin-232521-deployment",
+          "s3Key": "amplify-builds/resetPassword-53417a6a386b52532b2b-build.zip"
+        },
+        "changeEmail": {
+          "deploymentBucketName": "amplify-60creek-jin-232521-deployment",
+          "s3Key": "amplify-builds/changeEmail-544974594b385a49417a-build.zip"
+        },
+        "createStripeCustomer": {
+          "deploymentBucketName": "amplify-60creek-jin-232521-deployment",
+          "s3Key": "amplify-builds/createStripeCustomer-37654f336e2f35367273-build.zip"
+        },
+        "S3Trigger8eb0cf16": {
+          "deploymentBucketName": "amplify-60creek-jin-232521-deployment",
+          "s3Key": "amplify-builds/S3Trigger8eb0cf16-474263494d4d674b575a-build.zip"
+        },
+        "prospectTableTrigger": {
+          "deploymentBucketName": "amplify-60creek-jin-232521-deployment",
+          "s3Key": "amplify-builds/prospectTableTrigger-47417a75366f43644d59-build.zip"
+        }
+      },
+      "hosting": {
+        "amplifyhosting": {
+          "appId": "d2xdfv13yonrbo",
+          "type": "manual"
+        }
       }
     }
   }
