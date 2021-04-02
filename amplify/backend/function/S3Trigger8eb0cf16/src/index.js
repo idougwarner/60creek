@@ -10,10 +10,11 @@ const s3 = new AWS.S3();
 
 const graphqlEndpointPath = `/sixtycreek-${process.env.ENV}/graphql-endpoint`;
 const appsyncApiKeyPath = `/sixtycreek-${process.env.ENV}/appsync-api-key`;
+const stripeSecretKeyPath = `/sixtycreek-${process.env.ENV}/stripe-secret-key`;
 
 const envPromise = ssm
   .getParameters({
-    Names: [graphqlEndpointPath, appsyncApiKeyPath],
+    Names: [graphqlEndpointPath, appsyncApiKeyPath, stripeSecretKeyPath],
     WithDecryption: true,
   })
   .promise();
@@ -68,6 +69,9 @@ exports.handler = async function (event, context) {
     const params = envVariables.Parameters;
     const graphqlEndpoint = getEnvValue(params, graphqlEndpointPath);
     const appsyncApiKey = getEnvValue(params, appsyncApiKeyPath);
+    const stripeSecretKey = getEnvValue(params, stripeSecretKeyPath);
+
+    const stripe = require('stripe')(stripeSecretKey);
 
     console.log(event.Records[0].s3);
     if (event.Records[0].eventName !== 'ObjectCreated:Put') return;
@@ -103,6 +107,18 @@ exports.handler = async function (event, context) {
       });
     }
     await s3.deleteObject(s3Param).promise();
+    if (prospectList.enhance && prospects.length > 0) {
+      await stripe.paymentIntents.create({
+        amount: prospects.length * 100,
+        currency: 'usd',
+        customer: prospectList.customerId,
+        payment_method: prospectList.paymentMethodId,
+        receipt_email: prospectList.customerEmail,
+        off_session: true,
+        confirm: true,
+        description: 'Enhanced prospects uploaded',
+      });
+    }
     const r = await axios({
       url: graphqlEndpoint,
       method: 'post',
@@ -113,8 +129,10 @@ exports.handler = async function (event, context) {
         query: print(updateProspectList),
         variables: {
           input: {
-            ...prospectList,
-            amount: prospectList.enhance ? prospects.length : 0,
+            id: prospectList.id,
+            uploadStatus: 'completed',
+            customerId: '-',
+            amount: 0,
           },
         },
       },

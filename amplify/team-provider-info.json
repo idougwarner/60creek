@@ -281,21 +281,13 @@
           "deploymentBucketName": "amplify-60creek-jin-232521-deployment",
           "s3Key": "amplify-builds/createStripeCustomer-37654f336e2f35367273-build.zip"
         },
-        "prospectListTableTrigger": {
-          "deploymentBucketName": "amplify-60creek-jin-232521-deployment",
-          "s3Key": "amplify-builds/prospectListTableTrigger-4b687a39427a42775556-build.zip"
-        },
-        "fetchEnhanceData": {
-          "deploymentBucketName": "amplify-60creek-jin-232521-deployment",
-          "s3Key": "amplify-builds/fetchEnhanceData-39686277726b58503234-build.zip"
-        },
         "S3Trigger8eb0cf16": {
           "deploymentBucketName": "amplify-60creek-jin-232521-deployment",
-          "s3Key": "amplify-builds/S3Trigger8eb0cf16-7a772f4e582f7773646d-build.zip"
+          "s3Key": "amplify-builds/S3Trigger8eb0cf16-474263494d4d674b575a-build.zip"
         },
         "prospectTableTrigger": {
           "deploymentBucketName": "amplify-60creek-jin-232521-deployment",
-          "s3Key": "amplify-builds/prospectTableTrigger-574d333170385631344a-build.zip"
+          "s3Key": "amplify-builds/prospectTableTrigger-47417a75366f43644d59-build.zip"
         }
       },
       "hosting": {

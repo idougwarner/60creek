@@ -8,6 +8,7 @@
     "aws-sdk": "^2.876.0",
     "axios": "^0.21.1",
     "graphql": "^15.5.0",
-    "graphql-tag": "^2.11.0"
+    "graphql-tag": "^2.11.0",
+    "stripe": "^8.135.0"
   }
 }
