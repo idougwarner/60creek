@@ -49,6 +49,14 @@ const Layout = ({ children }) => {
   const showUpdatedProspects = () => {
     const id = completedProspectList.id;
     setCompletedProspectList(null);
+
+    dispatch({
+      type: ACTIONS.SET_COMPLETED_PROSPECT_LIST_ID,
+      data: {
+        prospectListId: id,
+      },
+    });
+
     history.push({
       pathname: APP_URLS.PROSPECTS,
       search: 'prospectList=' + id,
