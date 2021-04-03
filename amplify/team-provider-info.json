@@ -105,7 +105,7 @@
         },
         "subscriptionInfo": {
           "deploymentBucketName": "amplify-60creek-stage-01840-deployment",
-          "s3Key": "amplify-builds/subscriptionInfo-3462717059384446414a-build.zip"
+          "s3Key": "amplify-builds/subscriptionInfo-30434b7149496e7a545a-build.zip"
         },
         "checkout": {
           "deploymentBucketName": "amplify-60creek-stage-01840-deployment",
@@ -139,8 +139,14 @@
           "deploymentBucketName": "amplify-60creek-stage-01840-deployment",
           "s3Key": "amplify-builds/fetchEnhanceData-39686277726b58503234-build.zip"
         },
-        "S3Trigger8eb0cf16": {},
-        "prospectTableTrigger": {}
+        "S3Trigger8eb0cf16": {
+          "deploymentBucketName": "amplify-60creek-stage-01840-deployment",
+          "s3Key": "amplify-builds/S3Trigger8eb0cf16-474263494d4d674b575a-build.zip"
+        },
+        "prospectTableTrigger": {
+          "deploymentBucketName": "amplify-60creek-stage-01840-deployment",
+          "s3Key": "amplify-builds/prospectTableTrigger-47417a75366f43644d59-build.zip"
+        }
       },
       "hosting": {
         "amplifyhosting": {
