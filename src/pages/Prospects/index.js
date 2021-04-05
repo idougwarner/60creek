@@ -324,7 +324,10 @@ const ProspectsPage = () => {
               />
               CSV
             </Dropdown.Item>
-            <Dropdown.Item onClick={() => setShowConfirmModal(true)}>
+            <Dropdown.Item
+              onClick={() => setShowConfirmModal(true)}
+              disabled={selected.length === 0}
+            >
               <img
                 src='/assets/icons/delete.svg'
                 className='item-icon'

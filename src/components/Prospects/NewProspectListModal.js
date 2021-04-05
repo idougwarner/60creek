@@ -381,6 +381,18 @@ const NewProspectListModal = ({ show, close, existingList = false }) => {
     }
   };
 
+  const downloadTemplate = () => {
+    const tmplateFileName = 'Prospect Template.csv';
+    const data =
+      'Status,First name,Last Name,Company,Street,City,State,Zip,Phone,Email,Facebook';
+    const blob = new Blob([data], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+
+    link.href = url;
+    link.download = tmplateFileName;
+    link.click();
+  };
   const fieldComponent = (idx, fieldName, required = true) => {
     return (
       <>
@@ -665,11 +677,7 @@ const NewProspectListModal = ({ show, close, existingList = false }) => {
               <Form.Text className='text-muted mb-3'>
                 This template must be used for upload as a csv file
               </Form.Text>
-              <Button
-                variant='outline-primary'
-                href='/assets/template/Prospect_Template.csv'
-                download
-              >
+              <Button variant='outline-primary' onClick={downloadTemplate}>
                 DOWNLOAD
               </Button>
             </Form.Group>
