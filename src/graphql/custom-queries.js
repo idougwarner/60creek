@@ -15,3 +15,25 @@ export const listProspectsCounts = /* GraphQL */ `
     }
   }
 `;
+
+export const prospectsCountsByProspectListId = /* GraphQL */ `
+  query ProspectsByProspectListId(
+    $prospectListId: ID
+    $sortDirection: ModelSortDirection
+    $filter: ModelProspectFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    prospectsByProspectListId(
+      prospectListId: $prospectListId
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      nextToken
+      scannedCount
+      count
+    }
+  }
+`;

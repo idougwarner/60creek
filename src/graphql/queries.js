@@ -165,7 +165,6 @@ export const getProspect = /* GraphQL */ `
       prospectList {
         id
         userId
-        file
         name
         enhance
         customerEmail
@@ -264,7 +263,6 @@ export const listProspects = /* GraphQL */ `
         prospectList {
           id
           userId
-          file
           name
           enhance
           customerEmail
@@ -289,7 +287,6 @@ export const getProspectList = /* GraphQL */ `
     getProspectList(id: $id) {
       id
       userId
-      file
       name
       enhance
       customerEmail
@@ -312,7 +309,6 @@ export const listProspectLists = /* GraphQL */ `
       items {
         id
         userId
-        file
         name
         enhance
         customerEmail
@@ -429,7 +425,6 @@ export const getMarketingCampaign = /* GraphQL */ `
       prospectList {
         id
         userId
-        file
         name
         enhance
         customerEmail
@@ -503,7 +498,6 @@ export const listMarketingCampaigns = /* GraphQL */ `
         prospectList {
           id
           userId
-          file
           name
           enhance
           customerEmail
@@ -734,7 +728,6 @@ export const prospectsByUserId = /* GraphQL */ `
         prospectList {
           id
           userId
-          file
           name
           enhance
           customerEmail
@@ -845,7 +838,6 @@ export const prospectsByProspectListId = /* GraphQL */ `
         prospectList {
           id
           userId
-          file
           name
           enhance
           customerEmail
@@ -885,7 +877,6 @@ export const prospectListsByUserId = /* GraphQL */ `
       items {
         id
         userId
-        file
         name
         enhance
         customerEmail
@@ -964,7 +955,6 @@ export const campaignsByUserId = /* GraphQL */ `
         prospectList {
           id
           userId
-          file
           name
           enhance
           customerEmail

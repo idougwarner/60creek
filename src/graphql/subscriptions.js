@@ -148,7 +148,6 @@ export const onCreateProspect = /* GraphQL */ `
       prospectList {
         id
         userId
-        file
         name
         enhance
         customerEmail
@@ -242,7 +241,6 @@ export const onUpdateProspect = /* GraphQL */ `
       prospectList {
         id
         userId
-        file
         name
         enhance
         customerEmail
@@ -336,7 +334,6 @@ export const onDeleteProspect = /* GraphQL */ `
       prospectList {
         id
         userId
-        file
         name
         enhance
         customerEmail
@@ -357,7 +354,6 @@ export const onCreateProspectList = /* GraphQL */ `
     onCreateProspectList {
       id
       userId
-      file
       name
       enhance
       customerEmail
@@ -375,7 +371,6 @@ export const onUpdateProspectList = /* GraphQL */ `
     onUpdateProspectList {
       id
       userId
-      file
       name
       enhance
       customerEmail
@@ -393,7 +388,6 @@ export const onDeleteProspectList = /* GraphQL */ `
     onDeleteProspectList {
       id
       userId
-      file
       name
       enhance
       customerEmail
@@ -524,7 +518,6 @@ export const onCreateMarketingCampaign = /* GraphQL */ `
       prospectList {
         id
         userId
-        file
         name
         enhance
         customerEmail
@@ -589,7 +582,6 @@ export const onUpdateMarketingCampaign = /* GraphQL */ `
       prospectList {
         id
         userId
-        file
         name
         enhance
         customerEmail
@@ -654,7 +646,6 @@ export const onDeleteMarketingCampaign = /* GraphQL */ `
       prospectList {
         id
         userId
-        file
         name
         enhance
         customerEmail

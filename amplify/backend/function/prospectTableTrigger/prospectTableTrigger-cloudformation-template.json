@@ -55,12 +55,12 @@
         "FunctionName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "prospectListTableTrigger",
+            "prospectTableTrigger",
             {
               "Fn::Join": [
                 "",
                 [
-                  "prospectListTableTrigger",
+                  "prospectTableTrigger",
                   "-",
                   {
                     "Ref": "env"
@@ -97,12 +97,12 @@
         "RoleName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "60creekLambdaRole5956d419",
+            "60creekLambdaRolee15018a6",
             {
               "Fn::Join": [
                 "",
                 [
-                  "60creekLambdaRole5956d419",
+                  "60creekLambdaRolee15018a6",
                   "-",
                   {
                     "Ref": "env"
@@ -173,13 +173,13 @@
         }
       }
     },
-    "LambdaTriggerPolicyProspectList": {
+    "LambdaTriggerPolicyProspect": {
       "DependsOn": [
         "LambdaExecutionRole"
       ],
       "Type": "AWS::IAM::Policy",
       "Properties": {
-        "PolicyName": "amplify-lambda-execution-policy-ProspectList",
+        "PolicyName": "amplify-lambda-execution-policy-Prospect",
         "Roles": [
           {
             "Ref": "LambdaExecutionRole"
@@ -198,7 +198,7 @@
               ],
               "Resource": {
                 "Fn::ImportValue": {
-                  "Fn::Sub": "${api60creekGraphQLAPIIdOutput}:GetAtt:ProspectListTable:StreamArn"
+                  "Fn::Sub": "${api60creekGraphQLAPIIdOutput}:GetAtt:ProspectTable:StreamArn"
                 }
               }
             }
@@ -206,10 +206,10 @@
         }
       }
     },
-    "LambdaEventSourceMappingProspectList": {
+    "LambdaEventSourceMappingProspect": {
       "Type": "AWS::Lambda::EventSourceMapping",
       "DependsOn": [
-        "LambdaTriggerPolicyProspectList",
+        "LambdaTriggerPolicyProspect",
         "LambdaExecutionRole"
       ],
       "Properties": {
@@ -217,7 +217,7 @@
         "Enabled": true,
         "EventSourceArn": {
           "Fn::ImportValue": {
-            "Fn::Sub": "${api60creekGraphQLAPIIdOutput}:GetAtt:ProspectListTable:StreamArn"
+            "Fn::Sub": "${api60creekGraphQLAPIIdOutput}:GetAtt:ProspectTable:StreamArn"
           }
         },
         "FunctionName": {

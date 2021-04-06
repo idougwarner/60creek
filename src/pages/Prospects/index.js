@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import "./Prospects.scss";
+import React, { useEffect, useState } from 'react';
+import './Prospects.scss';
 import {
   DropdownButton,
   Dropdown,
@@ -10,42 +10,39 @@ import {
   Spinner,
   SplitButton,
   Button,
-} from "react-bootstrap";
-import AddSingleProspectModal from "../../components/Prospects/AddSingleProspectModal";
-import NewProspectListModal from "../../components/Prospects/NewProspectListModal";
-import { API, graphqlOperation } from "aws-amplify";
+} from 'react-bootstrap';
+import AddSingleProspectModal from '../../components/Prospects/AddSingleProspectModal';
+import NewProspectListModal from '../../components/Prospects/NewProspectListModal';
+import { API, graphqlOperation } from 'aws-amplify';
 import {
   prospectListsByUserId,
   prospectsByUserId,
-} from "../../graphql/queries";
+} from '../../graphql/queries';
 import {
   downloadCSVFromJSON,
   downloadXlsxFromJSON,
   formatProspects,
-} from "../../helpers/CSVFileHelper";
-import { useDispatch, useSelector } from "react-redux";
-import FilterDropdown from "../../components/Prospects/FilterDropdown";
-import { ACTIONS } from "../../redux/actionTypes";
-import { useIndexedDB } from "react-indexed-db";
-import { IndexDBStores } from "../../helpers/DBConfig";
-import { useHistory, useLocation } from "react-router-dom";
-import { APP_URLS } from "../../helpers/routers";
-import { WORKER_STATUS } from "../../redux/uploadWorkerReducer";
-import { QUERY_LIMIT } from "../../helpers/constants";
-import { deleteProspect } from "../../graphql/mutations";
-import ConfirmDeleteModal from "../../components/Prospects/ConfirmDeleteModal";
-import { onUpdateProspectList } from "../../graphql/subscriptions";
+} from '../../helpers/CSVFileHelper';
+import { useDispatch, useSelector } from 'react-redux';
+import FilterDropdown from '../../components/Prospects/FilterDropdown';
+import { ACTIONS } from '../../redux/actionTypes';
+import { useHistory, useLocation } from 'react-router-dom';
+import { APP_URLS } from '../../helpers/routers';
+import { QUERY_LIMIT } from '../../helpers/constants';
+import { deleteProspect } from '../../graphql/mutations';
+import ConfirmDeleteModal from '../../components/Prospects/ConfirmDeleteModal';
+import { onUpdateProspectList } from '../../graphql/subscriptions';
 
 const tableFields = [
-  { title: "STATUS", field: "status", sortable: false },
-  { title: "FIRST", field: "firstName", sortable: true },
-  { title: "LAST", field: "lastName", sortable: true },
-  { title: "EMAIL", field: "email", sortable: true },
-  { title: "PHONE", field: "phone", sortable: true },
-  { title: "COMPANY", field: "company", sortable: true },
+  { title: 'STATUS', field: 'status', sortable: false },
+  { title: 'FIRST', field: 'firstName', sortable: true },
+  { title: 'LAST', field: 'lastName', sortable: true },
+  { title: 'EMAIL', field: 'email', sortable: true },
+  { title: 'PHONE', field: 'phone', sortable: true },
+  { title: 'COMPANY', field: 'company', sortable: true },
   // { title: "STREET", field: "address1", sortable: true },
-  { title: "CITY", field: "city", sortable: true },
-  { title: "STATE", field: "state", sortable: true },
+  { title: 'CITY', field: 'city', sortable: true },
+  { title: 'STATE', field: 'state', sortable: true },
   // { title: "ZIP", field: "zip", sortable: true },
   // { title: "CONTACT INFO", field: "contactInfo", sortable: false },
 ];
@@ -54,12 +51,12 @@ const ASC = 1;
 // const DESC = -1;
 const ProspectsPage = () => {
   const [prospects, setProspects] = useState([]);
-  const [nextToken, setNextToken] = useState("");
+  const [nextToken, setNextToken] = useState('');
 
   const [filteredData, setFilteredData] = useState([]);
-  const [strFilter, setStrFilter] = useState("");
+  const [strFilter, setStrFilter] = useState('');
 
-  const [sortType, setSortType] = useState({ sort: ASC, field: "lastName" });
+  const [sortType, setSortType] = useState({ sort: ASC, field: 'lastName' });
 
   const [showAddExistingModal, setShowAddExistingModal] = useState(false);
   const [showSingleModal, setShowSingleModal] = useState(false);
@@ -71,18 +68,15 @@ const ProspectsPage = () => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   const user = useSelector((state) => state.userStore);
-  const prospectsDb = useIndexedDB(IndexDBStores.PROSPECT);
   const history = useHistory();
   const location = useLocation();
   const dispatch = useDispatch();
-
-  const uploadStatus = useSelector((state) => state.uploadWorkerStore);
 
   const loadData = async () => {
     setLoading(true);
     try {
       const token = nextToken;
-      setNextToken("");
+      setNextToken('');
 
       const rtList = await API.graphql(
         graphqlOperation(prospectListsByUserId, {
@@ -129,10 +123,10 @@ const ProspectsPage = () => {
     return formatProspects(rtVal);
   };
   const downloadCSV = () => {
-    downloadCSVFromJSON(getExportData(), "Prospects.csv");
+    downloadCSVFromJSON(getExportData(), 'Prospects.csv');
   };
   const downloadExcel = () => {
-    downloadXlsxFromJSON(getExportData(), "Prospects.xlsx");
+    downloadXlsxFromJSON(getExportData(), 'Prospects.xlsx');
   };
   const changeSort = (field) => {
     if (field === sortType.field) {
@@ -143,7 +137,6 @@ const ProspectsPage = () => {
   };
   useEffect(() => {
     if (user) {
-      checkLocalStorage();
       loadData();
     }
     // eslint-disable-next-line
@@ -153,21 +146,21 @@ const ProspectsPage = () => {
     if (strFilter) {
       newData = prospects.filter((item) => {
         if (
-          item["firstName"].toLowerCase().indexOf(strFilter.toLowerCase()) >= 0
+          item['firstName'].toLowerCase().indexOf(strFilter.toLowerCase()) >= 0
         ) {
           return true;
         }
         if (
-          item["lastName"].toLowerCase().indexOf(strFilter.toLowerCase()) >= 0
+          item['lastName'].toLowerCase().indexOf(strFilter.toLowerCase()) >= 0
         ) {
           return true;
         }
-        if (item["email"].toLowerCase().indexOf(strFilter.toLowerCase()) >= 0) {
+        if (item['email'].toLowerCase().indexOf(strFilter.toLowerCase()) >= 0) {
           return true;
         }
         if (
-          item["phone"]
-            .replace(/[^0-9]/g, "")
+          item['phone']
+            .replace(/[^0-9]/g, '')
             .indexOf(strFilter.toLowerCase()) >= 0
         ) {
           return true;
@@ -179,15 +172,14 @@ const ProspectsPage = () => {
     }
 
     const queryParams = new URLSearchParams(location.search);
-    let listFilter = queryParams.getAll("prospectList");
-    let statusFilter = queryParams.getAll("status");
-    console.log(listFilter, statusFilter);
+    let listFilter = queryParams.getAll('prospectList');
+    let statusFilter = queryParams.getAll('status');
 
     if (statusFilter.length > 0) {
       newData = newData.filter(
         (item) =>
           statusFilter.findIndex(
-            (it) => it.toLowerCase() === (item.status?.toLowerCase() || "")
+            (it) => it.toLowerCase() === (item.status?.toLowerCase() || '')
           ) >= 0
       );
     }
@@ -203,25 +195,6 @@ const ProspectsPage = () => {
     });
     setFilteredData(newData);
   }, [strFilter, prospects, sortType, location.search]);
-  const checkLocalStorage = async () => {
-    const localProspects = await prospectsDb.getAll();
-    if (localProspects && localProspects.length > 0) {
-      setShowOriginUpload(true);
-    }
-  };
-
-  useEffect(() => {
-    if (uploadStatus.status === WORKER_STATUS.IDLE) {
-    } else if (uploadStatus.status === WORKER_STATUS.START) {
-    } else if (uploadStatus.status === WORKER_STATUS.CHANGE) {
-    } else if (uploadStatus.status === WORKER_STATUS.COMPLETED) {
-      // loadData();
-    } else if (uploadStatus.status === WORKER_STATUS.ERROR) {
-      checkLocalStorage();
-    } else {
-    }
-    // eslint-disable-next-line
-  }, [uploadStatus]);
 
   const onUpdateProspectListSubscription = (data) => {
     const prospectList = data.value.data.onUpdateProspectList;
@@ -229,7 +202,7 @@ const ProspectsPage = () => {
       user &&
       prospectList &&
       user.id === prospectList.userId &&
-      prospectList.uploadStatus === "completed"
+      prospectList.uploadStatus === 'completed'
     ) {
       loadData();
     }
@@ -247,7 +220,7 @@ const ProspectsPage = () => {
   }, []);
 
   const gotoDetailPage = (id) => {
-    history.push(APP_URLS.PROSPECTS + "/" + id);
+    history.push(APP_URLS.PROSPECTS + '/' + id);
   };
 
   const deleteProspects = async () => {
@@ -271,58 +244,58 @@ const ProspectsPage = () => {
   return (
     <>
       <h4>Prospect List</h4>
-      <div className="mb-4">
+      <div className='mb-4'>
         <SplitButton
-          variant="primary"
-          title="ADD PROSPECT(S)"
-          className="add-prospects-btn"
+          variant='primary'
+          title='ADD PROSPECT(S)'
+          className='add-prospects-btn'
         >
           <Dropdown.Item
-            eventKey="1"
+            eventKey='1'
             onClick={() => {
               setShowNewListModal(true);
             }}
           >
             <img
-              src="/assets/icons/new-list.svg"
-              className="item-icon"
-              alt="new-list"
+              src='/assets/icons/new-list.svg'
+              className='item-icon'
+              alt='new-list'
             />
             CREATE NEW LIST
           </Dropdown.Item>
           <Dropdown.Item
-            eventKey="2"
+            eventKey='2'
             onClick={() => {
               setShowAddExistingModal(true);
             }}
           >
             <img
-              src="/assets/icons/add-to-existing-list.svg"
-              className="item-icon"
-              alt="add-new-to-existing-list"
+              src='/assets/icons/add-to-existing-list.svg'
+              className='item-icon'
+              alt='add-new-to-existing-list'
             />
             ADD TO EXISTING LIST
           </Dropdown.Item>
-          <Dropdown.Item eventKey="3" onClick={() => setShowSingleModal(true)}>
+          <Dropdown.Item eventKey='3' onClick={() => setShowSingleModal(true)}>
             <img
-              src="/assets/icons/new-list.svg"
-              className="item-icon"
-              alt="add-single"
+              src='/assets/icons/new-list.svg'
+              className='item-icon'
+              alt='add-single'
             />
             ADD SINGLE PROSPECT
           </Dropdown.Item>
         </SplitButton>
       </div>
-      <div className="card">
-        <div className="d-flex justify-content-between mb-4">
-          <div className="d-flex">
-            <InputGroup className="search-input">
+      <div className='card'>
+        <div className='d-flex justify-content-between mb-4'>
+          <div className='d-flex'>
+            <InputGroup className='search-input'>
               <InputGroup.Prepend>
-                <img src="/assets/icons/search.svg" alt="search" />
+                <img src='/assets/icons/search.svg' alt='search' />
               </InputGroup.Prepend>
               <FormControl
-                id=""
-                placeholder="Search List ..."
+                id=''
+                placeholder='Search List ...'
                 value={strFilter}
                 onChange={(e) => setStrFilter(e.target.value)}
               />
@@ -330,70 +303,73 @@ const ProspectsPage = () => {
             <FilterDropdown />
           </div>
           <DropdownButton
-            variant="light"
-            className="more-menu-btn"
-            title={<img src="/assets/icons/more.svg" alt="search" />}
+            variant='light'
+            className='more-menu-btn'
+            title={<img src='/assets/icons/more.svg' alt='search' />}
           >
             <Dropdown.Item onClick={downloadExcel}>
               <img
-                src="/assets/icons/excel.svg"
-                className="item-icon"
-                alt="excel"
+                src='/assets/icons/excel.svg'
+                className='item-icon'
+                alt='excel'
                 onClick={downloadExcel}
               />
               Excel
             </Dropdown.Item>
             <Dropdown.Item onClick={downloadCSV}>
               <img
-                src="/assets/icons/csv.svg"
-                className="item-icon"
-                alt="csv"
+                src='/assets/icons/csv.svg'
+                className='item-icon'
+                alt='csv'
               />
               CSV
             </Dropdown.Item>
-            <Dropdown.Item onClick={() => setShowConfirmModal(true)}>
+            <Dropdown.Item
+              onClick={() => setShowConfirmModal(true)}
+              disabled={selected.length === 0}
+            >
               <img
-                src="/assets/icons/delete.svg"
-                className="item-icon"
-                alt="csv"
+                src='/assets/icons/delete.svg'
+                className='item-icon'
+                alt='csv'
               />
               Delete
             </Dropdown.Item>
           </DropdownButton>
         </div>
-        <div className="d-flex justify-content-between mb-4">
-          <div className="selected d-flex align-items-center">
+        <div className='d-flex justify-content-between mb-4'>
+          <div className='selected d-flex align-items-center'>
             {!deleting ? (
               <>{selected.length} selected</>
             ) : (
               <>
                 <Spinner
-                  size="sm"
-                  animation="border"
-                  role="status"
+                  size='sm'
+                  animation='border'
+                  role='status'
                   style={{ marginRight: 10 }}
-                />{" "}
+                />{' '}
                 deleting ...
               </>
             )}
           </div>
-          <div className="showing">
+          <div className='showing'>
             Showing<span>{filteredData.length}</span>of
             <span>{prospects.length}</span>prospects
           </div>
         </div>
-        <Table responsive="xl" className="data-table">
+        <Table responsive='xl' className='data-table'>
           <thead>
             <tr>
-              <th width="30"></th>
+              <th width='30'></th>
               {tableFields.map((item, id) => (
                 <th
                   key={id}
                   className={
                     item.sortable
-                      ? "sort-field " +
-                        (sortType.field === item.field ? "sorted-field" : "")
-                      : ""
+                      ? 'sort-field ' +
+                        (sortType.field === item.field ? 'sorted-field' : '')
+                      : ''
                   }
                   onClick={() =>
                     item.sortable ? changeSort(item.field) : null
@@ -404,8 +380,8 @@ const ProspectsPage = () => {
                     <span
                       className={
                         (sortType.field === item.field && sortType.sort === ASC
-                          ? "desc "
-                          : "") + "sort-icon"
+                          ? 'desc '
+                          : '') + 'sort-icon'
                       }
                     ></span>
                   )}
@@ -417,15 +393,15 @@ const ProspectsPage = () => {
           <tbody>
             {loading && (
               <tr>
-                <td colSpan="10" align="center">
-                  <Spinner animation="border" role="status" />
+                <td colSpan='10' align='center'>
+                  <Spinner animation='border' role='status' />
                 </td>
               </tr>
             )}
             {!loading &&
               filteredData &&
               filteredData.map((item, idx) => (
-                <tr key={idx} className="clickable">
+                <tr key={idx} className='clickable'>
                   <td>
                     <FormCheck
                       custom
@@ -434,8 +410,8 @@ const ProspectsPage = () => {
                           ? true
                           : false
                       }
-                      type="checkbox"
-                      id={"checkbox-" + idx}
+                      type='checkbox'
+                      id={'checkbox-' + idx}
                       onChange={(event) => {
                         toggleItem(item.id);
                       }}
@@ -450,9 +426,9 @@ const ProspectsPage = () => {
               ))}
           </tbody>
         </Table>
-        <div className="d-flex justify-content-center">
+        <div className='d-flex justify-content-center'>
           {nextToken && (
-            <Button variant="outline-primary" onClick={loadData}>
+            <Button variant='outline-primary' onClick={loadData}>
               Next
             </Button>
           )}
