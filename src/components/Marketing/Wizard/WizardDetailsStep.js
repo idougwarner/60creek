@@ -3,8 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Button, Dropdown, DropdownButton, Form } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
-import { prospectsCountsByProspectListId } from '../../../graphql/custom-queries';
-import { QUERY_LIMIT } from '../../../helpers/constants';
+import { customSearchProspects } from '../../../graphql/custom-queries';
 import { APP_URLS } from '../../../helpers/routers';
 import { CREATE_CAMPAIGN_ACTIONS } from '../../../redux/actionTypes';
 import InfoTooltip from '../../controls/InfoTooltip';
@@ -38,14 +37,17 @@ const WizardDetailsStep = () => {
     try {
       setLoading(true);
       const rt = await API.graphql(
-        graphqlOperation(prospectsCountsByProspectListId, {
-          limit: QUERY_LIMIT,
-          prospectListId: value.value,
+        graphqlOperation(customSearchProspects, {
+          limit: 5,
+          from: 0,
+          filter: {
+            prospectListId: { eq: value.value },
+          },
         })
       );
       dispatch({
         type: CREATE_CAMPAIGN_ACTIONS.UPDATE_DEFAULT_PROSPECTS,
-        data: rt.data.prospectsByProspectListId.scannedCount,
+        data: rt.data.searchProspects.total,
       });
       setLoading(false);
     } catch (err) {}

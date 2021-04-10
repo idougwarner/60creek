@@ -61,14 +61,16 @@ const FilterDropdown = ({ changeFilterEvent }) => {
     }
   }, [prospectList]);
   useEffect(() => {
-    const params = new URLSearchParams();
+    const queryParams = new URLSearchParams(location.search);
+    queryParams.delete('prospectList');
+    queryParams.delete('status');
     for (let i = 0; i < filterList.length; i++) {
-      params.append('prospectList', filterList[i]);
+      queryParams.append('prospectList', filterList[i]);
     }
     for (let i = 0; i < filterStatus.length; i++) {
-      params.append('status', filterStatus[i]);
+      queryParams.append('status', filterStatus[i]);
     }
-    history.push({ search: params.toString() });
+    history.push({ search: queryParams.toString() });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filterList, filterStatus]);
 

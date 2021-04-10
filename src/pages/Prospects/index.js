@@ -9,21 +9,18 @@ import {
   FormCheck,
   Spinner,
   SplitButton,
-  Button,
 } from 'react-bootstrap';
 import AddSingleProspectModal from '../../components/Prospects/AddSingleProspectModal';
 import NewProspectListModal from '../../components/Prospects/NewProspectListModal';
 import { API, graphqlOperation } from 'aws-amplify';
-import {
-  prospectListsByUserId,
-  prospectsByUserId,
-} from '../../graphql/queries';
+import { prospectListsByUserId } from '../../graphql/queries';
 import {
   downloadCSVFromJSON,
   downloadXlsxFromJSON,
   formatProspects,
 } from '../../helpers/CSVFileHelper';
 import { useDispatch, useSelector } from 'react-redux';
+import InfiniteScroll from 'react-infinite-scroll-component';
 import FilterDropdown from '../../components/Prospects/FilterDropdown';
 import { ACTIONS } from '../../redux/actionTypes';
 import { useHistory, useLocation } from 'react-router-dom';
@@ -32,6 +29,7 @@ import { QUERY_LIMIT } from '../../helpers/constants';
 import { deleteProspect } from '../../graphql/mutations';
 import ConfirmDeleteModal from '../../components/Prospects/ConfirmDeleteModal';
 import { onUpdateProspectList } from '../../graphql/subscriptions';
+import { customSearchProspects } from '../../graphql/custom-queries';
 
 const tableFields = [
   { title: 'STATUS', field: 'status', sortable: false },
@@ -47,16 +45,23 @@ const tableFields = [
   // { title: "CONTACT INFO", field: "contactInfo", sortable: false },
 ];
 
-const ASC = 1;
-// const DESC = -1;
+const ASC = 'asc';
+const DESC = 'desc';
+
+var timer = null;
+var oldParams = '-';
+var from = 0;
+
 const ProspectsPage = () => {
   const [prospects, setProspects] = useState([]);
-  const [nextToken, setNextToken] = useState('');
+  const [total, setTotal] = useState(0);
 
-  const [filteredData, setFilteredData] = useState([]);
   const [strFilter, setStrFilter] = useState('');
 
-  const [sortType, setSortType] = useState({ sort: ASC, field: 'lastName' });
+  const [sortType, setSortType] = useState({
+    direction: ASC,
+    field: 'lastName',
+  });
 
   const [showAddExistingModal, setShowAddExistingModal] = useState(false);
   const [showSingleModal, setShowSingleModal] = useState(false);
@@ -75,9 +80,6 @@ const ProspectsPage = () => {
   const loadData = async () => {
     setLoading(true);
     try {
-      const token = nextToken;
-      setNextToken('');
-
       const rtList = await API.graphql(
         graphqlOperation(prospectListsByUserId, {
           userId: user.id,
@@ -90,20 +92,71 @@ const ProspectsPage = () => {
           prospectList: rtList.data.prospectListsByUserId.items,
         });
       }
+
+      let filters = [{ userId: { eq: user.id } }];
+      const queryParams = new URLSearchParams(location.search);
+      const prospectListIds = queryParams.getAll('prospectList');
+      if (prospectListIds.length > 0) {
+        filters.push({
+          or: prospectListIds.map((item) => ({ prospectListId: { eq: item } })),
+        });
+      }
+      const status = queryParams.getAll('status');
+      if (status.length > 0) {
+        filters.push({
+          or: status.map((item) => ({ status: { eq: item } })),
+        });
+      }
+      const strSearch = queryParams.get('search');
+      if (strSearch) {
+        filters.push({
+          or: [
+            { firstName: { wildcard: `*${strSearch}*` } },
+            { lastName: { wildcard: `*${strSearch}*` } },
+            { email: { wildcard: `*${strSearch}*` } },
+            { phone: { wildcard: `*${strSearch}*` } },
+          ],
+        });
+      }
+
+      const sortField = queryParams.get('field') || 'lastName';
+      const direction = queryParams.get('direction') || ASC;
       const rt = await API.graphql(
-        graphqlOperation(prospectsByUserId, {
-          userId: user.id,
-          limit: QUERY_LIMIT,
-          nextToken: token ? token : null,
+        graphqlOperation(customSearchProspects, {
+          sort: {
+            direction: direction,
+            field: sortField,
+          },
+          limit: 15,
+          from: from,
+          filter: {
+            and: filters,
+          },
         })
       );
-      if (rt?.data?.prospectsByUserId?.items) {
-        setProspects(rt.data.prospectsByUserId.items);
-        setNextToken(rt.data.prospectsByUserId.nextToken);
+      if (rt?.data?.searchProspects?.items) {
+        if (from === 0) {
+          setProspects([...rt.data.searchProspects.items]);
+        } else {
+          setProspects([...prospects, ...rt.data.searchProspects.items]);
+        }
+        from += rt.data.searchProspects.items.length;
+
+        setTotal(rt.data.searchProspects.total);
       }
     } catch (err) {}
     setLoading(false);
   };
+
+  useEffect(() => {
+    if (user && oldParams !== location.search) {
+      oldParams = location.search;
+      from = 0;
+      setProspects([]);
+      loadData();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location, user]);
 
   const toggleItem = (id) => {
     let newSelected = [...selected];
@@ -116,7 +169,7 @@ const ProspectsPage = () => {
     setSelected(newSelected);
   };
   const getExportData = () => {
-    let rtVal = [...filteredData];
+    let rtVal = [...prospects];
     if (selected.length > 0) {
       rtVal = rtVal.filter((item) => selected.includes(item.id));
     }
@@ -129,72 +182,47 @@ const ProspectsPage = () => {
     downloadXlsxFromJSON(getExportData(), 'Prospects.xlsx');
   };
   const changeSort = (field) => {
+    let newDirection = ASC;
     if (field === sortType.field) {
-      setSortType({ sort: 0 - sortType.sort, field: field });
-    } else {
-      setSortType({ sort: ASC, field: field });
-    }
-  };
-  useEffect(() => {
-    if (user) {
-      loadData();
-    }
-    // eslint-disable-next-line
-  }, [user]);
-  useEffect(() => {
-    let newData = [];
-    if (strFilter) {
-      newData = prospects.filter((item) => {
-        if (
-          item['firstName'].toLowerCase().indexOf(strFilter.toLowerCase()) >= 0
-        ) {
-          return true;
-        }
-        if (
-          item['lastName'].toLowerCase().indexOf(strFilter.toLowerCase()) >= 0
-        ) {
-          return true;
-        }
-        if (item['email'].toLowerCase().indexOf(strFilter.toLowerCase()) >= 0) {
-          return true;
-        }
-        if (
-          item['phone']
-            .replace(/[^0-9]/g, '')
-            .indexOf(strFilter.toLowerCase()) >= 0
-        ) {
-          return true;
-        }
-        return false;
-      });
-    } else {
-      newData = [...prospects];
+      newDirection = sortType.direction === ASC ? DESC : ASC;
     }
 
     const queryParams = new URLSearchParams(location.search);
-    let listFilter = queryParams.getAll('prospectList');
-    let statusFilter = queryParams.getAll('status');
+    queryParams.delete('field');
+    queryParams.delete('direction');
+    queryParams.append('field', field);
+    queryParams.append('direction', newDirection);
+    history.push({ search: queryParams.toString() });
 
-    if (statusFilter.length > 0) {
-      newData = newData.filter(
-        (item) =>
-          statusFilter.findIndex(
-            (it) => it.toLowerCase() === (item.status?.toLowerCase() || '')
-          ) >= 0
-      );
+    setSortType({ direction: newDirection, field: field });
+  };
+  const keyUpEvent = () => {
+    if (timer) {
+      clearTimeout(timer);
     }
-    if (listFilter.length > 0) {
-      newData = newData.filter(
-        (item) => listFilter.indexOf(item.prospectList.id) >= 0
-      );
-    }
-    newData = newData.sort((a, b) => {
-      return a[sortType.field] < b[sortType.field]
-        ? 0 - sortType.sort
-        : 0 + sortType.sort;
+    timer = setTimeout(() => {
+      const queryParams = new URLSearchParams(location.search);
+      queryParams.delete('search');
+      if (strFilter) {
+        queryParams.append('search', strFilter);
+      }
+      history.push({ search: queryParams.toString() });
+    }, 800);
+  };
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const search = queryParams.get('search');
+    const sortField = queryParams.get('field') || 'lastName';
+    const direction = queryParams.get('direction') || ASC;
+    setSortType({
+      direction: direction,
+      field: sortField,
     });
-    setFilteredData(newData);
-  }, [strFilter, prospects, sortType, location.search]);
+    if (search) {
+      setStrFilter(search);
+    }
+    // eslint-disable-next-line
+  }, []);
 
   const onUpdateProspectListSubscription = (data) => {
     const prospectList = data.value.data.onUpdateProspectList;
@@ -298,6 +326,7 @@ const ProspectsPage = () => {
                 placeholder='Search List ...'
                 value={strFilter}
                 onChange={(e) => setStrFilter(e.target.value)}
+                onKeyUp={() => keyUpEvent()}
               />
             </InputGroup>
             <FilterDropdown />
@@ -354,85 +383,87 @@ const ProspectsPage = () => {
             )}
           </div>
           <div className='showing'>
-            Showing<span>{filteredData.length}</span>of
-            <span>{prospects.length}</span>prospects
+            Showing<span>{prospects.length}</span>of
+            <span>{total}</span>prospects
           </div>
         </div>
-        <Table responsive='xl' className='data-table'>
-          <thead>
-            <tr>
-              <th width='30'></th>
-              {tableFields.map((item, id) => (
-                <th
-                  key={id}
-                  className={
-                    item.sortable
-                      ? 'sort-field ' +
-                        (sortType.field === item.field ? 'sorted-field' : '')
-                      : ''
-                  }
-                  onClick={() =>
-                    item.sortable ? changeSort(item.field) : null
-                  }
-                >
-                  {item.title}
-                  {item.sortable && (
-                    <span
-                      className={
-                        (sortType.field === item.field && sortType.sort === ASC
-                          ? 'desc '
-                          : '') + 'sort-icon'
-                      }
-                    ></span>
-                  )}
-                </th>
-              ))}
-              {/* <th width="120">CONTACT INFO</th> */}
-            </tr>
-          </thead>
-          <tbody>
-            {loading && (
+
+        <InfiniteScroll
+          dataLength={prospects.length}
+          scrollThreshold='50px'
+          next={loadData}
+          hasMore={prospects.length < total}
+        >
+          <Table responsive='xl' className='data-table'>
+            <thead>
               <tr>
-                <td colSpan='10' align='center'>
-                  <Spinner animation='border' role='status' />
-                </td>
+                <th width='30'></th>
+                {tableFields.map((item, id) => (
+                  <th
+                    key={id}
+                    className={
+                      item.sortable
+                        ? 'sort-field ' +
+                          (sortType.field === item.field ? 'sorted-field' : '')
+                        : ''
+                    }
+                    onClick={() =>
+                      item.sortable ? changeSort(item.field) : null
+                    }
+                  >
+                    {item.title}
+                    {item.sortable && (
+                      <span
+                        className={
+                          (sortType.field === item.field &&
+                          sortType.direction === ASC
+                            ? 'desc '
+                            : '') + 'sort-icon'
+                        }
+                      ></span>
+                    )}
+                  </th>
+                ))}
+                {/* <th width="120">CONTACT INFO</th> */}
               </tr>
-            )}
-            {!loading &&
-              filteredData &&
-              filteredData.map((item, idx) => (
-                <tr key={idx} className='clickable'>
-                  <td>
-                    <FormCheck
-                      custom
-                      checked={
-                        selected.findIndex((it) => it === item.id) >= 0
-                          ? true
-                          : false
-                      }
-                      type='checkbox'
-                      id={'checkbox-' + idx}
-                      onChange={(event) => {
-                        toggleItem(item.id);
-                      }}
-                    />
-                  </td>
-                  {tableFields.map((field, col) => (
-                    <td key={col} onClick={() => gotoDetailPage(item.id)}>
-                      {item[field.field]}
+            </thead>
+            <tbody>
+              {prospects &&
+                prospects.map((item, idx) => (
+                  <tr key={idx} className='clickable'>
+                    <td>
+                      <FormCheck
+                        custom
+                        checked={
+                          selected.findIndex((it) => it === item.id) >= 0
+                            ? true
+                            : false
+                        }
+                        type='checkbox'
+                        id={'checkbox-' + idx}
+                        onChange={(event) => {
+                          toggleItem(item.id);
+                        }}
+                      />
                     </td>
-                  ))}
+                    {tableFields.map((field, col) => (
+                      <td key={col} onClick={() => gotoDetailPage(item.id)}>
+                        {item[field.field]}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+
+              {loading && (
+                <tr>
+                  <td colSpan='10' align='center'>
+                    <Spinner animation='border' role='status' />
+                  </td>
                 </tr>
-              ))}
-          </tbody>
-        </Table>
-        <div className='d-flex justify-content-center'>
-          {nextToken && (
-            <Button variant='outline-primary' onClick={loadData}>
-              Next
-            </Button>
-          )}
-        </div>
+              )}
+            </tbody>
+          </Table>
+        </InfiniteScroll>
         {showAddExistingModal && (
           <NewProspectListModal
             show={showAddExistingModal}
