@@ -37,3 +37,38 @@ export const prospectsCountsByProspectListId = /* GraphQL */ `
     }
   }
 `;
+export const customSearchProspects = /* GraphQL */ `
+  query SearchProspects(
+    $filter: SearchableProspectFilterInput
+    $sort: SearchableProspectSortInput
+    $limit: Int
+    $nextToken: String
+    $from: Int
+  ) {
+    searchProspects(
+      filter: $filter
+      sort: $sort
+      limit: $limit
+      nextToken: $nextToken
+      from: $from
+    ) {
+      items {
+        id
+        status
+        firstName
+        lastName
+        company
+        address1
+        city
+        state
+        phone
+        email
+        enhance
+        enhanced
+        fetched
+      }
+      nextToken
+      total
+    }
+  }
+`;

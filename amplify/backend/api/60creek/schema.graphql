@@ -380,6 +380,7 @@ type User
 }
 type Prospect
   @model
+  @searchable
   @key(
     name: "prospectsByUserId"
     fields: ["userId", "prospectListId"]

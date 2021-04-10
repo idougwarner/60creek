@@ -72,7 +72,7 @@ exports.handler = async (event) => {
         };
 
         {
-          let rt;
+          let rt, rt1;
 
           if (email && !phone) {
             rt = await axios.get('https://api.datafinder.com/v2/qdf.php', {
@@ -82,10 +82,25 @@ exports.handler = async (event) => {
                 ...queryParams,
               },
             });
-          } else if (email || phone) {
+          } else if (phone && !email) {
             rt = await axios.get('https://api.datafinder.com/v2/qdf.php', {
               params: {
                 service: 'email',
+                k2: datafinderKey,
+                ...queryParams,
+              },
+            });
+          } else if (!email && !phone) {
+            rt = await axios.get('https://api.datafinder.com/v2/qdf.php', {
+              params: {
+                service: 'email',
+                k2: datafinderKey,
+                ...queryParams,
+              },
+            });
+            rt1 = await axios.get('https://api.datafinder.com/v2/qdf.php', {
+              params: {
+                service: 'phone',
                 k2: datafinderKey,
                 ...queryParams,
               },
@@ -101,12 +116,31 @@ exports.handler = async (event) => {
                     ? ' ' + fetchedData.MiddleName
                     : '') || firstName,
               lastName: fetchedData.LastName || lastName,
-              address1: fetchedData.Address,
-              city: fetchedData.City,
-              state: fetchedData.State,
-              zip: fetchedData.Zip,
+              address1: fetchedData.Address || address1,
+              city: fetchedData.City || city,
+              state: fetchedData.State || state,
+              zip: fetchedData.Zip || zip,
               phone: fetchedData.Phone || phone,
               email: fetchedData.Email || email,
+            };
+          }
+          if (rt1 && rt1.data && rt1.data.datafinder['num-results'] > 0) {
+            const fetchedData = rt1.data.datafinder.results[0];
+            dt = {
+              firstName:
+                fetchedData.FirstName +
+                  (fetchedData.MiddleName
+                    ? ' ' + fetchedData.MiddleName
+                    : '') || firstName,
+              lastName:
+                fetchedData.LastName || (dt ? dt.lastName : null) || lastName,
+              address1:
+                fetchedData.Address || (dt ? dt.address1 : null) || address1,
+              city: fetchedData.City || (dt ? dt.city : null) || city,
+              state: fetchedData.State || (dt ? dt.state : null) || state,
+              zip: fetchedData.Zip || (dt ? dt.zip : null) || zip,
+              phone: fetchedData.Phone || (dt ? dt.phone : null) || phone,
+              email: fetchedData.Email || (dt ? dt.email : null) || email,
             };
           }
 
