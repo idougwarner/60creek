@@ -972,3 +972,112 @@ export const campaignsByUserId = /* GraphQL */ `
     }
   }
 `;
+export const searchProspects = /* GraphQL */ `
+  query SearchProspects(
+    $filter: SearchableProspectFilterInput
+    $sort: SearchableProspectSortInput
+    $limit: Int
+    $nextToken: String
+    $from: Int
+  ) {
+    searchProspects(
+      filter: $filter
+      sort: $sort
+      limit: $limit
+      nextToken: $nextToken
+      from: $from
+    ) {
+      items {
+        id
+        userId
+        prospectListId
+        status
+        firstName
+        lastName
+        company
+        address1
+        address2
+        city
+        state
+        zip
+        phone
+        email
+        facebook
+        notes
+        interested
+        enhance
+        enhanced
+        fetched
+        demographic {
+          DOB
+          ageRange
+          ethnicCode
+          singleParent
+          seniorAdultInHousehold
+          youngAdultInHousehold
+          workingWoman
+          SOHOIndicator
+          businessOwner
+          language
+          religion
+          numberOfChildren
+          maritalStatusInHousehold
+          homeOwnerRenter
+          education
+          occupation
+          occupationDetail
+          gender
+          socialPresence
+          presenceOfChildren
+        }
+        lifestyle {
+          magazines
+          computerAndTechnology
+          dietingWeightLoss
+          exerciseHealthGrouping
+          doItYourselferHomeImprovement
+          jewelry
+          mailOrderBuyer
+          membershipClubs
+          travelGrouping
+          onlineEducation
+          sportsGrouping
+          sportsOutdoorsGrouping
+          investing
+          booksAndReading
+          politicalDonor
+          hobbiesAndCrafts
+          cosmetics
+          charitableDonations
+          artsAntiquesCollectibles
+          petOwner
+          cooking
+          autoPartsAccessories
+          healthBeautyWellness
+          parentingAndChildrensProducts
+          music
+          movie
+          selfImprovement
+          womensApparel
+        }
+        prospectList {
+          id
+          userId
+          name
+          enhance
+          customerEmail
+          customerId
+          paymentMethodId
+          amount
+          uploadStatus
+          createdAt
+          updatedAt
+        }
+        createdAt
+        updatedAt
+      }
+      nextToken
+      total
+    }
+  }
+`;
