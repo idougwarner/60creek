@@ -152,6 +152,7 @@ const ProspectsPage = () => {
     if (user && oldParams !== location.search) {
       oldParams = location.search;
       from = 0;
+      setSelected([]);
       setProspects([]);
       loadData();
     }
@@ -241,14 +242,25 @@ const ProspectsPage = () => {
     ).subscribe({
       next: onUpdateProspectListSubscription,
     });
+    oldParams = '-';
     return () => {
       updateProspectListSubscription.unsubscribe();
+      oldParams = '-';
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
+  const selectAll = () => {
+    if (selected.length < prospects.length) {
+      setSelected(prospects.map((item) => item.id));
+    } else {
+      setSelected([]);
+    }
+  };
   const gotoDetailPage = (id) => {
-    history.push(APP_URLS.PROSPECTS + '/' + id);
+    history.push({
+      pathname: APP_URLS.PROSPECTS + '/' + id,
+      search: location.search,
+    });
   };
 
   const deleteProspects = async () => {
@@ -266,6 +278,7 @@ const ProspectsPage = () => {
       }
       setProspects(newData);
       setSelected([]);
+      loadData();
     } catch (err) {}
     setDeleting(false);
   };
@@ -397,7 +410,21 @@ const ProspectsPage = () => {
           <Table responsive='xl' className='data-table'>
             <thead>
               <tr>
-                <th width='30'></th>
+                <th width='30'>
+                  <FormCheck
+                    custom
+                    checked={selected.length > 0}
+                    className={
+                      selected.length > 0 &&
+                      selected.length !== prospects.length
+                        ? 'indeterminate'
+                        : ''
+                    }
+                    onChange={() => selectAll()}
+                    type='checkbox'
+                    id={'checkbox-all'}
+                  />
+                </th>
                 {tableFields.map((item, id) => (
                   <th
                     key={id}
