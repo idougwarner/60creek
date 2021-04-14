@@ -303,7 +303,7 @@
         },
         "prospectTableTrigger": {
           "deploymentBucketName": "amplify-60creek-jin-232521-deployment",
-          "s3Key": "amplify-builds/prospectTableTrigger-30396f62493066626c54-build.zip"
+          "s3Key": "amplify-builds/prospectTableTrigger-30314f33506732676d73-build.zip"
         }
       },
       "hosting": {
