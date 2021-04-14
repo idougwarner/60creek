@@ -34,6 +34,20 @@ const getEnvValue = (values, key) => {
   }
   return '';
 };
+
+const formatPhoneNumber = (phoneNumberString) => {
+  let cleaned = ('' + phoneNumberString).replace(/\D/g, '');
+  let match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
+  if (match) {
+    return '(' + match[1] + ') ' + match[2] + ' - ' + match[3];
+  }
+  return '';
+};
+
+const cleanedPhoneNumber = (phoneNumberString) => {
+  return ('' + phoneNumberString).replace(/\D/g, '');
+};
+
 exports.handler = async (event) => {
   try {
     const envVariables = await envPromise;
@@ -53,7 +67,7 @@ exports.handler = async (event) => {
         const firstName = record.dynamodb.NewImage.firstName.S;
         const lastName = record.dynamodb.NewImage.lastName.S;
         const email = record.dynamodb.NewImage.email.S;
-        const phone = record.dynamodb.NewImage.phone.S;
+        const phone = cleanedPhoneNumber(record.dynamodb.NewImage.phone.S);
         const city = record.dynamodb.NewImage.city.S;
         const state = record.dynamodb.NewImage.state.S;
         const zip = record.dynamodb.NewImage.zip.S;
@@ -120,7 +134,7 @@ exports.handler = async (event) => {
               city: fetchedData.City || city,
               state: fetchedData.State || state,
               zip: fetchedData.Zip || zip,
-              phone: fetchedData.Phone || phone,
+              phone: formatPhoneNumber(fetchedData.Phone || phone),
               email: fetchedData.Email || email,
             };
           }
@@ -139,7 +153,9 @@ exports.handler = async (event) => {
               city: fetchedData.City || (dt ? dt.city : null) || city,
               state: fetchedData.State || (dt ? dt.state : null) || state,
               zip: fetchedData.Zip || (dt ? dt.zip : null) || zip,
-              phone: fetchedData.Phone || (dt ? dt.phone : null) || phone,
+              phone: formatPhoneNumber(
+                fetchedData.Phone || (dt ? dt.phone : null) || phone
+              ),
               email: fetchedData.Email || (dt ? dt.email : null) || email,
             };
           }

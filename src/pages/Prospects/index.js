@@ -276,7 +276,8 @@ const ProspectsPage = () => {
         const idx = newData.findIndex((item) => item.id === selected[i]);
         newData.splice(idx, 1);
       }
-      setProspects(newData);
+      from = 0;
+      setProspects([]);
       setSelected([]);
       loadData();
     } catch (err) {}
