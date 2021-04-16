@@ -62,7 +62,6 @@ exports.handler = async (event) => {
         record.eventName === 'INSERT' &&
         record.dynamodb.NewImage.enhance.BOOL === true
       ) {
-        console.log(record);
         const id = record.dynamodb.NewImage.id.S;
         const firstName = record.dynamodb.NewImage.firstName.S;
         const lastName = record.dynamodb.NewImage.lastName.S;
@@ -120,7 +119,6 @@ exports.handler = async (event) => {
               },
             });
           }
-
           if (rt && rt.data && rt.data.datafinder['num-results'] > 0) {
             const fetchedData = rt.data.datafinder.results[0];
             dt = {
@@ -135,7 +133,7 @@ exports.handler = async (event) => {
               state: fetchedData.State || state,
               zip: fetchedData.Zip || zip,
               phone: formatPhoneNumber(fetchedData.Phone || phone),
-              email: fetchedData.Email || email,
+              email: fetchedData.EmailAddr || email,
             };
           }
           if (rt1 && rt1.data && rt1.data.datafinder['num-results'] > 0) {
@@ -156,7 +154,7 @@ exports.handler = async (event) => {
               phone: formatPhoneNumber(
                 fetchedData.Phone || (dt ? dt.phone : null) || phone
               ),
-              email: fetchedData.Email || (dt ? dt.email : null) || email,
+              email: fetchedData.EmailAddr || (dt ? dt.email : null) || email,
             };
           }
 
@@ -170,7 +168,11 @@ exports.handler = async (event) => {
               },
             }
           );
-          if (rtSocial.data && rtSocial.data.datafinder['num-results'] > 0) {
+          if (
+            rtSocial &&
+            rtSocial.data &&
+            rtSocial.data.datafinder['num-results'] > 0
+          ) {
             const fetchedData = rtSocial.data.datafinder.results[0];
             dt.facebook = fetchedData.FBURL;
           }
@@ -183,7 +185,7 @@ exports.handler = async (event) => {
               ...queryParams,
             },
           });
-          if (rt.data && rt.data.datafinder['num-results'] > 0) {
+          if (rt && rt.data && rt.data.datafinder['num-results'] > 0) {
             const fetchedData = rt.data.datafinder.results[0];
             dt.demographic = {
               DOB: fetchedData.DOB,
@@ -217,7 +219,7 @@ exports.handler = async (event) => {
               ...queryParams,
             },
           });
-          if (rt.data && rt.data.datafinder['num-results'] > 0) {
+          if (rt && rt.data && rt.data.datafinder['num-results'] > 0) {
             const fetchedData = rt.data.datafinder.results[0];
             dt.lifestyle = {
               magazines: fetchedData.Magazines,
