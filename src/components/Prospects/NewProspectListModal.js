@@ -193,7 +193,7 @@ const NewProspectListModal = ({ show, close, existingList = false }) => {
     setCompleted(false);
     setPercentage(0);
   }, []);
-  const next = async () => {
+  const next = () => {
     if (step < STEP3) {
       setStep(step + 1);
     }
