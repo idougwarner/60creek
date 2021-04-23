@@ -100,6 +100,11 @@ export const getJsonFromFile = (file) => {
           }
         }
         if (cnt > 0) {
+          for (let j = 0; j < validFields.length; j++) {
+            if (!row[validFields[j]]) {
+              row[validFields[j]] = '';
+            }
+          }
           data.push(row);
         }
       }
